@@ -60,7 +60,8 @@ export class AoiEngine {
   setTransportRouter(router: TransportRouter) {
     this.transportRouter = router;
     router.onMessage(async (msg) => {
-      const { findWindow, sendKeys, listSessions } = await import("../transport/ssh");
+      const { findWindow } = await import("../runtime/find-window");
+      const { sendKeys, listSessions } = await import("../transport/ssh");
       const sessions = this.sessionCache.sessions.length > 0
         ? this.sessionCache.sessions
         : await listSessions().catch(() => []);

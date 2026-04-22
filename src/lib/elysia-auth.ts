@@ -44,11 +44,11 @@ function isProtected(path: string, method: string): boolean {
 // TCP connection. This is the ONLY authoritative source for client IP.
 // Headers (X-Forwarded-For, X-Real-IP) are attacker-controlled and
 // MUST NOT influence auth decisions. See #191.
-let _bunServer: Server | null = null;
+let _bunServer: Server<any> | null = null;
 
 /** Store the Bun server reference so the auth plugin can call requestIP().
  *  Called once from server.ts after Bun.serve(). */
-export function setBunServer(server: Server): void {
+export function setBunServer(server: Server<any>): void {
   _bunServer = server;
 }
 

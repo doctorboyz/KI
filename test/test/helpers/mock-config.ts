@@ -7,19 +7,19 @@
  * @target-module src/config.ts
  * (Checked by scripts/check-mock-export-sync.sh — #435)
  */
-import type { MawConfig, MawIntervals, MawTimeouts, MawLimits } from "../../../src/core/config";
+import type { AoiConfig, AoiIntervals, AoiTimeouts, AoiLimits } from "../../../src/core/config";
 
-const INTERVALS: Record<keyof MawIntervals, number> = {
+const INTERVALS: Record<keyof AoiIntervals, number> = {
   capture: 50, sessions: 5000, status: 3000, teams: 3000,
   preview: 2000, peerFetch: 10000, crashCheck: 30000,
 };
 
-const TIMEOUTS: Record<keyof MawTimeouts, number> = {
+const TIMEOUTS: Record<keyof AoiTimeouts, number> = {
   http: 5000, health: 3000, ping: 5000, pty: 5000,
   workspace: 5000, shellInit: 3000, wakeRetry: 500, wakeVerify: 3000,
 };
 
-const LIMITS: Record<keyof MawLimits, number> = {
+const LIMITS: Record<keyof AoiLimits, number> = {
   feedMax: 500, feedDefault: 50, feedHistory: 50,
   logsMax: 500, logsDefault: 50, logsTruncate: 500,
   messageTruncate: 100, ptyCols: 500, ptyRows: 200,
@@ -33,7 +33,7 @@ export const TEST_D = {
 } as const;
 
 /** Build a complete config mock with typed helpers — no `as any` needed */
-export function mockConfigModule(loadConfig: () => Partial<MawConfig>) {
+export function mockConfigModule(loadConfig: () => Partial<AoiConfig>) {
   return {
     loadConfig,
     resetConfig: () => {},
@@ -44,9 +44,9 @@ export function mockConfigModule(loadConfig: () => Partial<MawConfig>) {
     buildCommandInDir: (_name: string, cwd: string) => `cd '${cwd}' && echo test`,
     getEnvVars: () => ({}),
     D: TEST_D,
-    cfgInterval: (k: keyof MawIntervals) => INTERVALS[k],
-    cfgTimeout: (k: keyof MawTimeouts) => TIMEOUTS[k],
-    cfgLimit: (k: keyof MawLimits) => LIMITS[k],
-    cfg: <K extends keyof MawConfig>(k: K) => loadConfig()[k],
+    cfgInterval: (k: keyof AoiIntervals) => INTERVALS[k],
+    cfgTimeout: (k: keyof AoiTimeouts) => TIMEOUTS[k],
+    cfgLimit: (k: keyof AoiLimits) => LIMITS[k],
+    cfg: <K extends keyof AoiConfig>(k: K) => loadConfig()[k],
   };
 }

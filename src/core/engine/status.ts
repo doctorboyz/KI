@@ -134,7 +134,7 @@ export class StatusDetector {
             timestamp: new Date().toISOString(),
             oracle: oracleName,
             host: "local",
-            event: status === "busy" ? "PreToolUse" : status === "ready" ? "Stop" : status === "crashed" ? "Error" : "SessionEnd",
+            event: status === "busy" ? "PreToolUse" : status === "ready" ? "Stop" : status === "crashed" ? "PluginError" : "SessionEnd",
             project: session,
             sessionId: "",
             message: status === "busy" ? "working" : status === "ready" ? "waiting" : status === "crashed" ? "crashed" : "idle",

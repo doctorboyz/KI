@@ -39,7 +39,7 @@ export class TmuxTransport implements Transport {
       let tmuxTarget = target.tmuxTarget;
       if (!tmuxTarget) {
         const sessions = await listSessions();
-        tmuxTarget = findWindow(sessions, target.oracle);
+        tmuxTarget = findWindow(sessions, target.oracle) ?? undefined;
         if (!tmuxTarget) return false;
       }
 

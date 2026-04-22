@@ -4,6 +4,8 @@ import type { InvokeContext } from "../../../../plugin/types";
 
 let lastWakeCall: { oracle: string; opts: any } | null = null;
 let lastWakeAllCall: { opts: any } | null = null;
+// Track lastWakeCall outside TS control flow so null reassignment doesn't narrow
+function getWakeCall() { return lastWakeCall; }
 
 // Bun's module cache key is the normalized path WITHOUT the .ts extension.
 // Use join() from the src root — same convention as stop.test.ts and other plugin
@@ -130,12 +132,12 @@ describe("wake plugin", () => {
 
   it("CLI --wt and --new: both resolve to the same wt value", async () => {
     const a = await handler({ source: "cli", args: ["neo", "--wt", "foo"] });
-    const wtValue = lastWakeCall?.opts.wt;
+    const wtValue = getWakeCall()?.opts?.wt;
     expect(a.ok).toBe(true);
     lastWakeCall = null;
     const b = await handler({ source: "cli", args: ["neo", "--new", "foo"] });
     expect(b.ok).toBe(true);
-    expect(lastWakeCall?.opts.wt).toBe(wtValue);
-    expect(lastWakeCall?.opts.wt).toBe("foo");
+    expect(getWakeCall()?.opts?.wt).toBe(wtValue);
+    expect(getWakeCall()?.opts?.wt).toBe("foo");
   });
 });

@@ -16,7 +16,7 @@ import { curlFetch } from "../core/transport/curl-fetch";
 /** Resolve an oracle name to a NanoClaw JID + URL using config */
 function resolveNanoclawJid(oracle: string): { jid: string; url: string } | null {
   const config = loadConfig();
-  const nc = config.nanoclaw as { url?: string; channels?: Record<string, string> } | undefined;
+  const nc = (config as unknown as Record<string, unknown>).nanoclaw as { url?: string; channels?: Record<string, string> } | undefined;
   if (!nc?.url || !nc?.channels) return null;
   const jid = nc.channels[oracle];
   if (!jid) return null;

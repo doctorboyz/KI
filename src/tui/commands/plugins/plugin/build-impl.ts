@@ -112,7 +112,7 @@ export async function cmdPluginBuild(args: string[]): Promise<void> {
  * Keeping the two paths separate lets us diverge them without touching build.
  */
 export async function cmdPluginDev(args: string[]): Promise<void> {
-  const flags = parseFlags(args, {}, 0);
+  const flags = parseFlags(args, { "--types": Boolean }, 0);
   const dir = resolve(flags._[0] || ".");
   const emitTypes = flags["--types"] === true;
   console.log(`\x1b[36maoi plugin dev\x1b[0m — watch mode (Ctrl-C to stop)`);

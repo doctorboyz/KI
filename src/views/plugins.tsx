@@ -2,7 +2,16 @@
 import { Hono } from "hono";
 import type { LoadedPlugin } from "../plugin/types";
 
-export function pluginsView(plugins: { stats: () => { plugins: LoadedPlugin[]; totalEvents: number; totalErrors: number; gated: number; startedAt: string; gates?: Record<string, number>; filters?: Record<string, number>; handlers?: Record<string, number>; lates?: Record<string, number> } }) {
+interface PluginRow extends LoadedPlugin {
+  name: string;
+  type: string;
+  events: number;
+  errors: number;
+  lastEvent: string | null;
+  loadedAt: number;
+}
+
+export function pluginsView(plugins: { stats: () => { plugins: PluginRow[]; totalEvents: number; totalErrors: number; gated: number; startedAt: string; gates?: Record<string, number>; filters?: Record<string, number>; handlers?: Record<string, number>; lates?: Record<string, number> } }) {
   const view = new Hono();
 
   view.get("/", (c) => {

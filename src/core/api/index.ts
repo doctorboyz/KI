@@ -35,7 +35,6 @@ export const api = new Elysia({ prefix: "/api" })
     path: "/docs",
     documentation: {
       info: { title: "aoi API", version: "2.0.0-alpha.1" },
-      description: "Multi-Agent Workflow API — federation, sessions, plugins, workspace",
     },
   }))
   .use(sessionsApi)
@@ -70,13 +69,13 @@ for (const p of bundledPlugins) {
   const { methods } = p.manifest.api;
   if (methods.includes("GET")) {
     api.get(apiPath, async ({ query }) => {
-      const result = await invokePlugin(p, { source: "api", args: query ?? {} });
+      const result = await invokePlugin(p, { source: "api", args: (query ?? {}) as Record<string, unknown> });
       return result;
     });
   }
   if (methods.includes("POST")) {
     api.post(apiPath, async ({ body }) => {
-      const result = await invokePlugin(p, { source: "api", args: body ?? {} });
+      const result = await invokePlugin(p, { source: "api", args: (body ?? {}) as Record<string, unknown> });
       return result;
     });
   }

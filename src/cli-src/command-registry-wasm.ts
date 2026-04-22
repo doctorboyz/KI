@@ -22,7 +22,7 @@ import {
  */
 export async function loadWasmCommand(path: string, filename: string, scope: "builtin" | "user", disabled: string[] = []): Promise<void> {
   const wasmBytes = readFileSync(path);
-  const mod = new WebAssembly.Module(wasmBytes);
+  const mod = new WebAssembly.Module(wasmBytes as unknown as BufferSource);
   const exports = WebAssembly.Module.exports(mod);
   const exportNames = exports.map((e: { name: string }) => e.name);
 
@@ -44,7 +44,7 @@ export async function loadWasmCommand(path: string, filename: string, scope: "bu
 
   let instance: WebAssembly.Instance;
   try {
-    instance = new WebAssembly.Instance(mod, bridge);
+    instance = new WebAssembly.Instance(mod, { env: bridge.env });
   } catch (err: any) {
     console.error(`[commands] wasm instantiation failed: ${filename}: ${err.message?.slice(0, 120)}`);
     return;

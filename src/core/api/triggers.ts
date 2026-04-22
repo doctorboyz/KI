@@ -37,7 +37,7 @@ triggersApi.post("/triggers/fire", async ({ body }) => {
   const event = typedBody.event as TriggerEvent;
   const ctx: TriggerContext = typedBody.context || {};
 
-  const results = fire(event, ctx);
+  const results = await fire(event, ctx);
   return {
     ok: true,
     event,

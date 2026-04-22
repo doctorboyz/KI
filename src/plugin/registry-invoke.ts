@@ -121,7 +121,7 @@ export async function invokePlugin(
   // Compile
   let mod: WebAssembly.Module;
   try {
-    mod = new WebAssembly.Module(wasmBytes);
+    mod = new WebAssembly.Module(wasmBytes as unknown as BufferSource);
   } catch (err: unknown) {
     return { ok: false, error: `wasm compile error: ${err instanceof Error ? err.message : String(err)}` };
   }
@@ -145,7 +145,7 @@ export async function invokePlugin(
 
   let instance: WebAssembly.Instance;
   try {
-    instance = new WebAssembly.Instance(mod, bridge);
+    instance = new WebAssembly.Instance(mod, { env: bridge.env });
   } catch (err: unknown) {
     return { ok: false, error: `wasm instantiation failed: ${err instanceof Error ? err.message : String(err)}` };
   }

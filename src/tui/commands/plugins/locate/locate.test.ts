@@ -12,6 +12,7 @@ import type { InvokeContext } from "../../../../plugin/types";
 
 function makeCtx(args: string[]): InvokeContext {
   return {
+    source: "cli",
     args,
     cwd: process.cwd(),
     env: process.env,

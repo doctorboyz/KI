@@ -8,7 +8,7 @@ export const command = {
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
-  const args = ctx.args ?? [];
+  const args = (Array.isArray(ctx.args) ? ctx.args : []) as string[];
   const flags = parseFlags(args, {
     "--path": Boolean,
     "-p": "--path",

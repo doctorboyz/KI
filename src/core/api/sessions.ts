@@ -1,7 +1,7 @@
 import { Elysia, t} from "elysia";
 import { listSessions, capture, sendKeys, selectWindow } from "../transport/ssh";
 import { checkPaneIdle } from "../../commands/shared/comm-send";
-import { findWindow } from "../runtime/find-window";
+import { findWindow, type Session } from "../runtime/find-window";
 import { getAggregatedSessions, findPeerForTarget, sendKeysToPeer } from "../transport/peers";
 import { loadConfig } from "../config";
 import { curlFetch } from "../transport/curl-fetch";
@@ -13,7 +13,7 @@ import { WakeBody, SleepBody, SendBody } from "../../lib/schemas";
 export const sessionsApi = new Elysia();
 
 /** Resolve oracle name → tmux target, same logic as local peek (#273). */
-function resolveCapture(query: string, sessions: { name: string }[]): string {
+function resolveCapture(query: string, sessions: Session[]): string {
   const config = loadConfig();
   const mapped = (config.sessions as Record<string, string>)?.[query];
   if (mapped) {
@@ -152,7 +152,7 @@ sessionsApi.post("/wake", async ({ body, set}) => {
   try {
     const { target, task } = body;
     const { cmdWake } = await import("../../commands/shared/wake");
-    await cmdWake(target, { noAttach: true, task });
+    await cmdWake(target, { task });
     return { ok: true, target };
   } catch (err) {
     set.status = 500; return { error: String(err) };

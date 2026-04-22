@@ -30,9 +30,10 @@ export function handlePtyMessage(ws: AoiWS, msg: string | Buffer) {
   if (typeof msg !== "string") {
     // Binary → keystroke to PTY stdin
     const session = findSession(ws);
-    if (session?.proc.stdin) {
-      session.proc.stdin.write(msg as Buffer);
-      session.proc.stdin.flush();
+    const stdin = session?.proc.stdin;
+    if (stdin && typeof stdin !== "number") {
+      stdin.write(msg as Buffer);
+      stdin.flush();
     }
     return;
   }

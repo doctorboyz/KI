@@ -24,7 +24,7 @@ interface DeprecatedBody {
   message: string;
 }
 
-function gone(set: { status: number; headers: Record<string, string> }, replacement: string): DeprecatedBody {
+function gone(set: { status?: number | string; headers: Record<string, string | number> }, replacement: string): DeprecatedBody {
   set.status = 410;
   set.headers["Link"] = `<${replacement}>; rel="alternate"`;
   set.headers["Deprecation"] = "true";

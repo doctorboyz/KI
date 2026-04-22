@@ -19,11 +19,11 @@ export interface CurlResponse {
   data: any;
 }
 
-export async function curlFetch(url: string, opts?: {
+export async function curlFetch(url: string, opts: {
   method?: string;
   body?: string;
   timeout?: number;
-}): Promise<CurlResponse> {
+} = {}): Promise<CurlResponse> {
   // Build auth headers
   const headers: Record<string, string> = {};
   if (opts?.body) headers["Content-Type"] = "application/json";
