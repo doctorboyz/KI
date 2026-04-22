@@ -1,0 +1,28 @@
+{
+  "name": "aoi",
+  "version": "0.1.0",
+  "description": "Agent Office Interface — keyboard-first TUI for maw-js agent orchestration",
+  "type": "module",
+  "bin": {
+    "aoi": "./src/cli.ts"
+  },
+  "scripts": {
+    "dev": "bun run --watch src/cli.ts",
+    "build": "bun build src/cli.ts --outdir dist --target bun",
+    "start": "bun dist/cli.js",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ink": "^5.0.0",
+    "ink-text-input": "^5.0.0",
+    "react": "^18.3.1",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^18.3.0",
+    "react-devtools-core": "^7.0.1",
+    "typescript": "^5.5.0"
+  }
+}
