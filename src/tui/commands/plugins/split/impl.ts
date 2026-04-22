@@ -1,6 +1,6 @@
-import { listSessions, hostExec, withPaneLock } from "../../../sdk";
-import { resolveSessionTarget } from "../../../core/matcher/resolve-target";
-import { normalizeTarget } from "../../../core/matcher/normalize-target";
+import { listSessions, hostExec, withPaneLock } from "../../../../sdk";
+import { resolveSessionTarget } from "../../../../core/matcher/resolve-target";
+import { normalizeTarget } from "../../../../core/matcher/normalize-target";
 
 export interface SplitOpts {
   /** Split percentage (1-99). Default: 50. */

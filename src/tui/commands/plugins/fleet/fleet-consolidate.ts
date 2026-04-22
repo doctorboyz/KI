@@ -1,8 +1,8 @@
 import { join } from "path";
 import { readdirSync, readFileSync, unlinkSync } from "fs";
-import { hostExec } from "../../../sdk";
-import { loadConfig } from "../../../config";
-import { FLEET_DIR } from "../../../sdk";
+import { hostExec } from "../../../../sdk";
+import { loadConfig } from "../../../../core/config";
+import { FLEET_DIR } from "../../../../sdk";
 
 /**
  * aoi fleet consolidate [--dry-run] [--remove]

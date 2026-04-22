@@ -6,7 +6,7 @@
  */
 
 // No execSync — use async Bun.spawn to avoid blocking event loop
-import { loadConfig, saveConfig, type TriggerConfig, type TriggerEvent } from "../../config";
+import { loadConfig, saveConfig, type TriggerConfig, type TriggerEvent } from "../config";
 import { logAudit } from "../fleet/audit";
 
 export interface TriggerContext {

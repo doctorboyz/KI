@@ -2,7 +2,7 @@ import type { InvokeContext, InvokeResult } from "../../../plugin/types";
 import { cmdOracleList, cmdOracleAbout, cmdOracleScan, cmdOracleScanStale } from "./impl";
 import { cmdOraclePrune } from "./impl-prune";
 import { cmdOracleRegister } from "./impl-register";
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../cli-src/parse-args";
 
 export const command = {
   name: ["oracle", "oracles"],

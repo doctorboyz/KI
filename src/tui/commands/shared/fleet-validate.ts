@@ -1,7 +1,7 @@
 import { join } from "path";
 import { existsSync } from "fs";
-import { tmux } from "../../sdk";
-import { loadConfig } from "../../core/config";
+import { tmux } from "../../../sdk";
+import { loadConfig } from "../../../core/config";
 import { loadFleetEntries, getSessionNames } from "./fleet-load";
 
 export async function cmdFleetValidate() {

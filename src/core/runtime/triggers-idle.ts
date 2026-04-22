@@ -5,7 +5,7 @@
  * an agent transitions from busy→idle and the configured timeout elapses.
  */
 
-import type { TriggerConfig } from "../../config";
+import type { TriggerConfig } from "../config";
 import { fire, getTriggers, idleTimers, agentPrevState } from "./triggers-engine";
 
 /**

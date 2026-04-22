@@ -1,5 +1,5 @@
 import { hostExec, listSessions } from "../transport/ssh";
-import { loadConfig } from "../../config";
+import { loadConfig } from "../config";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
 import { FLEET_DIR } from "../paths";

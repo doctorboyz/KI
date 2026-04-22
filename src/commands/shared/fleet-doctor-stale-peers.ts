@@ -6,7 +6,7 @@
  */
 
 import { curlFetch } from "../../sdk";
-import type { PeerConfig } from "../../config";
+import type { PeerConfig } from "../../core/config";
 import type { DoctorFinding } from "./fleet-doctor-checks";
 
 /**

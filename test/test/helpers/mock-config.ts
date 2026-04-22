@@ -7,7 +7,7 @@
  * @target-module src/config.ts
  * (Checked by scripts/check-mock-export-sync.sh — #435)
  */
-import type { MawConfig, MawIntervals, MawTimeouts, MawLimits } from "../../src/config";
+import type { MawConfig, MawIntervals, MawTimeouts, MawLimits } from "../../../src/core/config";
 
 const INTERVALS: Record<keyof MawIntervals, number> = {
   capture: 50, sessions: 5000, status: 3000, teams: 3000,

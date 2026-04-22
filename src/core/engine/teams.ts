@@ -1,8 +1,8 @@
 import { readdirSync, readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
-import { tmux } from "../core/transport/tmux";
-import type { AoiWS } from "../core/types";
+import { tmux } from "../transport/tmux";
+import type { AoiWS } from "../types";
 
 // Runtime shape of a team member as stored in ~/.claude/teams/<team>/config.json.
 // Superset of TeamMember (in commands/plugins/team/team-helpers) — Claude Code's

@@ -32,8 +32,8 @@ export { checkMissingRepos } from "./fleet-doctor-checks-repo";
 export { checkStalePeers } from "./fleet-doctor-stale-peers";
 export { autoFix } from "./fleet-doctor-fixer";
 
-import { loadConfig } from "../../core/config";
-import { listSessions } from "../../sdk";
+import { loadConfig } from "../../../core/config";
+import { listSessions } from "../../../sdk";
 import { loadFleetEntries } from "./fleet-load";
 import {
   checkCollisions,

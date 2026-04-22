@@ -6,8 +6,8 @@
  * with re-exported getEnvVars from config.ts).
  */
 
-import { hostExec } from "../../sdk";
-import { ghqFind } from "../../core/ghq";
+import { hostExec } from "../../../sdk";
+import { ghqFind } from "../../../core/ghq";
 
 // --- URL/slug detection ---------------------------------------------------
 

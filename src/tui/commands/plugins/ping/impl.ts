@@ -1,5 +1,5 @@
-import { loadConfig, cfgTimeout } from "../../../config";
-import { curlFetch } from "../../../sdk";
+import { loadConfig, cfgTimeout } from "../../../../core/config";
+import { curlFetch } from "../../../../sdk";
 
 export async function cmdPing(node?: string) {
   const config = loadConfig();

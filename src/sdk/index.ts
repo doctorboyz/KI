@@ -23,8 +23,8 @@ export {
   loadConfig, saveConfig, buildCommand, buildCommandInDir,
   getEnvVars, cfgTimeout, cfgLimit, cfgInterval, cfg, D,
   resetConfig,
-} from "../config";
-export type { AoiConfig } from "../config";
+} from "../core/config";
+export type { AoiConfig } from "../core/config";
 
 // ─── Transport ───────────────────────────────────────────────────────────────
 
@@ -41,7 +41,7 @@ export {
   getPaneCommand, getPaneCommands, getPaneInfos,
   HostExecError,
 } from "../core/transport/ssh";
-export type { Session as SshSession, HostExecTransport } from "../core/transport/ssh";
+export type { HostExecTransport } from "../core/transport/ssh";
 export { curlFetch } from "../core/transport/curl-fetch";
 export {
   getPeers, getFederationStatus, findPeerForTarget,
@@ -86,11 +86,11 @@ export type { ArtifactMeta, ArtifactSummary } from "../lib/artifacts";
 
 export { discoverPackages, invokePlugin } from "../plugin/registry";
 export { parseManifest, loadManifestFromDir } from "../plugin/manifest";
-export { registerCommand, matchCommand, listCommands } from "../cli/command-registry";
+export { registerCommand, matchCommand, listCommands } from "../cli-src/command-registry";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-export { parseFlags } from "../cli/parse-args";
+export { parseFlags } from "../cli-src/parse-args";
 
 // ─── definePlugin — the plugin contract ──────────────────────────────────────
 

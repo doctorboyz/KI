@@ -1,5 +1,5 @@
-import { hostExec as ssh, tmux } from "../../sdk";
-import { loadConfig, buildCommand } from "../../core/config";
+import { hostExec as ssh, tmux } from "../../../sdk";
+import { loadConfig, buildCommand } from "../../../core/config";
 import type { FleetSession } from "./fleet-load";
 
 /** After fleet spawn, send /recap to oracles with active Pulse board items */

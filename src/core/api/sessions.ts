@@ -1,14 +1,14 @@
 import { Elysia, t} from "elysia";
-import { listSessions, capture, sendKeys, selectWindow } from "../core/transport/ssh";
-import { checkPaneIdle } from "../commands/shared/comm-send";
-import { findWindow } from "../core/runtime/find-window";
-import { getAggregatedSessions, findPeerForTarget, sendKeysToPeer } from "../core/transport/peers";
+import { listSessions, capture, sendKeys, selectWindow } from "../transport/ssh";
+import { checkPaneIdle } from "../../commands/shared/comm-send";
+import { findWindow } from "../runtime/find-window";
+import { getAggregatedSessions, findPeerForTarget, sendKeysToPeer } from "../transport/peers";
 import { loadConfig } from "../config";
-import { curlFetch } from "../core/transport/curl-fetch";
-import { resolveTarget } from "../core/routing";
-import { processMirror } from "../commands/plugins/overview/impl";
-import { resolveFleetSession } from "../commands/shared/wake";
-import { WakeBody, SleepBody, SendBody } from "../lib/schemas";
+import { curlFetch } from "../transport/curl-fetch";
+import { resolveTarget } from "../routing";
+import { processMirror } from "../../commands/plugins/overview/impl";
+import { resolveFleetSession } from "../../commands/shared/wake";
+import { WakeBody, SleepBody, SendBody } from "../../lib/schemas";
 
 export const sessionsApi = new Elysia();
 
@@ -151,7 +151,7 @@ sessionsApi.post("/select", async ({ body, set}) => {
 sessionsApi.post("/wake", async ({ body, set}) => {
   try {
     const { target, task } = body;
-    const { cmdWake } = await import("../commands/shared/wake");
+    const { cmdWake } = await import("../../commands/shared/wake");
     await cmdWake(target, { noAttach: true, task });
     return { ok: true, target };
   } catch (err) {
@@ -164,7 +164,7 @@ sessionsApi.post("/wake", async ({ body, set}) => {
 sessionsApi.post("/sleep", async ({ body, set}) => {
   try {
     const { target } = body;
-    const { cmdSleepOne } = await import("../commands/plugins/sleep/impl");
+    const { cmdSleepOne } = await import("../../commands/plugins/sleep/impl");
     await cmdSleepOne(target);
     return { ok: true, target };
   } catch (err) {

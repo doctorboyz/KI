@@ -1,5 +1,5 @@
-import { hostExec } from "../../../sdk";
-import { UserError } from "../../../core/util/user-error";
+import { hostExec } from "../../../../sdk";
+import { UserError } from "../../../../core/util/user-error";
 
 /**
  * aoi whoami — print the current tmux session name on stdout.

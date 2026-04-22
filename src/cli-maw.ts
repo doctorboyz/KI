@@ -3,19 +3,19 @@ process.env.MAW_CLI = "1";
 
 // #566: apply --as <name> BEFORE any state-touching import (paths.ts evaluates
 // AOI_HOME at module load). Must be the first side effect.
-import { applyInstancePreset } from "./cli/instance-preset";
+import { applyInstancePreset } from "./cli-src/instance-preset";
 applyInstancePreset();
 
 import { cmdPeek, cmdSend } from "./commands/shared/comm";
 import { logAudit } from "./core/fleet/audit";
-import { usage } from "./cli/usage";
-import { routeComm } from "./cli/route-comm";
-import { routeTools } from "./cli/route-tools";
-import { scanCommands, matchCommand, executeCommand } from "./cli/command-registry";
-import { setVerbosityFlags } from "./cli/verbosity";
-import { getVersionString } from "./cli/cmd-version";
-import { runUpdate } from "./cli/cmd-update";
-import { runBootstrap } from "./cli/plugin-bootstrap";
+import { usage } from "./cli-src/usage";
+import { routeComm } from "./cli-src/route-comm";
+import { routeTools } from "./cli-src/route-tools";
+import { scanCommands, matchCommand, executeCommand } from "./cli-src/command-registry";
+import { setVerbosityFlags } from "./cli-src/verbosity";
+import { getVersionString } from "./cli-src/cmd-version";
+import { runUpdate } from "./cli-src/cmd-update";
+import { runBootstrap } from "./cli-src/plugin-bootstrap";
 import { UserError, isUserError } from "./core/util/user-error";
 import { AmbiguousMatchError } from "./core/runtime/find-window";
 import { renderAmbiguousMatch } from "./core/util/render-ambiguous";
@@ -70,7 +70,7 @@ async function main(): Promise<void> {
         // Also: slice by the MATCHED name (alias or command), not always command,
         // so remaining args are computed correctly when an alias fires.
         const { discoverPackages, invokePlugin } = await import("./plugin/registry");
-        const { resolvePluginMatch } = await import("./cli/dispatch-match");
+        const { resolvePluginMatch } = await import("./cli-src/dispatch-match");
         const plugins = discoverPackages();
         // #393 Bug H: use lowercased cmdName ONLY for plugin-name matching.
         // Pass the ORIGINAL-case args to the plugin. Previously remaining was
@@ -107,7 +107,7 @@ async function main(): Promise<void> {
           knownCommands.push(p.manifest.cli.command);
           for (const a of p.manifest.cli.aliases ?? []) knownCommands.push(a);
         }
-        const { listCommands } = await import("./cli/command-registry");
+        const { listCommands } = await import("./cli-src/command-registry");
         for (const c of listCommands()) {
           const names = Array.isArray(c.name) ? c.name : [c.name];
           for (const n of names) knownCommands.push(n);

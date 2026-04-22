@@ -4,14 +4,14 @@ import { createHash } from "crypto";
 import { existsSync, lstatSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
-import { warn } from "../cli/verbosity";
+import { warn } from "../cli-src/verbosity";
 
 // JSON import inlined at build time — survives bundling (dist/aoi).
 // Source mode: resolved on load. Bundled mode: Bun embeds the JSON.
 // Either way runtimeSdkVersion() returns the real value, never "0.0.0".
 // See #543 — previous fs-read approach broke in dist/aoi because
 // import.meta.dir walks to a path that doesn't exist post-bundle.
-import sdkPkg from "../../packages/sdk/package.json" with { type: "json" };
+import sdkPkg from "../../package.json" with { type: "json" };
 
 // Single scan dir — everything lives in ~/.aoi/plugins/ (or AOI_PLUGINS_DIR
 // if set). Resolved at call time so tests can override the root.

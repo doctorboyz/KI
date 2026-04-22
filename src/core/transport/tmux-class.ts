@@ -1,5 +1,5 @@
 import { hostExec } from "./ssh";
-import { cfgLimit } from "../../config";
+import { cfgLimit } from "../config";
 import {
   q,
   resolveSocket,

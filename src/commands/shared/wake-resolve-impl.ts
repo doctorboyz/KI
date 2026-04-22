@@ -1,5 +1,5 @@
 import { hostExec, tmux, FLEET_DIR, curlFetch } from "../../sdk";
-import { loadConfig, getEnvVars } from "../../config";
+import { loadConfig, getEnvVars } from "../../core/config";
 import { ghqFind } from "../../core/ghq";
 import { resolveSessionTarget } from "../../core/matcher/resolve-target";
 import { readdirSync, readFileSync, existsSync } from "fs";

@@ -1,5 +1,5 @@
 import { getFederationStatus, getPeers, curlFetch, listSessions } from "../../sdk";
-import { loadConfig } from "../../config";
+import { loadConfig } from "../../core/config";
 
 async function fetchPeerAgentCount(url: string): Promise<number> {
   try {

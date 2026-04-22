@@ -1,6 +1,6 @@
 import { readdirSync } from "fs";
 import { tmux, FLEET_DIR, saveTabOrder, restoreTabOrder } from "../../sdk";
-import { loadConfig, buildCommand, getEnvVars } from "../../config";
+import { loadConfig, buildCommand, getEnvVars } from "../../core/config";
 import { ensureSessionRunning } from "./wake";
 import { loadFleet } from "./fleet-load";
 import { respawnMissingWorktrees, resumeActiveItems } from "./fleet-resume";

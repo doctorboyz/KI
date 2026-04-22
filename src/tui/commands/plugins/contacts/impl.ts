@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
-import { loadConfig } from "../../../config";
-import { parseFlags } from "../../../cli/parse-args";
+import { loadConfig } from "../../../../core/config";
+import { parseFlags } from "../../../../cli-src/parse-args";
 
 interface Contact {
   aoi?: string;

@@ -1,7 +1,7 @@
 import { listSessions, hostExec } from "../../../sdk";
 import { loadFleetEntries } from "../../shared/fleet-load";
 import { join } from "path";
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import { FLEET_DIR } from "../../../sdk";
 import { readdirSync as readDir } from "fs";
 

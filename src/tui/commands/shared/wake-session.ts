@@ -1,5 +1,5 @@
-import { hostExec, tmux } from "../../sdk";
-import { buildCommand, buildCommandInDir, cfgTimeout } from "../../core/config";
+import { hostExec, tmux } from "../../../sdk";
+import { buildCommand, buildCommandInDir, cfgTimeout } from "../../../core/config";
 import { execSync } from "child_process";
 
 /** Attach to tmux session — switch-client if inside tmux, attach if fresh shell */

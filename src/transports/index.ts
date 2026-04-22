@@ -2,7 +2,7 @@
  * Transport registry — creates and wires all transports from config.
  */
 
-import { loadConfig } from "../config";
+import { loadConfig } from "../core/config";
 import { TransportRouter } from "../core/transport/transport";
 import { TmuxTransport } from "./tmux";
 import { HttpTransport } from "./http";

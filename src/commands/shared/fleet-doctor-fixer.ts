@@ -6,7 +6,7 @@
  * those need a human.
  */
 
-import type { AoiConfig, PeerConfig } from "../../config";
+import type { AoiConfig, PeerConfig } from "../../core/config";
 import type { DoctorFinding, Level } from "./fleet-doctor-checks";
 
 // ---------- Color/icon helpers ----------
@@ -39,7 +39,7 @@ export function iconFor(level: Level): string {
  * subset of the config API.
  */
 export function defaultSave(update: Partial<AoiConfig>): void {
-  const mod = require("../../config") as typeof import("../../config");
+  const mod = require("../../core/config") as typeof import("../../core/config");
   mod.saveConfig(update);
 }
 

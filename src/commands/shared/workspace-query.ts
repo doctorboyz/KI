@@ -1,4 +1,4 @@
-import { cfgTimeout } from "../../config";
+import { cfgTimeout } from "../../core/config";
 import { curlFetch } from "../../sdk";
 import { resolveWorkspaceId, reportNoWorkspaceId, loadWorkspace, loadAllWorkspaces, saveWorkspace } from "./workspace-store";
 

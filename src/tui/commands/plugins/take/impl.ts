@@ -1,6 +1,6 @@
-import { listSessions, hostExec } from "../../../sdk";
-import { tmux } from "../../../sdk";
-import { buildCommandInDir } from "../../../config";
+import { listSessions, hostExec } from "../../../../sdk";
+import { tmux } from "../../../../sdk";
+import { buildCommandInDir } from "../../../../core/config";
 
 /**
  * aoi take <source-session>:<window> [target-session]

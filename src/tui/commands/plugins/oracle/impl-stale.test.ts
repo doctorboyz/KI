@@ -5,7 +5,7 @@ import {
   runStaleScan,
   type StaleEntry,
 } from "./impl-stale";
-import type { OracleEntry } from "../../../sdk";
+import type { OracleEntry } from "../../../../sdk";
 
 const NOW = new Date("2026-04-17T12:00:00Z");
 

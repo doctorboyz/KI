@@ -2,10 +2,10 @@
  * plugins seam: doInstall + doRemove implementations.
  */
 
-import type { LoadedPlugin } from "../../plugin/types";
+import type { LoadedPlugin } from "../../../plugin/types";
 import { existsSync, mkdirSync, cpSync, readFileSync } from "fs";
 import { join, resolve } from "path";
-import { parseManifest } from "../../plugin/manifest";
+import { parseManifest } from "../../../plugin/manifest";
 import { archiveToTmp } from "./plugins-ui";
 
 /** Allowlist: only http/https URLs permitted as plugin sources */

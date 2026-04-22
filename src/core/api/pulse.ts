@@ -10,7 +10,7 @@
  */
 
 import { Elysia, t} from "elysia";
-import { hostExec } from "../core/transport/ssh";
+import { hostExec } from "../transport/ssh";
 import { loadConfig, type AoiConfig } from "../config";
 
 const LABEL_RE = /^[a-zA-Z0-9_:/.\- ]+$/;

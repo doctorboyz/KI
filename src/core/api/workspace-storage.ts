@@ -2,7 +2,7 @@
 
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
-import { CONFIG_DIR } from "../core/paths";
+import { CONFIG_DIR } from "../paths";
 import type { Workspace } from "./workspace-types";
 
 export const WORKSPACE_DIR = join(CONFIG_DIR, "workspaces");

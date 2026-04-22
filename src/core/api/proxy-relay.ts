@@ -1,7 +1,7 @@
 // Proxy API — peer URL resolution and HTTP relay
 
 import { loadConfig } from "../config";
-import { signHeaders } from "../lib/federation-auth";
+import { signHeaders } from "../../lib/federation-auth";
 import { READONLY_METHODS } from "./proxy-trust";
 
 // --- Peer URL resolution (same as wormhole — acceptable duplication) ----

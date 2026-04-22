@@ -1,13 +1,13 @@
-import { tmux } from "../core/transport/tmux";
-import { registerBuiltinHandlers } from "../core/runtime/handlers";
+import { tmux } from "../transport/tmux";
+import { registerBuiltinHandlers } from "../runtime/handlers";
 import { sendBusyAgents } from "./capture";
 import { StatusDetector } from "./status";
-import { getAggregatedSessions, getPeers } from "../core/transport/peers";
+import { getAggregatedSessions, getPeers } from "../transport/peers";
 import { cfgLimit } from "../config";
-import type { FeedEvent } from "../lib/feed";
-import type { AoiWS, Handler } from "../core/types";
-import type { Session } from "../core/transport/ssh";
-import type { TransportRouter } from "../core/transport/transport";
+import type { FeedEvent } from "../../lib/feed";
+import type { AoiWS, Handler } from "../types";
+import type { Session } from "../runtime/find-window";
+import type { TransportRouter } from "../transport/transport";
 import { startIntervals, stopIntervals, sendInitialSessions, type EngineIntervalState } from "./engine-intervals";
 import { handleCrashedAgents } from "./engine-crash";
 
@@ -60,7 +60,7 @@ export class AoiEngine {
   setTransportRouter(router: TransportRouter) {
     this.transportRouter = router;
     router.onMessage(async (msg) => {
-      const { findWindow, sendKeys, listSessions } = await import("../core/transport/ssh");
+      const { findWindow, sendKeys, listSessions } = await import("../transport/ssh");
       const sessions = this.sessionCache.sessions.length > 0
         ? this.sessionCache.sessions
         : await listSessions().catch(() => []);

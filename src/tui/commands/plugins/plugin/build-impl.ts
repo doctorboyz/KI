@@ -23,8 +23,8 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync, watch } from "fs";
 import { join, resolve, basename } from "path";
 import { spawnSync } from "child_process";
-import { parseFlags } from "../../../cli/parse-args";
-import { inferCapabilitiesAst } from "../../../plugin/cap-infer-ast";
+import { parseFlags } from "../../../../cli-src/parse-args";
+import { inferCapabilitiesAst } from "../../../../plugin/cap-infer-ast";
 
 // ─── Capability inference ────────────────────────────────────────────────────
 

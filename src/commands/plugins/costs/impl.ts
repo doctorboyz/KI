@@ -1,4 +1,4 @@
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import { UserError } from "../../../core/util/user-error";
 import { sparkline } from "../../../lib/sparkline";
 

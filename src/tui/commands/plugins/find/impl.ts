@@ -1,5 +1,5 @@
-import { hostExec } from "../../../sdk";
-import { loadConfig } from "../../../config";
+import { hostExec } from "../../../../sdk";
+import { loadConfig } from "../../../../core/config";
 import { loadFleet } from "../../shared/fleet-load";
 import { join } from "path";
 import { existsSync } from "fs";

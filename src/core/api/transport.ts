@@ -7,8 +7,8 @@
  */
 
 import { Elysia } from "elysia";
-import { getTransportRouter } from "../transports";
-import { TransportSendBody, type TTransportSendBody } from "../lib/schemas";
+import { getTransportRouter } from "../../transports";
+import { TransportSendBody, type TTransportSendBody } from "../../lib/schemas";
 
 export const transportApi = new Elysia();
 

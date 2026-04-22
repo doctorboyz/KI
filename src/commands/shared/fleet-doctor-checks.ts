@@ -7,7 +7,7 @@
  * checkMissingRepos (uses existsSync) lives in fleet-doctor-checks-repo.ts.
  */
 
-import type { PeerConfig } from "../../config";
+import type { PeerConfig } from "../../core/config";
 
 export type Level = "error" | "warn" | "info";
 

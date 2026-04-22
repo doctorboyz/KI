@@ -16,7 +16,7 @@ import { execSync, execFileSync } from "child_process";
 // starting with a dash). Defense in depth — execFileSync below doesn't
 // invoke a shell, but keeps config values honest.
 const ORG_NAME_RE = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,37}[a-zA-Z0-9])?$/;
-import { loadConfig } from "../../config";
+import { loadConfig } from "../config";
 import type { OracleEntry } from "./registry-oracle-types";
 import { deriveName } from "./registry-oracle-scan-local";
 

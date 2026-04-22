@@ -1,8 +1,8 @@
 import { spawnSync } from "child_process";
 import { openSync, readSync, closeSync } from "fs";
-import { hostExec } from "../../sdk";
-import { loadConfig } from "../../core/config";
-import { tlink } from "../../core/util/terminal";
+import { hostExec } from "../../../sdk";
+import { loadConfig } from "../../../core/config";
+import { tlink } from "../../../core/util/terminal";
 
 export interface OrgEntry {
   name: string;

@@ -1,4 +1,4 @@
-import { hostExec } from "../../sdk";
+import { hostExec } from "../../../sdk";
 
 export async function probeTmuxServer(): Promise<boolean> {
   try {

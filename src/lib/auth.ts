@@ -7,7 +7,7 @@
  * Uses Bun.CryptoHasher for HMAC — no jsonwebtoken, no jose, no deps.
  */
 
-import { loadConfig } from "../config";
+import { loadConfig } from "../core/config";
 
 const JWT_SECRET = process.env.AOI_JWT_SECRET || "aoi-" + ((loadConfig() as any).node || "local");
 const TOKEN_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours

@@ -4,7 +4,7 @@
  * Composes local + remote scan results and writes the merged cache.
  */
 
-import { loadConfig } from "../../config";
+import { loadConfig } from "../config";
 import type { OracleEntry, RegistryCache } from "./registry-oracle-types";
 import { writeCache } from "./registry-oracle-cache";
 import { scanLocal } from "./registry-oracle-scan-local";

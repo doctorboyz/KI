@@ -1,13 +1,13 @@
 import { pushCapture, pushPreviews, broadcastSessions, sendBusyAgents } from "./capture";
 import { broadcastTeams } from "./teams";
-import { getAggregatedSessions, getPeers } from "../core/transport/peers";
+import { getAggregatedSessions, getPeers } from "../transport/peers";
 import { loadConfig, cfgInterval, cfgLimit } from "../config";
-import type { FeedEvent } from "../lib/feed";
-import type { AoiWS } from "../core/types";
-import type { Session } from "../core/transport/ssh";
-import type { TransportRouter } from "../core/transport/transport";
+import type { FeedEvent } from "../../lib/feed";
+import type { AoiWS } from "../types";
+import type { Session } from "../runtime/find-window";
+import type { TransportRouter } from "../transport/transport";
 import type { StatusDetector } from "./status";
-import { tmux } from "../core/transport/tmux";
+import { tmux } from "../transport/tmux";
 
 type SessionInfo = { name: string; windows: { index: number; name: string; active: boolean }[] };
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
-import type { InvokeContext } from "../../../plugin/types";
+import type { InvokeContext } from "../../../../plugin/types";
 
 // Mock the transport command
 mock.module("../../shared/transport", () => ({

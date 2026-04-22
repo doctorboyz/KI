@@ -2,11 +2,11 @@
  * install-impl seam: manifest reading + success printing helpers.
  */
 
-import type { PluginManifest } from "../../../plugin/types";
+import type { PluginManifest } from "../../../../plugin/types";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
-import { parseManifest } from "../../../plugin/manifest";
-import { runtimeSdkVersion } from "../../../plugin/registry";
+import { parseManifest } from "../../../../plugin/manifest";
+import { runtimeSdkVersion } from "../../../../plugin/registry";
 
 /**
  * Read + parse plugin.json from an unpacked dir. Returns null + logs if missing.

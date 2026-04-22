@@ -1,6 +1,6 @@
-import { capture } from "../core/transport/ssh";
-import { tmux } from "../core/transport/tmux";
-import type { AoiWS } from "../core/types";
+import { capture } from "../transport/ssh";
+import { tmux } from "../transport/tmux";
+import type { AoiWS } from "../types";
 
 type SessionInfo = { name: string; windows: { index: number; name: string; active: boolean }[] };
 

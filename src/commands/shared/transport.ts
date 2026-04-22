@@ -3,7 +3,7 @@
  */
 
 import { getTransportRouter } from "../../transports";
-import { loadConfig } from "../../config";
+import { loadConfig } from "../../core/config";
 
 export async function cmdTransportStatus() {
   const config = loadConfig() as any;

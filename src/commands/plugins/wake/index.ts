@@ -1,5 +1,5 @@
 import type { InvokeContext, InvokeResult } from "../../../plugin/types";
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../cli-src/parse-args";
 
 export const command = {
   name: "wake",

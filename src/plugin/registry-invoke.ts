@@ -10,7 +10,7 @@ import {
   preCacheBridge,
   readString,
   textEncoder,
-} from "../cli/wasm-bridge";
+} from "../cli-src/wasm-bridge";
 import type { LoadedPlugin, InvokeContext, InvokeResult } from "./types";
 
 const PLUGIN_INVOKE_TIMEOUT_MS = 5_000;

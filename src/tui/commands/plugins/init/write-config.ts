@@ -1,6 +1,6 @@
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "fs";
 import { dirname } from "path";
-import type { AoiConfig } from "../../../config/types";
+import type { AoiConfig } from "../../../../core/config/types";
 
 /** Atomically write JSON config; throws EEXIST if `wx` flag and file exists. */
 export function writeConfigAtomic(filePath: string, config: Partial<AoiConfig>, overwrite: boolean): void {
@@ -35,7 +35,7 @@ export interface BuildConfigInput {
 }
 
 const DEFAULT_PORT = 3456;
-const DEFAULT_ORACLE_URL = "http://localhost:47779";
+const DEFAULT_ORACLE_URL = "http://localhost:47778";
 const DEFAULT_COMMAND = "claude --dangerously-skip-permissions --continue";
 
 export function buildConfig(input: BuildConfigInput): Partial<AoiConfig> {

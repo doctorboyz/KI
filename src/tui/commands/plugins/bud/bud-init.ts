@@ -1,7 +1,7 @@
 import { join } from "path";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 import { loadFleetEntries } from "../../shared/fleet-load";
-import { FLEET_DIR } from "../../../sdk";
+import { FLEET_DIR } from "../../../../sdk";
 
 /** Step 2: Create ψ/ vault directory structure. Returns the psiDir path. */
 export function initVault(budRepoPath: string): string {

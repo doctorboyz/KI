@@ -2,9 +2,9 @@
  * federation-fetch.ts — fetchPeerIdentities async I/O.
  */
 
-import type { PeerConfig } from "../../core/config";
-import { cfgTimeout } from "../../core/config";
-import { curlFetch } from "../../sdk";
+import type { PeerConfig } from "../../../core/config";
+import { cfgTimeout } from "../../../core/config";
+import { curlFetch } from "../../../sdk";
 import type { PeerIdentity } from "./federation-identity";
 
 /**

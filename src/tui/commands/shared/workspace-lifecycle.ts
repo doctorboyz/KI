@@ -1,5 +1,5 @@
-import { loadConfig } from "../../core/config";
-import { curlFetch } from "../../sdk";
+import { loadConfig } from "../../../core/config";
+import { curlFetch } from "../../../sdk";
 import { configPath, resolveHubUrl, resolveWorkspaceId, reportNoWorkspaceId, loadWorkspace, saveWorkspace } from "./workspace-store";
 import type { WorkspaceConfig } from "./workspace-store";
 

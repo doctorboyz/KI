@@ -7,7 +7,7 @@ import {
   curlFetch, runHook,
 } from "../../sdk";
 import { Tmux } from "../../core/transport/tmux";
-import { loadConfig, cfgLimit } from "../../config";
+import { loadConfig, cfgLimit } from "../../core/config";
 import { logMessage, emitFeed } from "./comm-log-feed";
 import { writeInboxFile } from "../plugins/inbox/impl";
 

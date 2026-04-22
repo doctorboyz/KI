@@ -1,8 +1,8 @@
 import { readdirSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
-import { hostExec, tmux } from "../../../sdk";
-import { resolveSessionTarget } from "../../../core/matcher/resolve-target";
+import { hostExec, tmux } from "../../../../sdk";
+import { resolveSessionTarget } from "../../../../core/matcher/resolve-target";
 import { loadFleetEntries } from "../../shared/fleet-load";
 import { checkDestructive, isClaudeLikePane, isFleetOrViewSession } from "./safety";
 

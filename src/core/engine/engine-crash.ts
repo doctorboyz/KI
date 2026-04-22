@@ -1,7 +1,7 @@
-import { tmux } from "../core/transport/tmux";
+import { tmux } from "../transport/tmux";
 import { loadConfig, buildCommand } from "../config";
-import type { FeedEvent } from "../lib/feed";
-import type { AoiWS } from "../core/types";
+import type { FeedEvent } from "../../lib/feed";
+import type { AoiWS } from "../types";
 import type { StatusDetector } from "./status";
 
 type SessionInfo = { name: string; windows: { index: number; name: string; active: boolean }[] };

@@ -2,11 +2,11 @@
  * comm-peek.ts — cmdPeek + resolveSearchSessions + remote federation peek.
  */
 
-import { listSessions, capture, findWindow, curlFetch } from "../../sdk";
-import { loadConfig } from "../../core/config";
+import { listSessions, capture, findWindow, curlFetch } from "../../../sdk";
+import { loadConfig } from "../../../core/config";
 import { resolveFleetSession } from "./wake";
-import { normalizeTarget } from "../../core/matcher/normalize-target";
-import type { SshSession as Session } from "../../sdk";
+import { normalizeTarget } from "../../../core/matcher/normalize-target";
+import type { Session } from "../../../sdk";
 
 /** Resolve which sessions to search for an oracle query (#86). */
 /** @internal */

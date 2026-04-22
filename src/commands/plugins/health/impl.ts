@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { loadConfig, cfgTimeout } from "../../../config";
+import { loadConfig, cfgTimeout } from "../../../core/config";
 import { curlFetch } from "../../../sdk";
 import { tmux } from "../../../sdk";
 

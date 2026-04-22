@@ -7,7 +7,7 @@
  */
 
 import { Elysia } from "elysia";
-import { loadConfig, D } from "../config";
+import { loadConfig, D } from "../core/config";
 import { verify, isLoopback } from "./federation-auth";
 import type { Server } from "bun";
 

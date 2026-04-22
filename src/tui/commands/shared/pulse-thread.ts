@@ -1,4 +1,4 @@
-import { hostExec } from "../../sdk";
+import { hostExec } from "../../../sdk";
 
 const THAI_DAYS = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
 

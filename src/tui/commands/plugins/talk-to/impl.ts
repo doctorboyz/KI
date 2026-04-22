@@ -1,7 +1,7 @@
-import { loadConfig } from "../../../config";
-import { listSessions, sendKeys, getPaneCommand } from "../../../sdk";
-import { findWindow } from "../../../sdk";
-import { runHook } from "../../../sdk";
+import { loadConfig } from "../../../../core/config";
+import { listSessions, sendKeys, getPaneCommand } from "../../../../sdk";
+import { findWindow } from "../../../../sdk";
+import { runHook } from "../../../../sdk";
 import { appendFile, mkdir } from "fs/promises";
 import { homedir, hostname } from "os";
 import { join } from "path";

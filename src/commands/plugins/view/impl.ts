@@ -1,6 +1,6 @@
 import { listSessions } from "../../../sdk";
 import { Tmux, tmuxCmd, resolveSocket } from "../../../sdk";
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import { resolveSessionTarget } from "../../../core/matcher/resolve-target";
 import { logAnomaly } from "../../../core/fleet/audit";
 import { execSync } from "child_process";

@@ -21,7 +21,7 @@
  *   try: aoi <name>
  */
 
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../cli-src/parse-args";
 import { detectMode, ensureInstallRoot } from "./install-source-detect";
 import { installFromDir, installFromTarball, installFromUrl } from "./install-handlers";
 import { basename } from "path";

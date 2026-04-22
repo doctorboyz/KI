@@ -1,6 +1,6 @@
 import { scanAndCache, scanFull, scanRemote, readCache } from "../../../sdk";
 import { cmdOracleList, type OracleListOpts } from "./impl-list";
-import { isQuiet } from "../../../cli/verbosity";
+import { isQuiet } from "../../../cli-src/verbosity";
 
 export async function cmdOracleScan(opts: { force?: boolean; json?: boolean; local?: boolean; remote?: boolean; all?: boolean; verbose?: boolean; quiet?: boolean } = {}) {
   const start = Date.now();

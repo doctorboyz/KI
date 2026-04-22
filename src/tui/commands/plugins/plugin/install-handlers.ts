@@ -7,7 +7,7 @@ import { existsSync, lstatSync, mkdtempSync, readFileSync, readlinkSync, rmSync,
 import { spawnSync } from "child_process";
 import { tmpdir } from "os";
 import { basename, join } from "path";
-import { formatSdkMismatchError, runtimeSdkVersion, satisfies } from "../../../plugin/registry";
+import { formatSdkMismatchError, runtimeSdkVersion, satisfies } from "../../../../plugin/registry";
 import { installRoot, removeExisting } from "./install-source-detect";
 import { extractTarball, downloadTarball, verifyArtifactHash, verifyArtifactHashAgainst } from "./install-extraction";
 import { readManifest, printInstallSuccess } from "./install-manifest-helpers";

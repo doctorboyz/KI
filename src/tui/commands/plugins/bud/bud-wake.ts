@@ -1,8 +1,8 @@
-import { hostExec } from "../../../sdk";
+import { hostExec } from "../../../../sdk";
 import { cmdSoulSync } from "../soul-sync/impl";
 import { cmdWake } from "../../shared/wake";
 import { loadFleetEntries } from "../../shared/fleet-load";
-import { FLEET_DIR } from "../../../sdk";
+import { FLEET_DIR } from "../../../../sdk";
 import { join } from "path";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 

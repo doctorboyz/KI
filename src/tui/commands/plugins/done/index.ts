@@ -1,4 +1,4 @@
-import type { InvokeContext, InvokeResult } from "../../../plugin/types";
+import type { InvokeContext, InvokeResult } from "../../../../plugin/types";
 import { cmdDone } from "./impl";
 
 export const command = {

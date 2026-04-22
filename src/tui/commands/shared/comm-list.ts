@@ -2,7 +2,7 @@
  * comm-list.ts — cmdList + renderSessionName + orphan detection.
  */
 
-import { listSessions, getPaneInfos, scanWorktrees } from "../../sdk";
+import { listSessions, getPaneInfos, scanWorktrees } from "../../../sdk";
 
 /**
  * #359 — render a session header line for `aoi ls`.

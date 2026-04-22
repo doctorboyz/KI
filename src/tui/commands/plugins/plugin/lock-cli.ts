@@ -5,7 +5,7 @@
  */
 
 import { resolve } from "path";
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../../cli-src/parse-args";
 import { pinPlugin, unpinPlugin } from "./lock";
 
 export async function cmdPluginPin(args: string[]): Promise<void> {

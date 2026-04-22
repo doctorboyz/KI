@@ -1,6 +1,6 @@
 import { sendKeys, selectWindow, hostExec, getPaneCommand } from "../transport/ssh";
 import { tmux } from "../transport/tmux";
-import { buildCommand } from "../../config";
+import { buildCommand } from "../config";
 import type { AoiWS, Handler, AoiEngine } from "../types";
 
 /** Run an async action with standard ok/error response */

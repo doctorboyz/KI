@@ -26,15 +26,15 @@ let fakeInvokeResult: { ok: boolean; output?: string; error?: string } = {
   output: "federation context: source=peer from=local-node",
 };
 
-mock.module("../../../plugin/registry", () => ({
+mock.module("../../../../plugin/registry", () => ({
   discoverPackages: () => fakePlugins,
   invokePlugin: async (_plugin: LoadedPlugin, _ctx: unknown) => fakeInvokeResult,
 }));
 
-const { mockConfigModule } = await import("../../../../test/helpers/mock-config");
+const { mockConfigModule } = await import("../../../../../test/test/helpers/mock-config");
 mock.module("../../../config", () => mockConfigModule(() => ({ node: "local-node", port: 3456 })));
 
-mock.module("../../../core/transport/ssh", () => ({
+mock.module("../../../../core/transport/ssh", () => ({
   listSessions: async () => [],
   capture: async () => "",
   sendKeys: async () => {},
@@ -43,15 +43,15 @@ mock.module("../../../core/transport/ssh", () => ({
   getPaneInfos: async () => ({}),
 }));
 
-mock.module("../../../core/routing", () => ({
+mock.module("../../../../core/routing", () => ({
   resolveTarget: () => ({ type: "error", detail: "not found", hint: "" }),
 }));
 
-mock.module("../../../core/runtime/hooks", () => ({ runHook: async () => {} }));
-mock.module("../../../core/transport/peers", () => ({ findPeerForTarget: async () => undefined }));
-mock.module("../../../core/fleet/worktrees", () => ({ scanWorktrees: async () => [] }));
+mock.module("../../../../core/runtime/hooks", () => ({ runHook: async () => {} }));
+mock.module("../../../../core/transport/peers", () => ({ findPeerForTarget: async () => undefined }));
+mock.module("../../../../core/fleet/worktrees", () => ({ scanWorktrees: async () => [] }));
 // NOTE: do NOT mock find-window here — it leaks globally and breaks routing tests (#198)
-mock.module("../../../core/transport/curl-fetch", () => ({ curlFetch: async () => ({ ok: false, data: {} }) }));
+mock.module("../../../../core/transport/curl-fetch", () => ({ curlFetch: async () => ({ ok: false, data: {} }) }));
 mock.module("../../../commands/shared/wake", () => ({ resolveFleetSession: () => undefined }));
 
 import { cmdSend } from "../../../commands/shared/comm";

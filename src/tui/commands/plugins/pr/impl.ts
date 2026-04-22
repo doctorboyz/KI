@@ -1,4 +1,4 @@
-import { Tmux } from "../../../core/transport/tmux";
+import { Tmux } from "../../../../core/transport/tmux";
 
 function branchToTitle(branch: string): string {
   // Strip prefix like "agents/" or "feature/"

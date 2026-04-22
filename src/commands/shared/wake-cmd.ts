@@ -1,6 +1,6 @@
 import { hostExec, tmux, restoreTabOrder, takeSnapshot } from "../../sdk";
 import { ghqFind } from "../../core/ghq";
-import { buildCommandInDir, cfgTimeout, loadConfig, saveConfig } from "../../config";
+import { buildCommandInDir, cfgTimeout, loadConfig, saveConfig } from "../../core/config";
 import { resolveWorktreeTarget } from "../../core/matcher/resolve-target";
 import { normalizeTarget } from "../../core/matcher/normalize-target";
 import { assertValidOracleName } from "../../core/fleet/validate";

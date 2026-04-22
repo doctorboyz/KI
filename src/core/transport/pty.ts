@@ -1,5 +1,5 @@
 import { tmux, tmuxCmd } from "./tmux";
-import { loadConfig, cfgTimeout, cfgLimit } from "../../config";
+import { loadConfig, cfgTimeout, cfgLimit } from "../config";
 import type { AoiWS } from "../types";
 
 let nextPtyId = 0;

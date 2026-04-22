@@ -10,11 +10,11 @@
  *   4. Wake fleet (aoi wake all)
  */
 
-import { listSessions } from "../../../sdk";
-import { Tmux } from "../../../sdk";
+import { listSessions } from "../../../../sdk";
+import { Tmux } from "../../../../sdk";
 import { cmdSleep, cmdWakeAll } from "../../shared/fleet";
 import { execSync } from "child_process";
-import { ghqFindSync } from "../../../core/ghq";
+import { ghqFindSync } from "../../../../core/ghq";
 
 const HELP_TEXT = [
   "usage: aoi restart [--no-update] [--ref <git-ref>]",

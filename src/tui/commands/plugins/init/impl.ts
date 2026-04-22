@@ -2,7 +2,7 @@ import { homedir, hostname } from "os";
 import { execSync } from "child_process";
 import { existsSync, readdirSync } from "fs";
 import { join } from "path";
-import { CONFIG_FILE, FLEET_DIR } from "../../../core/paths";
+import { CONFIG_FILE, FLEET_DIR } from "../../../../core/paths";
 import { runPromptLoop, ttyAsk, type AskFn } from "./prompts";
 import { parseNonInteractive } from "./non-interactive";
 import {

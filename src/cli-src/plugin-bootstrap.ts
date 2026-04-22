@@ -26,7 +26,7 @@ export async function runBootstrap(pluginDir: string, srcDir: string): Promise<v
 
     // 2. Install from pluginSources URLs in config
     try {
-      const { loadConfig } = await import("../config");
+      const { loadConfig } = await import("../core/config");
       const config = loadConfig();
       const sources: string[] = config.pluginSources ?? [];
       for (const url of sources) {

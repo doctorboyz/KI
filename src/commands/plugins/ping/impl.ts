@@ -1,4 +1,4 @@
-import { loadConfig, cfgTimeout } from "../../../config";
+import { loadConfig, cfgTimeout } from "../../../core/config";
 import { curlFetch } from "../../../sdk";
 
 export async function cmdPing(node?: string) {

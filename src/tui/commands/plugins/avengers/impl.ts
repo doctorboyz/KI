@@ -2,7 +2,7 @@
  * aoi avengers — rate limit monitor integration with ARRA-01/avengers.
  */
 
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../../core/config";
 
 function getAvengersUrl(): string | null {
   return (loadConfig() as any).avengers || null;

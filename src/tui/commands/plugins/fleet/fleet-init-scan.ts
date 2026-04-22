@@ -1,8 +1,8 @@
 import { join } from "path";
 import { existsSync, mkdirSync, rmSync } from "fs";
-import { hostExec } from "../../../sdk";
-import { FLEET_DIR } from "../../../sdk";
-import { ghqList } from "../../../core/ghq";
+import { hostExec } from "../../../../sdk";
+import { FLEET_DIR } from "../../../../sdk";
+import { ghqList } from "../../../../core/ghq";
 
 interface FleetWindow {
   name: string;

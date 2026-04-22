@@ -11,7 +11,7 @@
  */
 
 import { findWindow, type Session } from "./runtime/find-window";
-import type { AoiConfig } from "../config";
+import type { AoiConfig } from "./config";
 import { resolveFleetSession } from "../commands/shared/wake";
 
 export type { Session };

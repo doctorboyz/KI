@@ -11,7 +11,7 @@ import {
   findInTmux,
   cmdOracleRegister,
 } from "./impl-register";
-import type { OracleEntry } from "../../../sdk";
+import type { OracleEntry } from "../../../../sdk";
 import type { StaleEntry } from "./impl-stale";
 import { mkdirSync, writeFileSync, mkdtempSync } from "fs";
 import { join } from "path";

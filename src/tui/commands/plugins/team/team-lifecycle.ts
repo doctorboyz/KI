@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync } from "fs";
 import { join } from "path";
-import { tmux } from "../../../sdk";
-import { assertValidOracleName } from "../../../core/fleet/validate";
+import { tmux } from "../../../../sdk";
+import { assertValidOracleName } from "../../../../core/fleet/validate";
 import { TEAMS_DIR, loadTeam, resolvePsi, writeShutdownRequest, cleanupTeamDir } from "./team-helpers";
 
 const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
@@ -225,7 +225,7 @@ export async function cmdTeamSpawn(
       return;
     }
     try {
-      const { hostExec } = await import("../../../sdk");
+      const { hostExec } = await import("../../../../sdk");
       const claudeCmd = `claude --model ${model} --prompt-file '${promptPath.replace(/'/g, "'\\''")}'`;
       await hostExec(`tmux split-window -h -l 50% '${claudeCmd.replace(/'/g, "'\\''")}'`);
       console.log();

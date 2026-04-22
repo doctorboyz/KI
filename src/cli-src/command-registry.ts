@@ -14,7 +14,7 @@
 
 import { readdirSync, existsSync } from "fs";
 import { join } from "path";
-import { loadConfig } from "../config";
+import { loadConfig } from "../core/config";
 import { loadWasmCommand } from "./command-registry-wasm";
 import { registerCommand } from "./command-registry-match";
 

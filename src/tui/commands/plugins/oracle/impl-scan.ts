@@ -1,6 +1,6 @@
-import { scanAndCache, scanFull, scanRemote, readCache } from "../../../sdk";
+import { scanAndCache, scanFull, scanRemote, readCache } from "../../../../sdk";
 import { cmdOracleList, type OracleListOpts } from "./impl-list";
-import { isQuiet } from "../../../cli/verbosity";
+import { isQuiet } from "../../../../cli-src/verbosity";
 
 export async function cmdOracleScan(opts: { force?: boolean; json?: boolean; local?: boolean; remote?: boolean; all?: boolean; verbose?: boolean; quiet?: boolean } = {}) {
   const start = Date.now();
@@ -62,7 +62,7 @@ export async function cmdOracleScan(opts: { force?: boolean; json?: boolean; loc
       if (removedKeys.length > 0) {
         console.log(`  \x1b[31m-\x1b[0m removed: ${removedKeys.join(", ")}`);
       }
-      const { CACHE_FILE } = await import("../../../core/fleet/registry-oracle-types");
+      const { CACHE_FILE } = await import("../../../../core/fleet/registry-oracle-types");
       console.log(`  \x1b[90m  cache: ${CACHE_FILE}\x1b[0m`);
     }
 

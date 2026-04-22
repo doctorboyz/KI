@@ -1,5 +1,5 @@
 import { hostExec } from "../../../sdk";
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import { loadFleetEntries } from "../../shared/fleet-load";
 import { cmdSoulSync } from "../soul-sync/impl";
 import { FLEET_DIR } from "../../../sdk";

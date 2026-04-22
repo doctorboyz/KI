@@ -9,7 +9,7 @@
  */
 
 import type { MiddlewareHandler } from "hono";
-import { loadConfig, type AoiConfig } from "../config";
+import { loadConfig, type AoiConfig } from "../core/config";
 
 // Lazy singleton — initialized once, reused across requests
 let _config: AoiConfig | null = null;

@@ -1,7 +1,7 @@
 import { join } from "path";
 import { existsSync, unlinkSync, symlinkSync, mkdirSync, readdirSync } from "fs";
-import { tmux, FLEET_DIR } from "../../sdk";
-import { loadConfig } from "../../core/config";
+import { tmux, FLEET_DIR } from "../../../sdk";
+import { loadConfig } from "../../../core/config";
 import { loadFleetEntries, getSessionNames } from "./fleet-load";
 
 export async function cmdFleetSync() {

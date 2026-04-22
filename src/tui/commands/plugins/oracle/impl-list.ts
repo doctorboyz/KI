@@ -22,7 +22,7 @@ import {
   isCacheStale,
   loadConfig,
   type OracleEntry,
-} from "../../../sdk";
+} from "../../../../sdk";
 import { lineageOf, timeSince, type OracleLineage } from "./impl-helpers";
 
 export interface OracleListOpts {

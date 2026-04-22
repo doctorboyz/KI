@@ -1,7 +1,7 @@
 import { existsSync } from "fs";
 import { join, basename } from "path";
 import { hostExec } from "../../../sdk";
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import { findPeers, findProjectsForOracle, syncOracleVaults, syncProjectVault, reportProjectResult, type SoulSyncResult, type ProjectSyncResult } from "./sync-helpers";
 import { resolveOraclePath, resolveProjectSlug, findOracleForProject } from "./resolve";
 

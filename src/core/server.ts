@@ -1,13 +1,13 @@
 import { Hono } from "hono";
-import { AoiEngine } from "../engine";
+import { AoiEngine } from "./engine";
 import type { WSData } from "./types";
-import { loadConfig } from "../config";
+import { loadConfig } from "./config";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
 import { serveStatic } from "hono/bun";
-import { api } from "../api";
-import { feedBuffer, feedListeners } from "../api/feed";
+import { api } from "./api";
+import { feedBuffer, feedListeners } from "./api/feed";
 import { mountViews } from "../views/index";
 import { setupTriggerListener } from "./runtime/trigger-listener";
 import { createTransportRouter } from "../transports";
@@ -20,7 +20,7 @@ import { setBunServer } from "../lib/elysia-auth";
 
 function getVersionString(): string {
   try {
-    const pkg = require("../package.json");
+    const pkg = require("../../package.json");
     let hash = ""; try { hash = require("child_process").execSync("git rev-parse --short HEAD", { cwd: import.meta.dir }).toString().trim(); } catch {}
     let buildDate = "";
     try {
@@ -108,39 +108,11 @@ export async function startServer(port = +(process.env.AOI_PORT || loadConfig().
   // Hook workflow triggers into feed events
   setupTriggerListener(feedListeners);
 
-  // Plugin system — built-in + user plugins
+  // Plugin system — AOI registry-based plugin loading
   try {
-    const { PluginSystem, loadPlugins, reloadUserPlugins, watchUserPlugins } = require("../plugins/index");
-    const { homedir } = require("os");
-    const { join, resolve, dirname } = require("path");
-    const plugins = new PluginSystem();
-
-    // Built-in plugins (ship with aoi)
-    const builtinDir = resolve(dirname(new URL(import.meta.url).pathname), "plugins", "builtin");
-    await loadPlugins(plugins, builtinDir, "builtin");
-
-    // User plugins (file-drop: ~/.oracle/plugins/)
-    const userPluginsDir = join(homedir(), ".oracle", "plugins");
-    await loadPlugins(plugins, userPluginsDir, "user");
-
-    // Hot-reload: watch the user plugins dir and re-import on .ts/.js/.wasm
-    // change. Builtin plugins are not touched. Opt out with AOI_HOT_RELOAD=0.
-    watchUserPlugins(userPluginsDir, async (changedFile: string) => {
-      console.log(`[plugin] reloading user plugins (${changedFile} changed)`);
-      await reloadUserPlugins(plugins, userPluginsDir);
-    });
-
-    // Single feedListener wires everything through the plugin pipeline
-    feedListeners.add((event) => plugins.emit(event));
-
-    // Plugin debug API + page (still on Hono views — will move to Elysia in #312)
-    views.get("/api/plugins", (c) => c.json(plugins.stats()));
-    views.post("/api/plugins/reload", async (c) => {
-      await reloadUserPlugins(plugins, userPluginsDir);
-      return c.json({ ok: true, ...plugins.stats() });
-    });
-    const { pluginsView } = require("../views/plugins");
-    views.route("/plugins", pluginsView(plugins));
+    const { discoverPackages } = require("../plugin/registry");
+    const discovered = discoverPackages();
+    console.log(`[plugins] discovered ${discovered.length} plugin(s)`);
   } catch (err) {
     console.error("[plugins] failed to init:", err);
   }

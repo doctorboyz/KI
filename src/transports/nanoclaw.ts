@@ -10,7 +10,28 @@
 
 import type { Transport, TransportTarget, TransportMessage, TransportPresence } from "../core/transport/transport";
 import type { FeedEvent } from "../lib/feed";
-import { resolveNanoclawJid, sendViaNanoclaw } from "../bridges/nanoclaw";
+import { loadConfig } from "../core/config";
+import { curlFetch } from "../core/transport/curl-fetch";
+
+/** Resolve an oracle name to a NanoClaw JID + URL using config */
+function resolveNanoclawJid(oracle: string): { jid: string; url: string } | null {
+  const config = loadConfig();
+  const nc = config.nanoclaw as { url?: string; channels?: Record<string, string> } | undefined;
+  if (!nc?.url || !nc?.channels) return null;
+  const jid = nc.channels[oracle];
+  if (!jid) return null;
+  return { jid, url: nc.url };
+}
+
+/** Send a message through NanoClaw's HTTP endpoint */
+async function sendViaNanoclaw(jid: string, text: string, url: string): Promise<boolean> {
+  try {
+    const res = await curlFetch(`${url}/send`, { method: "POST", body: JSON.stringify({ jid, text }) });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
 
 export class NanoclawTransport implements Transport {
   readonly name = "nanoclaw";

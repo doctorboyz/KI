@@ -1,4 +1,4 @@
-import { loadConfig } from "../../config";
+import { loadConfig } from "../config";
 
 /** Resolve tmux socket path from env or config. */
 export function resolveSocket(): string | undefined {

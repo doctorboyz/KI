@@ -1,7 +1,7 @@
 import { hostExec } from "../../../sdk";
 import { tmux } from "../../../sdk";
 import { ghqFind } from "../../../core/ghq";
-import { buildCommand } from "../../../config";
+import { buildCommand } from "../../../core/config";
 import { findWorktrees } from "../../shared/wake";
 import { resolveWorktreeTarget } from "../../../core/matcher/resolve-target";
 

@@ -21,7 +21,7 @@ import { mkdirSync, readdirSync, readFileSync, writeFileSync, unlinkSync } from 
 import { join } from "path";
 import { CONFIG_DIR } from "../paths";
 import { listSessions } from "../transport/ssh";
-import { loadConfig } from "../../config";
+import { loadConfig } from "../config";
 
 export const SNAPSHOT_DIR = join(CONFIG_DIR, "snapshots");
 mkdirSync(SNAPSHOT_DIR, { recursive: true });

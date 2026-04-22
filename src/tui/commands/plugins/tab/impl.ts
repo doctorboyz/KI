@@ -1,5 +1,5 @@
-import { hostExec } from "../../../sdk";
-import { tmux, tmuxCmd } from "../../../sdk";
+import { hostExec } from "../../../../sdk";
+import { tmux, tmuxCmd } from "../../../../sdk";
 import { cmdPeek, cmdSend } from "../../shared/comm";
 import { cmdTalkTo } from "../talk-to/impl";
 

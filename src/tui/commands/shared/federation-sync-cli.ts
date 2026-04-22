@@ -2,8 +2,8 @@
  * federation-sync-cli.ts — CLI formatting + cmdFederationSync entry point.
  */
 
-import { loadConfig } from "../../core/config";
-import type { AoiConfig } from "../../core/config";
+import { loadConfig } from "../../../core/config";
+import type { AoiConfig } from "../../../core/config";
 import { fetchPeerIdentities } from "./federation-fetch";
 import { computeSyncDiff } from "./federation-diff";
 import { applySyncDiff } from "./federation-apply";
@@ -31,7 +31,7 @@ export interface SyncOptions {
  * tests that mock.module() the config module globally.
  */
 function defaultSave(update: Partial<AoiConfig>): void {
-  const mod = require("../../config") as typeof import("../../config");
+  const mod = require("../../../core/config") as typeof import("../../../core/config");
   mod.saveConfig(update);
 }
 

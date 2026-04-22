@@ -20,7 +20,7 @@
 
 import { createHash, createHmac, timingSafeEqual } from "crypto";
 import type { MiddlewareHandler } from "hono";
-import { loadConfig } from "../config";
+import { loadConfig } from "../core/config";
 
 const WINDOW_SEC = 300; // ±5 minutes
 

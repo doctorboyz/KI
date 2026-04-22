@@ -15,9 +15,9 @@
 
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
-import { CONFIG_DIR, listSessions } from "../../../sdk";
+import { CONFIG_DIR, listSessions } from "../../../../sdk";
 import { runStaleScan, type StaleEntry } from "./impl-stale";
-import type { OracleEntry } from "../../../sdk";
+import type { OracleEntry } from "../../../../sdk";
 import { createInterface } from "readline";
 
 const CACHE_FILE = join(CONFIG_DIR, "oracles.json");

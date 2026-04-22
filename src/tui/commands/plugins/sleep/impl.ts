@@ -1,10 +1,10 @@
-import { tmux } from "../../../sdk";
+import { tmux } from "../../../../sdk";
 import { detectSession } from "../../shared/wake";
-import { saveTabOrder } from "../../../sdk";
+import { saveTabOrder } from "../../../../sdk";
 import { appendFile, mkdir } from "fs/promises";
 import { homedir } from "os";
 import { join } from "path";
-import { takeSnapshot } from "../../../sdk";
+import { takeSnapshot } from "../../../../sdk";
 
 /**
  * aoi sleep <oracle> [window]

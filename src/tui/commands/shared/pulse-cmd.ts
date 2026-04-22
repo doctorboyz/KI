@@ -1,4 +1,4 @@
-import { hostExec } from "../../sdk";
+import { hostExec } from "../../../sdk";
 import { cmdWake } from "./wake";
 import {
   timePeriod, todayDate, todayLabel,

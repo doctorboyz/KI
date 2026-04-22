@@ -1,9 +1,9 @@
 import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { execSync } from "child_process";
-import { CONFIG_FILE } from "../core/paths";
-import { refreshContext } from "../lib/context";
-import { verbose, info } from "../cli/verbosity";
+import { CONFIG_FILE } from "../paths";
+import { refreshContext } from "../../lib/context";
+import { verbose, info } from "../../cli-src/verbosity";
 import type { AoiConfig } from "./types";
 import { D } from "./types";
 import { validateConfig } from "./validate-ext";
@@ -22,7 +22,7 @@ const DEFAULTS: AoiConfig = {
   host: "local",
   port: 3456,
   ghqRoot: detectGhqRoot(),
-  oracleUrl: "http://localhost:47779",
+  oracleUrl: "http://localhost:47778",
   env: {},
   commands: { default: "claude" },
   sessions: {},

@@ -1,5 +1,5 @@
-import { loadConfig, cfgTimeout } from "../../config";
-import type { Session } from "./ssh";
+import { loadConfig, cfgTimeout } from "../config";
+import type { Session } from "../runtime/find-window";
 import { curlFetch } from "./curl-fetch";
 
 /**

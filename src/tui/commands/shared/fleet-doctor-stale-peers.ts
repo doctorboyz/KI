@@ -5,8 +5,8 @@
  * making it unsuitable for synchronous unit-test environments.
  */
 
-import { curlFetch } from "../../sdk";
-import type { PeerConfig } from "../../core/config";
+import { curlFetch } from "../../../sdk";
+import type { PeerConfig } from "../../../core/config";
 import type { DoctorFinding } from "./fleet-doctor-checks";
 
 /**

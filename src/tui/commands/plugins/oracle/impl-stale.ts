@@ -13,7 +13,7 @@
  * liveness. For each cloned repo we read the last commit date via git log;
  * missing clones or commit-less repos fall into DEAD.
  */
-import { readCache, scanAndCache, listSessions, type OracleEntry } from "../../../sdk";
+import { readCache, scanAndCache, listSessions, type OracleEntry } from "../../../../sdk";
 import { execSync } from "child_process";
 
 export type StaleTier = "ACTIVE" | "SLOW" | "STALE" | "DEAD";

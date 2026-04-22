@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import type { FeedEvent } from "../lib/feed";
+import type { FeedEvent } from "../../lib/feed";
 import { markRealFeedEvent } from "../engine/status";
 import { cfgLimit } from "../config";
 

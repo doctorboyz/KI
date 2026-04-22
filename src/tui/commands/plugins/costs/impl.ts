@@ -1,6 +1,6 @@
-import { loadConfig } from "../../../config";
-import { UserError } from "../../../core/util/user-error";
-import { sparkline } from "../../../lib/sparkline";
+import { loadConfig } from "../../../../core/config";
+import { UserError } from "../../../../core/util/user-error";
+import { sparkline } from "../../../../lib/sparkline";
 
 type CostAgent = {
   name: string;

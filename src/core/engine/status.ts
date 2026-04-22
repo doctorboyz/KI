@@ -1,7 +1,7 @@
-import { capture } from "../core/transport/ssh";
-import { tmux } from "../core/transport/tmux";
-import type { FeedEvent } from "../lib/feed";
-import type { AoiWS } from "../core/types";
+import { capture } from "../transport/ssh";
+import { tmux } from "../transport/tmux";
+import type { FeedEvent } from "../../lib/feed";
+import type { AoiWS } from "../types";
 
 interface AgentState {
   hash: string;

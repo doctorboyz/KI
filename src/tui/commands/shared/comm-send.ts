@@ -5,9 +5,9 @@
 import {
   listSessions, capture, sendKeys, getPaneCommand, findPeerForTarget, resolveTarget,
   curlFetch, runHook,
-} from "../../sdk";
-import { Tmux } from "../../core/transport/tmux";
-import { loadConfig, cfgLimit } from "../../core/config";
+} from "../../../sdk";
+import { Tmux } from "../../../core/transport/tmux";
+import { loadConfig, cfgLimit } from "../../../core/config";
 import { logMessage, emitFeed } from "./comm-log-feed";
 import { writeInboxFile } from "../plugins/inbox/impl";
 
@@ -120,7 +120,7 @@ export async function cmdSend(query: string, message: string, force = false) {
   // --- Plugin routing: aoi hey plugin:<name> <msg> ---
   if (query.startsWith("plugin:")) {
     const name = query.slice("plugin:".length);
-    const { discoverPackages, invokePlugin } = await import("../../plugin/registry");
+    const { discoverPackages, invokePlugin } = await import("../../../plugin/registry");
     const plugin = discoverPackages().find(p => p.manifest.name === name);
     if (!plugin) { console.error(`plugin not found: ${name}`); process.exit(1); }
     const result = await invokePlugin(plugin, { source: "peer", args: { message, from: config.node ?? "local" } });

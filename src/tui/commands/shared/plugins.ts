@@ -11,8 +11,8 @@
  * AOI_PLUGIN_HOME env var overrides install destination (useful for tests).
  */
 
-import type { LoadedPlugin } from "../../plugin/types";
-import { discoverPackages } from "../../plugin/registry";
+import type { LoadedPlugin } from "../../../plugin/types";
+import { discoverPackages } from "../../../plugin/registry";
 import { doLs, doInfo } from "./plugins-ls-info";
 import { doInstall, doRemove } from "./plugins-install";
 import { doProfile, doNuke } from "./plugins-profile";

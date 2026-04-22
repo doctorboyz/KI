@@ -1,4 +1,4 @@
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../cli-src/parse-args";
 import { validateNodeName, validateGhqRoot, validatePeerUrl, validatePeerName } from "./prompts";
 
 export interface NonInteractiveOpts {

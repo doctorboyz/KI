@@ -1,4 +1,4 @@
-import { tmux } from "../../../sdk";
+import { tmux } from "../../../../sdk";
 
 /**
  * aoi broadcast <message> — send to ALL Claude windows across ALL sessions

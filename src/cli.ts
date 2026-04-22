@@ -9,7 +9,7 @@
 process.env.AOI_CLI = "1";
 
 // #566: apply --as <name> BEFORE any state-touching import
-import { applyInstancePreset } from "./cli-src/cli/instance-preset";
+import { applyInstancePreset } from "./cli-src/instance-preset";
 applyInstancePreset();
 
 const rawArgs = process.argv.slice(2);
@@ -31,7 +31,7 @@ if (!cmd || cmd === "tui" || cmd === "office") {
 
 // Version
 if (cmd === "--version" || cmd === "-v" || cmd === "version") {
-  const { getVersionString } = await import("./cli-src/cli/cmd-version");
+  const { getVersionString } = await import("./cli-src/cmd-version");
   console.log(getVersionString());
   process.exit(0);
 }
@@ -75,22 +75,24 @@ TUI Key Bindings:
 
 // Serve mode — start API + WebSocket server
 if (cmd === "serve" || cmd === "server") {
-  // Delegate to the core server startup
+  // Delegate to the core server startup — server runs indefinitely
   const { startServer } = await import("./core/server");
   await startServer();
-  process.exit(0);
+  // startServer() resolves once the server is listening — keep alive
+  // Bun.serve() event loop keeps the process alive; prevent fallthrough.
+  await new Promise(() => {}); // hang forever
 }
 
 // All other commands — delegate to original CLI router
 // Import the full CLI logic from the aoi-derived code
 const { logAudit } = await import("./core/fleet/audit");
-const { usage } = await import("./cli-src/cli/usage");
-const { routeComm } = await import("./cli-src/cli/route-comm");
-const { routeTools } = await import("./cli-src/cli/route-tools");
-const { scanCommands, matchCommand, executeCommand } = await import("./cli-src/cli/command-registry");
-const { setVerbosityFlags } = await import("./cli-src/cli/verbosity");
+const { usage } = await import("./cli-src/usage");
+const { routeComm } = await import("./cli-src/route-comm");
+const { routeTools } = await import("./cli-src/route-tools");
+const { scanCommands, matchCommand, executeCommand } = await import("./cli-src/command-registry");
+const { setVerbosityFlags } = await import("./cli-src/verbosity");
 const { cmdPeek, cmdSend } = await import("./commands/shared/comm");
-const { runBootstrap } = await import("./cli-src/cli/plugin-bootstrap");
+const { runBootstrap } = await import("./cli-src/plugin-bootstrap");
 const { UserError, isUserError } = await import("./core/util/user-error");
 const { AmbiguousMatchError } = await import("./core/runtime/find-window");
 const { renderAmbiguousMatch } = await import("./core/util/render-ambiguous");
@@ -108,7 +110,7 @@ logAudit(cmd || "", args);
 
 async function runCommand(): Promise<void> {
   if (cmd === "update" || cmd === "upgrade") {
-    const { runUpdate } = await import("./cli-src/cli/cmd-update");
+    const { runUpdate } = await import("./cli-src/cmd-update");
     await runUpdate(args);
     return;
   }
@@ -134,7 +136,7 @@ async function runCommand(): Promise<void> {
 
   // Plugin registry
   const { discoverPackages, invokePlugin } = await import("./plugin/registry");
-  const { resolvePluginMatch } = await import("./cli-src/cli/dispatch-match");
+  const { resolvePluginMatch } = await import("./cli-src/dispatch-match");
   const plugins = discoverPackages();
 
   const cmdName = args.join(" ").toLowerCase();
@@ -156,7 +158,7 @@ async function runCommand(): Promise<void> {
   }
 
   // Unknown command fallback — try oracle name
-  const { listCommands } = await import("./cli-src/cli/command-registry");
+  const { listCommands } = await import("./cli-src/command-registry");
   const CORE_ROUTES = [
     "hey", "send", "tell",
     "plugins", "plugin", "artifacts", "artifact",

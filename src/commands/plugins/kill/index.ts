@@ -1,6 +1,6 @@
 import type { InvokeContext, InvokeResult } from "../../../plugin/types";
 import { cmdKill } from "./impl";
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../cli-src/parse-args";
 
 export const command = {
   name: "kill",

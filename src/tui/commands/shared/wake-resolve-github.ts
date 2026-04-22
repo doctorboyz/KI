@@ -1,4 +1,4 @@
-import { hostExec } from "../../sdk";
+import { hostExec } from "../../../sdk";
 
 /**
  * Sentinel frame applied to all GitHub-sourced content before it is used as a

@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "fs";
 import { join } from "path";
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 
 // File naming: YYYY-MM-DD_HH-MM_<from>_<slug>.md
 // Frontmatter: from / to / timestamp / read

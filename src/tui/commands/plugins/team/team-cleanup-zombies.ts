@@ -1,7 +1,7 @@
 import { readdirSync, existsSync } from "fs";
 import { join } from "path";
-import { tmux } from "../../../sdk";
-import type { TmuxPane } from "../../../sdk";
+import { tmux } from "../../../../sdk";
+import type { TmuxPane } from "../../../../sdk";
 import { loadFleetEntries } from "../../shared/fleet-load";
 import { TEAMS_DIR, loadTeam } from "./team-helpers";
 

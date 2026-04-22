@@ -1,5 +1,5 @@
-import { loadConfig, cfgTimeout } from "../../core/config";
-import { curlFetch } from "../../sdk";
+import { loadConfig, cfgTimeout } from "../../../core/config";
+import { curlFetch } from "../../../sdk";
 import { resolveWorkspaceId, reportNoWorkspaceId, loadWorkspace, saveWorkspace } from "./workspace-store";
 
 /** aoi workspace share <agent...> [--workspace <id>] */

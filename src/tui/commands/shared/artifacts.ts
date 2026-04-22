@@ -7,7 +7,7 @@
  *   aoi artifacts --json       # machine-readable
  */
 
-import { listArtifacts, getArtifact } from "../../lib/artifacts";
+import { listArtifacts, getArtifact } from "../../../lib/artifacts";
 
 export async function cmdArtifacts(sub: string, args: string[], flags: Record<string, any>) {
   const json = flags["--json"];

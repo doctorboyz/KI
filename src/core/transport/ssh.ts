@@ -1,4 +1,4 @@
-import { loadConfig } from "../../config";
+import { loadConfig } from "../config";
 import { tmuxCmd, Tmux } from "./tmux";
 
 const DEFAULT_HOST = process.env.AOI_HOST || loadConfig().host || "local";

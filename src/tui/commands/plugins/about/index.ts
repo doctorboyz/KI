@@ -1,4 +1,4 @@
-import type { InvokeContext, InvokeResult } from "../../../plugin/types";
+import type { InvokeContext, InvokeResult } from "../../../../plugin/types";
 import { cmdOracleAbout } from "../oracle/impl";
 
 export const command = {

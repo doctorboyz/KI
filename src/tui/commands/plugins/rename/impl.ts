@@ -1,4 +1,4 @@
-import { tmux } from "../../../sdk";
+import { tmux } from "../../../../sdk";
 
 /**
  * aoi rename <tab-number-or-name> <new-name>

@@ -1,4 +1,4 @@
-import { hostExec } from "../../../sdk";
+import { hostExec } from "../../../../sdk";
 import { existsSync } from "fs";
 
 /**

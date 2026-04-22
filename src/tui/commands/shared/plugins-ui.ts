@@ -2,7 +2,7 @@
  * plugins seam: UI helpers — table printing, path shortening, archive to tmp.
  */
 
-import type { LoadedPlugin } from "../../plugin/types";
+import type { LoadedPlugin } from "../../../plugin/types";
 import { homedir } from "os";
 import { renameSync } from "fs";
 

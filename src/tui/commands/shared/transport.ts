@@ -2,8 +2,8 @@
  * aoi transport status — show transport layer connectivity.
  */
 
-import { getTransportRouter } from "../../transports";
-import { loadConfig } from "../../core/config";
+import { getTransportRouter } from "../../../transports";
+import { loadConfig } from "../../../core/config";
 
 export async function cmdTransportStatus() {
   const config = loadConfig() as any;

@@ -1,9 +1,9 @@
-import { listSessions, capture, FLEET_DIR } from "../../../sdk";
+import { listSessions, capture, FLEET_DIR } from "../../../../sdk";
 import { findWorktrees, detectSession } from "../../shared/wake";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
 import { resolveOracleSafe } from "./impl-helpers";
-import { UserError } from "../../../core/util/user-error";
+import { UserError } from "../../../../core/util/user-error";
 
 export async function cmdOracleAbout(oracle: string) {
   const name = oracle.toLowerCase();

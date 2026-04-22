@@ -1,10 +1,10 @@
 import { describe, it, expect, mock } from "bun:test";
 import { join } from "path";
-import type { InvokeContext } from "../../../plugin/types";
+import type { InvokeContext } from "../../../../plugin/types";
 
 const root = join(import.meta.dir, "../../..");
 
-const { mockConfigModule } = await import("../../../../test/helpers/mock-config");
+const { mockConfigModule } = await import("../../../../../test/test/helpers/mock-config");
 mock.module(join(root, "config"), () => mockConfigModule(() => ({ host: "localhost", port: 3456 })));
 
 const mockAgentData = {

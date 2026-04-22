@@ -6,7 +6,7 @@
  */
 
 import { sendKeysToPeer, getAggregatedSessions } from "../core/transport/peers";
-import { cfgTimeout } from "../config";
+import { cfgTimeout } from "../core/config";
 import { listSessions } from "../core/transport/ssh";
 import { findWindow } from "../core/runtime/find-window";
 import { curlFetch } from "../core/transport/curl-fetch";

@@ -3,7 +3,7 @@
  * DO NOT change profile thresholds/logic — lean/standard/full were just shipped.
  */
 
-import type { LoadedPlugin } from "../../plugin/types";
+import type { LoadedPlugin } from "../../../plugin/types";
 import { existsSync, readdirSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";

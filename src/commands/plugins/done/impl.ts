@@ -1,5 +1,5 @@
 import { listSessions } from "../../../sdk";
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import { FLEET_DIR } from "../../../sdk";
 import { takeSnapshot } from "../../../sdk";
 import { tmux } from "../../../sdk";

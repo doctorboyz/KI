@@ -1,5 +1,5 @@
-import { tmux } from "../../../sdk";
-import { hostExec } from "../../../sdk";
+import { tmux } from "../../../../sdk";
+import { hostExec } from "../../../../sdk";
 import { mkdirSync, writeFileSync, readFileSync, readdirSync, unlinkSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";

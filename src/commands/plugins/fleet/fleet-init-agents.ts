@@ -1,4 +1,4 @@
-import { loadConfig, saveConfig } from "../../../config";
+import { loadConfig, saveConfig } from "../../../core/config";
 import { loadFleet } from "../../shared/fleet-load";
 
 export interface FleetInitAgentsResult {

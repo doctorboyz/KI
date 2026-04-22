@@ -10,8 +10,8 @@
 
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "fs";
 import { join } from "path";
-import { CONFIG_DIR, FLEET_DIR, listSessions, loadConfig } from "../../../sdk";
-import type { OracleEntry } from "../../../sdk";
+import { CONFIG_DIR, FLEET_DIR, listSessions, loadConfig } from "../../../../sdk";
+import type { OracleEntry } from "../../../../sdk";
 
 const CACHE_FILE = join(CONFIG_DIR, "oracles.json");
 

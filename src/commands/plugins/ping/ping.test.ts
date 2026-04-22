@@ -3,7 +3,7 @@ import { join } from "path";
 import type { InvokeContext } from "../../../plugin/types";
 
 const root = join(import.meta.dir, "../../..");
-const { mockConfigModule } = await import("../../../../test/helpers/mock-config");
+const { mockConfigModule } = await import("../../../../test/test/helpers/mock-config");
 
 mock.module(join(root, "config"), () => mockConfigModule(() => ({
   namedPeers: [{ name: "white", url: "http://white.local:3456" }],

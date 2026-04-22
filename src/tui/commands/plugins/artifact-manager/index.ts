@@ -20,7 +20,7 @@ import {
   listArtifacts,
   getArtifact,
   artifactDir,
-} from "../../../lib/artifacts";
+} from "../../../../lib/artifacts";
 import { readFileSync } from "fs";
 import { basename } from "path";
 

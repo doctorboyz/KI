@@ -1,4 +1,4 @@
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import { parseWakeTarget, ensureCloned } from "../../shared/wake-target";
 import { normalizeTarget } from "../../../core/matcher/normalize-target";
 import { assertValidOracleName } from "../../../core/fleet/validate";

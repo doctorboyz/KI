@@ -1,4 +1,4 @@
-import type { InvokeContext, InvokeResult } from "../../../plugin/types";
+import type { InvokeContext, InvokeResult } from "../../../../plugin/types";
 import type { RegistryManifest } from "./registry-fetch";
 
 export const command = {

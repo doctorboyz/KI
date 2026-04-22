@@ -1,5 +1,5 @@
-import { getFederationStatus, getPeers, curlFetch, listSessions } from "../../sdk";
-import { loadConfig } from "../../core/config";
+import { getFederationStatus, getPeers, curlFetch, listSessions } from "../../../sdk";
+import { loadConfig } from "../../../core/config";
 
 async function fetchPeerAgentCount(url: string): Promise<number> {
   try {
@@ -109,7 +109,7 @@ export async function cmdFederationStatus() {
  *   1 : at least one pair non-healthy
  */
 export async function cmdFederationStatusVerify(): Promise<{ ok: boolean }> {
-  const { getFederationStatusSymmetric } = await import("../../core/transport/peers");
+  const { getFederationStatusSymmetric } = await import("../../../core/transport/peers");
   const config = loadConfig();
   const named = config.namedPeers ?? [];
   const result = await getFederationStatusSymmetric();

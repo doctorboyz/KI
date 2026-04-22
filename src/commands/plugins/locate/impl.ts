@@ -15,7 +15,7 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { ghqFind } from "../../../core/ghq";
 import { listSessions, FLEET_DIR } from "../../../sdk";
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import { resolveSessionTarget } from "../../../core/matcher/resolve-target";
 import { UserError } from "../../../core/util/user-error";
 

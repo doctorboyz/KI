@@ -1,4 +1,4 @@
-import { hostExec } from "../../../core/transport/ssh";
+import { hostExec } from "../../../../core/transport/ssh";
 
 // ---------------------------------------------------------------------------
 // Types

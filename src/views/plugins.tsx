@@ -1,8 +1,8 @@
 /** @jsxImportSource hono/jsx */
 import { Hono } from "hono";
-import type { PluginSystem } from "../plugins";
+import type { LoadedPlugin } from "../plugin/types";
 
-export function pluginsView(plugins: PluginSystem) {
+export function pluginsView(plugins: { stats: () => { plugins: LoadedPlugin[]; totalEvents: number; totalErrors: number; gated: number; startedAt: string; gates?: Record<string, number>; filters?: Record<string, number>; handlers?: Record<string, number>; lates?: Record<string, number> } }) {
   const view = new Hono();
 
   view.get("/", (c) => {

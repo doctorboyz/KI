@@ -16,7 +16,7 @@
 
 import { Elysia, t} from "elysia";
 import { loadConfig } from "../config";
-import { signHeaders } from "../lib/federation-auth";
+import { signHeaders } from "../../lib/federation-auth";
 import {
   setSessionCookie,
   hasValidSessionCookie,

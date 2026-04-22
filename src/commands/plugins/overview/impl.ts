@@ -1,6 +1,6 @@
 import { listSessions, hostExec } from "../../../sdk";
 import { tmux } from "../../../sdk";
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import type { Session } from "../../../sdk";
 
 export interface OverviewTarget {

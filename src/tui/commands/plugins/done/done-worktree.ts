@@ -1,5 +1,5 @@
-import { hostExec } from "../../../sdk";
-import { FLEET_DIR } from "../../../sdk";
+import { hostExec } from "../../../../sdk";
+import { FLEET_DIR } from "../../../../sdk";
 import { readdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 

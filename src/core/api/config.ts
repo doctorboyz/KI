@@ -2,7 +2,7 @@ import { Elysia, t} from "elysia";
 import { readdirSync, readFileSync, writeFileSync, renameSync, unlinkSync, existsSync } from "fs";
 import { join, basename } from "path";
 import { type AoiConfig, loadConfig, saveConfig, configForDisplay } from "../config";
-import { FLEET_DIR as fleetDir } from "../core/paths";
+import { FLEET_DIR as fleetDir } from "../paths";
 
 export const configApi = new Elysia();
 
@@ -163,7 +163,7 @@ configApi.post("/pin-verify", async ({ body, headers, set}) => {
   const ok = pin === correct;
   if (ok) {
     pinAttempts.delete(ip);
-    const { createToken } = await import("../lib/auth");
+    const { createToken } = await import("../../lib/auth");
     return { ok, token: createToken() };
   }
   return { ok };

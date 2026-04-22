@@ -3,7 +3,7 @@
  * Handles message audit log (JSONL) and feed event emission to server plugin pipeline.
  */
 
-import { loadConfig } from "../../config";
+import { loadConfig } from "../../core/config";
 import { appendFile, mkdir } from "fs/promises";
 import { homedir, hostname } from "os";
 import { join } from "path";

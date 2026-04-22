@@ -1,5 +1,5 @@
-import { hostExec } from "../../../sdk";
-import { tmux } from "../../../sdk";
+import { hostExec } from "../../../../sdk";
+import { tmux } from "../../../../sdk";
 import { appendFileSync, mkdirSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";

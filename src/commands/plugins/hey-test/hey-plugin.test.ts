@@ -31,7 +31,7 @@ mock.module("../../../plugin/registry", () => ({
   invokePlugin: async (_plugin: LoadedPlugin, _ctx: unknown) => fakeInvokeResult,
 }));
 
-const { mockConfigModule } = await import("../../../../test/helpers/mock-config");
+const { mockConfigModule } = await import("../../../../test/test/helpers/mock-config");
 mock.module("../../../config", () => mockConfigModule(() => ({ node: "local-node", port: 3456 })));
 
 mock.module("../../../core/transport/ssh", () => ({

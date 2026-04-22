@@ -12,8 +12,8 @@
  */
 
 import { Elysia, t } from "elysia";
-import type { LoadedPlugin, InvokeContext, InvokeResult } from "../plugin/types";
-import { discoverPackages, invokePlugin } from "../plugin/registry";
+import type { LoadedPlugin, InvokeContext, InvokeResult } from "../../plugin/types";
+import { discoverPackages, invokePlugin } from "../../plugin/registry";
 
 export const pluginsRouter = new Elysia();
 

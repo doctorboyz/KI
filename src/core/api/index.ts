@@ -22,8 +22,8 @@ import { proxyApi } from "./proxy";
 import { pulseApi } from "./pulse";
 import { pluginsRouter } from "./plugins";
 import { uploadApi } from "./upload";
-import { discoverPackages, invokePlugin } from "../plugin/registry";
-import { federationAuth } from "../lib/elysia-auth";
+import { discoverPackages, invokePlugin } from "../../plugin/registry";
+import { federationAuth } from "../../lib/elysia-auth";
 
 export const api = new Elysia({ prefix: "/api" })
   .use(cors())

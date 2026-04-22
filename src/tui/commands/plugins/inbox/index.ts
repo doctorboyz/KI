@@ -1,4 +1,4 @@
-import type { InvokeContext, InvokeResult } from "../../../plugin/types";
+import type { InvokeContext, InvokeResult } from "../../../../plugin/types";
 import { cmdInboxLs, cmdInboxMarkRead, cmdInboxRead, cmdInboxWrite } from "./impl";
 
 export const command = {

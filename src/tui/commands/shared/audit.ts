@@ -1,5 +1,5 @@
-import { readAudit } from "../../sdk";
-import { parseFlags } from "../../cli/parse-args";
+import { readAudit } from "../../../sdk";
+import { parseFlags } from "../../../cli-src/parse-args";
 
 type AuditRow = {
   ts: string;

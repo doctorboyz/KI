@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
-import { loadConfig } from "../../core/config";
+import { loadConfig } from "../../../core/config";
 
 // ── Workspace config directory ──────────────────────────────────────
 export const WORKSPACES_DIR = join(

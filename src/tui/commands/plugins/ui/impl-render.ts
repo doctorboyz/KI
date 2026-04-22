@@ -14,7 +14,7 @@ import {
   justHost,
   buildTunnelCommand,
 } from "./impl-helpers";
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../../cli-src/parse-args";
 
 /**
  * Render the full output that `aoi ui` prints, given the parsed options.

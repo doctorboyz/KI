@@ -22,8 +22,8 @@
 import { existsSync, readFileSync, readdirSync } from "fs";
 import { join } from "path";
 import { loadManifestFromDir } from "./manifest";
-import { loadConfig } from "../config";
-import { verbose, info } from "../cli/verbosity";
+import { loadConfig } from "../core/config";
+import { verbose, info } from "../cli-src/verbosity";
 import type { LoadedPlugin } from "./types";
 import { satisfies, formatSdkMismatchError } from "./registry-semver";
 import {

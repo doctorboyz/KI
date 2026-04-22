@@ -11,7 +11,7 @@
  *   aoi.print.*  — colored terminal output helpers
  */
 
-import { loadConfig } from "../../config";
+import { loadConfig } from "../config";
 import type { Static } from "@sinclair/typebox";
 import {
   Identity as IdentitySchema,

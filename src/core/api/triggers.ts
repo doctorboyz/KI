@@ -1,7 +1,7 @@
 import { Elysia } from "elysia";
-import { getTriggers, getTriggerHistory, fire, type TriggerContext } from "../core/runtime/triggers";
+import { getTriggers, getTriggerHistory, fire, type TriggerContext } from "../runtime/triggers";
 import type { TriggerEvent } from "../config";
-import { TriggerFireBody, type TTriggerFireBody } from "../lib/schemas";
+import { TriggerFireBody, type TTriggerFireBody } from "../../lib/schemas";
 
 export const triggersApi = new Elysia();
 

@@ -2,7 +2,7 @@
  * plugins seam: doEnable + doDisable implementations.
  */
 
-import { discoverPackages, resetDiscoverCache } from "../../plugin/registry";
+import { discoverPackages, resetDiscoverCache } from "../../../plugin/registry";
 
 export function doEnable(name: string): void {
   const { loadConfig, saveConfig } = require("../../config");

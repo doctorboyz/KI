@@ -1,5 +1,5 @@
 import { tmux } from "../../sdk";
-import { loadConfig } from "../../config";
+import { loadConfig } from "../../core/config";
 
 export interface AgentRow {
   node: string;

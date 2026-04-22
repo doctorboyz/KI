@@ -1,5 +1,5 @@
 import type { InvokeContext, InvokeResult } from "../../../plugin/types";
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../cli-src/parse-args";
 
 export const command = {
   name: "pulse",
@@ -49,7 +49,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       const { cmdPulseLs } = await import("../../shared/pulse");
       await cmdPulseLs({ sync });
     } else if (subcmd === "cleanup" || subcmd === "clean") {
-      const { scanWorktrees, cleanupWorktree } = await import("../../../worktrees");
+      const { scanWorktrees, cleanupWorktree } = await import("../../../core/fleet/worktrees");
       const worktrees = await scanWorktrees();
       const stale = worktrees.filter(wt => wt.status !== "active");
       if (!stale.length) {

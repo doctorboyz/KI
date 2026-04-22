@@ -1,5 +1,5 @@
 import { describe, it, expect, mock, beforeEach } from "bun:test";
-import type { InvokeContext } from "../../../plugin/types";
+import type { InvokeContext } from "../../../../plugin/types";
 
 mock.module("./impl", () => ({
   cmdOracleList: async () => {

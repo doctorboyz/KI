@@ -13,7 +13,7 @@
 
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join, resolve } from "path";
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../cli-src/parse-args";
 
 // Repo root (for resolving the workspace SDK absolute path baked into
 // scaffolded package.json). src/commands/plugins/plugin/init-impl.ts → ../../../..

@@ -6,7 +6,7 @@ import {
   cmdTeamShutdown, cmdTeamList, cmdTeamCreate, cmdTeamSpawn,
   cmdTeamSend, cmdTeamResume, cmdTeamLives,
 } from "./impl";
-import { parseFlags } from "../../../cli/parse-args";
+import { parseFlags } from "../../../cli-src/parse-args";
 
 export const command = {
   name: "team",

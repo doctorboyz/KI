@@ -1,6 +1,6 @@
 {
   "name": "aoi",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AOI — Agent Office Interface. Multi-agent workflow with keyboard-first TUI.",
   "type": "module",
   "license": "BUSL-1.1",

@@ -5,7 +5,7 @@
 
 import type { Transport, TransportTarget, TransportMessage, TransportPresence } from "../core/transport/transport";
 import type { FeedEvent } from "../lib/feed";
-import { loadConfig } from "../config";
+import { loadConfig } from "../core/config";
 import { trySilent } from "../core/util/try-silent";
 import type { HubConnection } from "./hub-connection";
 import { openWebSocket, cleanupConnection } from "./hub-connection";

@@ -1,12 +1,12 @@
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../../core/config";
 import { parseWakeTarget, ensureCloned } from "../../shared/wake-target";
-import { normalizeTarget } from "../../../core/matcher/normalize-target";
-import { assertValidOracleName } from "../../../core/fleet/validate";
-import { hostExec } from "../../../sdk";
+import { normalizeTarget } from "../../../../core/matcher/normalize-target";
+import { assertValidOracleName } from "../../../../core/fleet/validate";
+import { hostExec } from "../../../../sdk";
 import { ensureBudRepo } from "./bud-repo";
 import { initVault, generateClaudeMd, configureFleet, writeBirthNote } from "./bud-init";
 import { finalizeBud } from "./bud-wake";
-import { writeSignal } from "../../../core/fleet/leaf";
+import { writeSignal } from "../../../../core/fleet/leaf";
 import { join } from "path";
 
 export interface BudOpts {

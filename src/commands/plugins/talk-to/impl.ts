@@ -1,4 +1,4 @@
-import { loadConfig } from "../../../config";
+import { loadConfig } from "../../../core/config";
 import { listSessions, sendKeys, getPaneCommand } from "../../../sdk";
 import { findWindow } from "../../../sdk";
 import { runHook } from "../../../sdk";
