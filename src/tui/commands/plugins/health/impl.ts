@@ -1,0 +1,96 @@
+import { execSync } from "child_process";
+import { loadConfig, cfgTimeout } from "../../../config";
+import { curlFetch } from "../../../sdk";
+import { tmux } from "../../../sdk";
+
+export async function cmdHealth() {
+  const checks: { name: string; status: string; detail: string }[] = [];
+
+  // 1. tmux
+  try {
+    const sessions = await tmux.listSessions();
+    checks.push({ name: "tmux server", status: "ok", detail: `running (${sessions.length} sessions)` });
+  } catch {
+    checks.push({ name: "tmux server", status: "fail", detail: "not running" });
+  }
+
+  // 2. aoi server
+  try {
+    const config = loadConfig();
+    const port = loadConfig().port;
+    const res = await fetch(`http://localhost:${port}/api/sessions`, { signal: AbortSignal.timeout(cfgTimeout("health")) });
+    if (res.ok) {
+      const data = await res.json();
+      const count = Array.isArray(data) ? data.length : (data.sessions?.length || 0);
+      checks.push({ name: "aoi server", status: "ok", detail: `online (:${port}, ${count} sessions)` });
+    } else {
+      checks.push({ name: "aoi server", status: "warn", detail: `HTTP ${res.status}` });
+    }
+  } catch {
+    checks.push({ name: "aoi server", status: "fail", detail: "offline" });
+  }
+
+  // 3. disk
+  try {
+    const df = execSync("df -h /tmp | tail -1", { encoding: "utf-8" }).trim();
+    const parts = df.split(/\s+/);
+    const avail = parts[3] || "?";
+    const pct = parseInt(parts[4] || "0");
+    checks.push({ name: "disk /tmp", status: pct > 90 ? "warn" : "ok", detail: `${avail} free` });
+  } catch {
+    checks.push({ name: "disk /tmp", status: "warn", detail: "unknown" });
+  }
+
+  // 4. memory
+  try {
+    const mem = execSync("free -m | grep Mem", { encoding: "utf-8" }).trim();
+    const parts = mem.split(/\s+/);
+    const avail = parseInt(parts[6] || "0");
+    checks.push({ name: "memory", status: avail < 500 ? "warn" : "ok", detail: `${avail}MB available` });
+  } catch {
+    checks.push({ name: "memory", status: "warn", detail: "unknown" });
+  }
+
+  // 5. pm2
+  try {
+    const pm2 = execSync("pm2 jlist 2>/dev/null", { encoding: "utf-8" });
+    const procs = JSON.parse(pm2);
+    const aoi = procs.find((p: any) => p.name === "aoi");
+    if (aoi) {
+      checks.push({ name: "pm2 aoi", status: aoi.pm2_env?.status === "online" ? "ok" : "warn", detail: `${aoi.pm2_env?.status} (pid ${aoi.pid})` });
+    } else {
+      checks.push({ name: "pm2 aoi", status: "fail", detail: "not found" });
+    }
+  } catch {
+    checks.push({ name: "pm2 aoi", status: "warn", detail: "pm2 not available" });
+  }
+
+  // 6. peers — reconcile both config.peers (string[]) and config.namedPeers ({name,url}[])
+  const config = loadConfig();
+  const rawPeers: string[] = config.peers || [];
+  const namedPeers: { name: string; url: string }[] = config.namedPeers || [];
+  const allPeers: { label: string; url: string }[] = [
+    ...rawPeers.map(url => ({ label: url, url })),
+    ...namedPeers.map(p => ({ label: `${p.name} (${p.url})`, url: p.url })),
+  ];
+  if (allPeers.length === 0) {
+    checks.push({ name: "peers", status: "none", detail: "none configured" });
+  } else {
+    for (const peer of allPeers) {
+      try {
+        const r = await curlFetch(`${peer.url}/api/federation/status`, { timeout: cfgTimeout("health") });
+        checks.push({ name: `peer ${peer.label}`, status: r.ok ? "ok" : "warn", detail: r.ok ? "online" : `HTTP ${r.status}` });
+      } catch {
+        checks.push({ name: `peer ${peer.label}`, status: "fail", detail: "unreachable" });
+      }
+    }
+  }
+
+  // Output
+  console.log("\naoi health\n");
+  for (const c of checks) {
+    const icon = c.status === "ok" ? "\x1b[32m●\x1b[0m" : c.status === "warn" ? "\x1b[33m●\x1b[0m" : c.status === "fail" ? "\x1b[31m●\x1b[0m" : "\x1b[90m○\x1b[0m";
+    console.log(`  ${icon} ${c.name.padEnd(18)} ${c.detail}`);
+  }
+  console.log();
+}
