@@ -64,11 +64,11 @@ const realLoadFleetEntries = _rFleetLoad.loadFleetEntries;
 const _rSoulSyncImpl = await import("../../src/commands/plugins/soul-sync/impl");
 const realCmdSoulSync = _rSoulSyncImpl.cmdSoulSync;
 const realSyncDir = _rSoulSyncImpl.syncDir;
-const realResolveOraclePath = _rSoulSyncImpl.resolveOraclePath;
+const realResolveKappaPath = _rSoulSyncImpl.resolveKappaPath;
 const realResolveProjectSlug = _rSoulSyncImpl.resolveProjectSlug;
-const realFindOracleForProject = _rSoulSyncImpl.findOracleForProject;
+const realFindKappaForProject = _rSoulSyncImpl.findKappaForProject;
 const realFindPeers = _rSoulSyncImpl.findPeers;
-const realFindProjectsForOracle = _rSoulSyncImpl.findProjectsForOracle;
+const realFindProjectsForKappa = _rSoulSyncImpl.findProjectsForKappa;
 const realSyncProjectVault = _rSoulSyncImpl.syncProjectVault;
 const realCmdSoulSyncProject = _rSoulSyncImpl.cmdSoulSyncProject;
 const _rWake = await import("../../src/commands/shared/wake");
@@ -176,11 +176,11 @@ let syncDirCalls: Array<{ src: string; dst: string }> = [];
 mock.module(
   join(import.meta.dir, "../../src/commands/plugins/soul-sync/impl"),
   () => ({
-    resolveOraclePath: realResolveOraclePath,
+    resolveKappaPath: realResolveKappaPath,
     resolveProjectSlug: realResolveProjectSlug,
-    findOracleForProject: realFindOracleForProject,
+    findKappaForProject: realFindKappaForProject,
     findPeers: realFindPeers,
-    findProjectsForOracle: realFindProjectsForOracle,
+    findProjectsForKappa: realFindProjectsForKappa,
     syncProjectVault: realSyncProjectVault,
     cmdSoulSyncProject: realCmdSoulSyncProject,
     cmdSoulSync: async (target?: string, opts?: Record<string, unknown>) => {
@@ -263,8 +263,8 @@ function makeCtx(overrides: Partial<BudFinalizeCtx> = {}): BudFinalizeCtx {
   return {
     name: "newbud",
     parentName: "neo",
-    org: "Soul-Brews-Studio",
-    budRepoName: "newbud-oracle",
+    org: "doctorboyz",
+    budRepoName: "newbud-kappa",
     budRepoPath,
     psiDir,
     ghqRoot,
@@ -322,11 +322,11 @@ describe("finalizeBud — step 5 (soul-sync seed)", () => {
     expect(cmdSoulSyncCalls).toHaveLength(0);
   });
 
-  test("no parentName → no cmdSoulSync call even with --seed (root oracle branch)", async () => {
+  test("no parentName → no cmdSoulSync call even with --seed (root kappa branch)", async () => {
     const ctx = makeCtx({ parentName: null, opts: { seed: true } });
     await finalizeBud(ctx);
 
-    // Even with --seed, a root oracle has no parent to pull from.
+    // Even with --seed, a root kappa has no parent to pull from.
     expect(cmdSoulSyncCalls).toHaveLength(0);
   });
 });
@@ -351,13 +351,13 @@ describe("finalizeBud — step 6 (git commit + push)", () => {
     expect(gits[commitIdx]).toContain(`git -C '${ctx.budRepoPath}'`);
   });
 
-  test("root oracle → commit message says 'root oracle' (no 'budded from')", async () => {
+  test("root kappa → commit message says 'root kappa' (no 'budded from')", async () => {
     const ctx = makeCtx({ parentName: null, opts: {} });
     await finalizeBud(ctx);
 
     const commit = hostExecCalls.find((c) => c.includes(" commit "));
     expect(commit).toBeDefined();
-    expect(commit).toContain("feat: birth — root oracle");
+    expect(commit).toContain("feat: birth — root kappa");
     expect(commit).not.toContain("budded from");
   });
 
@@ -378,7 +378,7 @@ describe("finalizeBud — step 7 (parent sync_peers)", () => {
   test("matching parent entry without bud in peers → appends bud name + writes file", async () => {
     const { entry, path } = seedFleetFile(5, "neo", {
       name: "05-neo",
-      windows: [{ name: "neo-oracle", repo: "Soul-Brews-Studio/neo-oracle" }],
+      windows: [{ name: "neo-kappa", repo: "doctorboyz/neo-kappa" }],
       sync_peers: ["mawjs", "colab"],
     });
     fleetEntriesOverride = [entry];
@@ -389,7 +389,7 @@ describe("finalizeBud — step 7 (parent sync_peers)", () => {
     const after = JSON.parse(readFileSync(path, "utf-8"));
     expect(after.sync_peers).toEqual(["mawjs", "colab", "newbud"]);
     expect(after.name).toBe("05-neo");
-    expect(after.windows).toEqual([{ name: "neo-oracle", repo: "Soul-Brews-Studio/neo-oracle" }]);
+    expect(after.windows).toEqual([{ name: "neo-kappa", repo: "doctorboyz/neo-kappa" }]);
   });
 
   test("strips NN- prefix off session.name when matching parent (42-neo matches stem 'neo')", async () => {
@@ -487,12 +487,12 @@ describe("finalizeBud — step 8 (wake)", () => {
       name: "issuebud",
       parentName: null,
       org: "my-gh-org",
-      budRepoName: "issuebud-oracle",
+      budRepoName: "issuebud-kappa",
       opts: { issue: 201 },
     });
     await finalizeBud(ctx);
 
-    expect(fetchIssuePromptCalls).toEqual([{ issue: 201, repo: "my-gh-org/issuebud-oracle" }]);
+    expect(fetchIssuePromptCalls).toEqual([{ issue: 201, repo: "my-gh-org/issuebud-kappa" }]);
     expect(cmdWakeCalls).toHaveLength(1);
     expect(cmdWakeCalls[0].opts).toEqual({
       noAttach: true,

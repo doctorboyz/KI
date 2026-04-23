@@ -11,9 +11,9 @@ mock.module(join(root, "config"), () => mockConfigModule(() => ({ host: "localho
 // Mock the health impl directly — do NOT mock child_process (leaks globally in Bun 1.3)
 mock.module("./impl", () => ({
   cmdHealth: async () => {
-    console.log("aoi health — localhost:3456");
+    console.log("ki health — localhost:3456");
     console.log("tmux server: running (2 sessions)");
-    console.log("pm2: aoi online (pid 1234)");
+    console.log("pm2: ki online (pid 1234)");
   },
 }));
 
@@ -24,14 +24,14 @@ describe("health plugin", () => {
     const ctx: InvokeContext = { source: "cli", args: [] };
     const result = await handler(ctx);
     expect(result.ok).toBe(true);
-    expect(result.output).toContain("aoi health");
+    expect(result.output).toContain("ki health");
   });
 
   it("API surface — returns ok with health output", async () => {
     const ctx: InvokeContext = { source: "api", args: {} };
     const result = await handler(ctx);
     expect(result.ok).toBe(true);
-    expect(result.output).toContain("aoi health");
+    expect(result.output).toContain("ki health");
   });
 
   it("reports tmux server in output", async () => {

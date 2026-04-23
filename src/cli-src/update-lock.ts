@@ -2,7 +2,7 @@ import { openSync, closeSync, unlinkSync, existsSync, mkdirSync, writeFileSync, 
 import { join } from "path";
 import { homedir } from "os";
 
-const LOCK_DIR = join(homedir(), ".aoi");
+const LOCK_DIR = join(homedir(), ".ki");
 const LOCK_PATH = join(LOCK_DIR, "update.lock");
 
 /**
@@ -56,7 +56,7 @@ export async function withUpdateLock<T>(fn: () => Promise<T>): Promise<T> {
         throw new Error(`update lock timeout: pid ${holderPid} still holds ${LOCK_PATH}`);
       }
       if (!announcedWait) {
-        console.log(`  \x1b[90m⋯ another 'aoi update' (pid ${holderPid}) is running, waiting up to 60s…\x1b[0m`);
+        console.log(`  \x1b[90m⋯ another 'ki update' (pid ${holderPid}) is running, waiting up to 60s…\x1b[0m`);
         announcedWait = true;
       }
       await new Promise(r => setTimeout(r, 500));

@@ -1,4 +1,4 @@
-import type { FeedEvent, Session } from "./aoi";
+import type { FeedEvent, Session } from "./ki";
 
 export type WsMessage =
   | { type: "sessions"; sessions: Session[] }

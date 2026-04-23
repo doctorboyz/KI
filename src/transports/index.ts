@@ -13,7 +13,7 @@ import { NanoclawTransport } from "./nanoclaw";
 /** Singleton router instance */
 let router: TransportRouter | null = null;
 
-/** Build transport router from aoi.config.json */
+/** Build transport router from ki.config.json */
 export function createTransportRouter(): TransportRouter {
   if (router) return router;
 

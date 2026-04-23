@@ -118,7 +118,7 @@ export async function cmdInboxLs(opts: { unread?: boolean; from?: string; last?:
 }
 
 export async function cmdInboxMarkRead(id: string) {
-  if (!id) { console.error("usage: aoi inbox read <id>"); return; }
+  if (!id) { console.error("usage: ki inbox read <id>"); return; }
   const msgs = loadInboxMessages(resolveInboxDir());
   const msg = msgs.find(m => m.id === id || m.filename.includes(id));
   if (!msg) { console.error(`\x1b[31merror\x1b[0m: message not found: ${id}`); return; }
@@ -128,7 +128,7 @@ export async function cmdInboxMarkRead(id: string) {
   console.log(`\x1b[32m✓\x1b[0m marked read: ${msg.filename}`);
 }
 
-// Legacy write shim — used by the oracle inbox skill
+// Legacy write shim — used by the kappa inbox skill
 export async function cmdInboxRead(target?: string) {
   const msgs = loadInboxMessages(resolveInboxDir());
   if (!msgs.length) { console.log("\x1b[90mno inbox messages\x1b[0m"); return; }

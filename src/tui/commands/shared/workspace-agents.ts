@@ -2,7 +2,7 @@ import { loadConfig, cfgTimeout } from "../../../core/config";
 import { curlFetch } from "../../../sdk";
 import { resolveWorkspaceId, reportNoWorkspaceId, loadWorkspace, saveWorkspace } from "./workspace-store";
 
-/** aoi workspace share <agent...> [--workspace <id>] */
+/** ki workspace share <agent...> [--workspace <id>] */
 export async function cmdWorkspaceShare(agents: string[], workspaceId?: string) {
   const id = resolveWorkspaceId(workspaceId);
   if (!id) {
@@ -41,7 +41,7 @@ export async function cmdWorkspaceShare(agents: string[], workspaceId?: string) 
   console.log(`\x1b[90m  total shared: ${ws.sharedAgents.length}\x1b[0m`);
 }
 
-/** aoi workspace unshare <agent...> [--workspace <id>] */
+/** ki workspace unshare <agent...> [--workspace <id>] */
 export async function cmdWorkspaceUnshare(agents: string[], workspaceId?: string) {
   const id = resolveWorkspaceId(workspaceId);
   if (!id) {
@@ -80,7 +80,7 @@ export async function cmdWorkspaceUnshare(agents: string[], workspaceId?: string
   console.log(`\x1b[90m  total shared: ${ws.sharedAgents.length}\x1b[0m`);
 }
 
-/** aoi workspace agents [workspace-id] */
+/** ki workspace agents [workspace-id] */
 export async function cmdWorkspaceAgents(workspaceId?: string) {
   const id = resolveWorkspaceId(workspaceId);
   if (!id) {
@@ -108,7 +108,7 @@ export async function cmdWorkspaceAgents(workspaceId?: string) {
 
   if (nodeNames.length === 0) {
     console.log("\x1b[90mNo agents in workspace yet.\x1b[0m");
-    console.log("\x1b[90m  aoi workspace share <agent...>  Share your agents\x1b[0m");
+    console.log("\x1b[90m  ki workspace share <agent...>  Share your agents\x1b[0m");
     return;
   }
 

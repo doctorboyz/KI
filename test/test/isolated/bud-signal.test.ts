@@ -24,7 +24,7 @@ const { scanSignals } = await import("../../src/commands/shared/scan-signals");
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 function freshRoot(): string {
-  return mkdtempSync(join(tmpBase, "oracle-"));
+  return mkdtempSync(join(tmpBase, "kappa-"));
 }
 
 function writeOldSignal(root: string, bud: string, daysAgo: number): void {

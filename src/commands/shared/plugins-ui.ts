@@ -7,7 +7,7 @@ import { homedir } from "os";
 import { renameSync } from "fs";
 
 export function archiveToTmp(name: string, dir: string): void {
-  const dest = `/tmp/aoi-plugin-${name}-${Date.now()}`;
+  const dest = `/tmp/ki-plugin-${name}-${Date.now()}`;
   renameSync(dir, dest);
 }
 

@@ -13,7 +13,7 @@ export interface DoneOpts {
 }
 
 /**
- * aoi done <window-name> [--force] [--dry-run]
+ * ki done <window-name> [--force] [--dry-run]
  *
  * Clean up a finished worktree window:
  * 0. Send /rrr to agent + git auto-save (unless --force)

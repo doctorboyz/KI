@@ -1,5 +1,5 @@
 /**
- * `aoi ui` — pure helper functions (testable without side-effects).
+ * `ki ui` — pure helper functions (testable without side-effects).
  *
  * Covers: peer resolution, URL building, SSH tunnel command building,
  * dev-server discovery, and dist-install detection.
@@ -14,7 +14,7 @@ import { ghqFindSync } from "../../../../core/ghq";
 // ---- Constants -----------------------------------------------------------
 
 export const LENS_PORT = 5173;
-export const AOI_PORT = 3456;
+export const KI_PORT = 3456;
 export const LENS_PAGE_2D = "federation_2d.html";
 export const LENS_PAGE_3D = "federation.html";
 
@@ -29,7 +29,7 @@ export interface UiOptions {
   installVersion?: string;
   /** Positional subcommand: "install" | "status" */
   subcommand?: "install" | "status";
-  /** --version flag for `aoi ui install --version v1.x.x` */
+  /** --version flag for `ki ui install --version v1.x.x` */
   version?: string;
 }
 
@@ -64,34 +64,34 @@ export function justHost(hostPort: string): string {
   return hostPort.split(":")[0];
 }
 
-/** Check if aoi-ui dist is installed at ~/.aoi/ui/dist/ */
+/** Check if ki-ui dist is installed at ~/.ki/ui/dist/ */
 export function isUiDistInstalled(): boolean {
-  const distDir = join(homedir(), ".aoi", "ui", "dist");
+  const distDir = join(homedir(), ".ki", "ui", "dist");
   return existsSync(join(distDir, "index.html"));
 }
 
-/** Find the aoi-ui source directory for dev mode. */
-export function findAoiUiSrcDir(): string | null {
-  // Try ghq path first (the standard oracle convention)
-  const ghqPath = ghqFindSync("/aoi-ui");
+/** Find the ki-ui source directory for dev mode. */
+export function findKiUiSrcDir(): string | null {
+  // Try ghq path first (the standard kappa convention)
+  const ghqPath = ghqFindSync("/ki-ui");
   if (ghqPath && existsSync(join(ghqPath, "package.json"))) return ghqPath;
 
-  // Try sibling of aoi
-  const aoiJsDir = join(__dirname, "..", "..");
-  const sibling = join(aoiJsDir, "..", "aoi-ui");
+  // Try sibling of ki
+  const kiJsDir = join(__dirname, "..", "..");
+  const sibling = join(kiJsDir, "..", "ki-ui");
   if (existsSync(join(sibling, "package.json"))) return sibling;
 
   // Try env override
-  if (process.env.AOI_UI_SRC && existsSync(join(process.env.AOI_UI_SRC, "package.json"))) {
-    return process.env.AOI_UI_SRC;
+  if (process.env.KI_UI_SRC && existsSync(join(process.env.KI_UI_SRC, "package.json"))) {
+    return process.env.KI_UI_SRC;
   }
 
   return null;
 }
 
 /** Build the dev server start command. */
-export function buildDevCommand(aoiUiDir: string): string {
-  return `cd ${aoiUiDir} && bun run dev`;
+export function buildDevCommand(kiUiDir: string): string {
+  return `cd ${kiUiDir} && bun run dev`;
 }
 
 /** Build the lens URL the user should open in their browser. */
@@ -109,9 +109,9 @@ export function buildLensUrl(opts: {
 
 /**
  * Build the SSH dual-port forward command as a single shell-paste-ready
- * string. Forwards BOTH the lens port (5173) and the aoi API port
+ * string. Forwards BOTH the lens port (5173) and the ki API port
  * (3456) so the user can hit both `http://localhost:5173/federation_2d.html`
- * AND run `aoi <cmd>` against the remote backend transparently.
+ * AND run `ki <cmd>` against the remote backend transparently.
  *
  * Uses `-N` (no remote command) but NOT `-f` — the user runs this in a
  * foreground terminal and Ctrl+C kills the tunnel. Transparent lifecycle.
@@ -120,7 +120,7 @@ export function buildTunnelCommand(args: { user: string; host: string }): string
   return (
     `ssh -N ` +
     `-L ${LENS_PORT}:localhost:${LENS_PORT} ` +
-    `-L ${AOI_PORT}:localhost:${AOI_PORT} ` +
+    `-L ${KI_PORT}:localhost:${KI_PORT} ` +
     `${args.user}@${args.host}`
   );
 }

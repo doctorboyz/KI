@@ -5,9 +5,9 @@
  * Why this exists:
  *   Previously the pattern `name.endsWith('-${userInput}')` was scattered
  *   across 7+ call sites. It silently picked the wrong answer when multiple
- *   items matched (e.g., target="view" matched aoijs-view, aoiui-view,
+ *   items matched (e.g., target="view" matched kijs-view, kiui-view,
  *   skills-cli-view — only the first won) and failed prefix-style names
- *   (e.g., target="aoijs" didn't match "aoijs-view").
+ *   (e.g., target="kijs" didn't match "kijs-view").
  *
  * This helper makes resolution explicit: exact wins, otherwise collect all
  * word-segment fuzzy matches and surface ambiguity to the caller. Silent
@@ -23,11 +23,11 @@ export type ResolveResult<T extends { name: string }> =
 /**
  * Resolve a bare user-typed name against a list of named items.
  *
- * Four-tier cascade (suffix-preferred — matches aoi tmux naming):
+ * Four-tier cascade (suffix-preferred — matches ki tmux naming):
  *
  * 1. **exact** (case-insensitive): name === target → { kind: "exact" }.
- * 2a. **suffix word-segment**: `*-target`. Matches aoi's `NN-oracle-name`
- *     session convention where user types the oracle name and expects to
+ * 2a. **suffix word-segment**: `*-target`. Matches ki's `NN-kappa-name`
+ *     session convention where user types the kappa name and expects to
  *     attach to the numbered session. 1 match → "fuzzy" (auto-pick).
  *     2+ matches → "ambiguous".
  * 2b. **prefix or middle word-segment** (only if 2a empty): `target-*` or
@@ -40,11 +40,11 @@ export type ResolveResult<T extends { name: string }> =
  *    "did you mean?" but the contract still says "not found".
  *
  * Why suffix-preferred (alpha.77 fix):
- *   User report — `aoi a aoijs` said ambiguous between `101-aoijs`
- *   (canonical oracle session) and `aoijs-view` (aux view). Pre-.77
+ *   User report — `ki a kijs` said ambiguous between `101-kijs`
+ *   (canonical kappa session) and `kijs-view` (aux view). Pre-.77
  *   treated both as Tier 2 equally. Suffix-preferred breaks the tie
- *   toward the oracle convention. View sessions still resolve when
- *   the user explicitly searches for them (e.g. target=`aoijs-view`
+ *   toward the kappa convention. View sessions still resolve when
+ *   the user explicitly searches for them (e.g. target=`kijs-view`
  *   → exact; target=`view` → 2a suffix match for all `-view` aux sessions).
  *
  * Invariant: the match ladder is exact → suffix-segment → prefix/middle
@@ -58,8 +58,8 @@ export type ResolveResult<T extends { name: string }> =
 export interface ResolveOptions {
   /**
    * When true, Tier 2b (prefix/middle) excludes items with a numeric fleet
-   * prefix (`/^\d+-/`). Session names follow the `NN-<oracle>` convention —
-   * the suffix after `NN-` IS the oracle name, so sub-segment matching is
+   * prefix (`/^\d+-/`). Session names follow the `NN-<kappa>` convention —
+   * the suffix after `NN-` IS the kappa name, so sub-segment matching is
    * wrong by construction (#535). Worktrees use the same numeric prefix as
    * a sequence counter but the remainder is descriptive, so sub-segment
    * matching is legitimate there (e.g. `pay` → `2-pay-v1`). Default: false.
@@ -79,7 +79,7 @@ export function resolveByName<T extends { name: string }>(
   const exact = items.find(it => it.name.toLowerCase() === lc);
   if (exact) return { kind: "exact", match: exact };
 
-  // Tier 2a — suffix-match preferred (`*-target`). Matches oracle session
+  // Tier 2a — suffix-match preferred (`*-target`). Matches kappa session
   // convention `NN-<name>` where user types `<name>` and wants the session.
   const suffix = items.filter(it => it.name.toLowerCase().endsWith(`-${lc}`));
   if (suffix.length === 1) return { kind: "fuzzy", match: suffix[0]! };
@@ -89,11 +89,11 @@ export function resolveByName<T extends { name: string }>(
   // when there's no suffix match. Catches view/aux sessions when the user
   // is specifically looking for one.
   //
-  // When `fleetSessions: true`, numeric-prefixed items (`NN-<oracle>`) are
-  // EXCLUDED here — they belong to the full suffix oracle (e.g. `114-aoijs-no2`
-  // IS `aoijs-no2`, not a sub-oracle `aoijs`). Tier 2a's exact-suffix rule
+  // When `fleetSessions: true`, numeric-prefixed items (`NN-<kappa>`) are
+  // EXCLUDED here — they belong to the full suffix kappa (e.g. `114-kijs-no2`
+  // IS `kijs-no2`, not a sub-kappa `kijs`). Tier 2a's exact-suffix rule
   // is the only legitimate way to resolve into a fleet session. Without this
-  // exclusion, typing `aoijs` matches `114-aoijs-no2` via `-aoijs-` — #535.
+  // exclusion, typing `kijs` matches `114-kijs-no2` via `-kijs-` — #535.
   const prefixOrMid = items.filter(it => {
     const n = it.name.toLowerCase();
     if (options.fleetSessions && /^\d+-/.test(n)) return false;
@@ -111,7 +111,7 @@ export function resolveByName<T extends { name: string }>(
 }
 
 // Thin convenience wrappers so call sites read cleanly at the use site.
-// Session target enables `fleetSessions` so `NN-<oracle>` names are resolved
+// Session target enables `fleetSessions` so `NN-<kappa>` names are resolved
 // correctly; worktree target leaves it off since worktree numeric prefixes
 // are sequence counters, not fleet-name boundaries.
 export const resolveSessionTarget = <T extends { name: string }>(

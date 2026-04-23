@@ -5,7 +5,7 @@ import { StatusDetector } from "./status";
 import { getAggregatedSessions, getPeers } from "../transport/peers";
 import { cfgLimit } from "../config";
 import type { FeedEvent } from "../../lib/feed";
-import type { AoiWS, Handler } from "../types";
+import type { KiWS, Handler } from "../types";
 import type { Session } from "../runtime/find-window";
 import type { TransportRouter } from "../transport/transport";
 import { startIntervals, stopIntervals, sendInitialSessions, type EngineIntervalState } from "./engine-intervals";
@@ -13,11 +13,11 @@ import { handleCrashedAgents } from "./engine-crash";
 
 type SessionInfo = { name: string; windows: { index: number; name: string; active: boolean }[] };
 
-export class AoiEngine {
-  private clients = new Set<AoiWS>();
+export class KiEngine {
+  private clients = new Set<KiWS>();
   private handlers = new Map<string, Handler>();
-  private lastContent = new Map<AoiWS, string>();
-  private lastPreviews = new Map<AoiWS, Map<string, string>>();
+  private lastContent = new Map<KiWS, string>();
+  private lastPreviews = new Map<KiWS, Map<string, string>>();
   private sessionCache = { sessions: [] as SessionInfo[], json: "" };
   private status = new StatusDetector();
 
@@ -65,7 +65,7 @@ export class AoiEngine {
       const sessions = this.sessionCache.sessions.length > 0
         ? this.sessionCache.sessions
         : await listSessions().catch(() => []);
-      const baseName = msg.to.replace(/-oracle$/, "");
+      const baseName = msg.to.replace(/-kappa$/, "");
       const target = findWindow(sessions, msg.to) || findWindow(sessions, baseName);
       if (target) {
         await sendKeys(target, msg.body);
@@ -82,14 +82,14 @@ export class AoiEngine {
 
   // --- WebSocket lifecycle ---
 
-  handleOpen(ws: AoiWS) {
+  handleOpen(ws: KiWS) {
     this.clients.add(ws);
     this.startIntervals();
     sendInitialSessions(ws, this.getIntervalState()).catch(() => {});
     ws.send(JSON.stringify({ type: "feed-history", events: this.feedBuffer.slice(-cfgLimit("feedHistory")) }));
   }
 
-  handleMessage(ws: AoiWS, msg: string | Buffer) {
+  handleMessage(ws: KiWS, msg: string | Buffer) {
     try {
       const data = JSON.parse(msg as string);
       const handler = this.handlers.get(data.type);
@@ -99,7 +99,7 @@ export class AoiEngine {
     }
   }
 
-  handleClose(ws: AoiWS) {
+  handleClose(ws: KiWS) {
     this.clients.delete(ws);
     this.lastContent.delete(ws);
     this.lastPreviews.delete(ws);
@@ -108,11 +108,11 @@ export class AoiEngine {
 
   // --- Public (handlers use these) ---
 
-  async pushCapture(ws: AoiWS) {
+  async pushCapture(ws: KiWS) {
     const { pushCapture } = await import("./capture");
     return pushCapture(ws, this.lastContent);
   }
-  async pushPreviews(ws: AoiWS) {
+  async pushPreviews(ws: KiWS) {
     const { pushPreviews } = await import("./capture");
     return pushPreviews(ws, this.lastPreviews);
   }

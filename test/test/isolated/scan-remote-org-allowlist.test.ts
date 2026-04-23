@@ -1,6 +1,6 @@
 /**
  * Closes #473 — regression guard for org-name allowlist in
- * registry-oracle-scan-remote.ts.
+ * registry-kappa-scan-remote.ts.
  *
  * Unit-tests the ORG_NAME_RE pattern directly. The full scanRemote
  * flow isn't exercised (requires network + gh auth) — this guards
@@ -8,7 +8,7 @@
  */
 import { describe, it, expect } from "bun:test";
 
-// Mirror of the pattern in src/core/fleet/registry-oracle-scan-remote.ts.
+// Mirror of the pattern in src/core/fleet/registry-kappa-scan-remote.ts.
 // Keep in sync — if the module's pattern changes, update this and the
 // corresponding test cases.
 const ORG_NAME_RE = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,37}[a-zA-Z0-9])?$/;
@@ -16,7 +16,7 @@ const ORG_NAME_RE = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,37}[a-zA-Z0-9])?$/;
 describe("org name allowlist (#473)", () => {
   describe("accepts real GitHub org names", () => {
     const good = [
-      "Soul-Brews-Studio",
+      "doctorboyz",
       "laris-co",
       "nazt",
       "github",

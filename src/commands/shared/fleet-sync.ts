@@ -51,7 +51,7 @@ export async function cmdFleetSync() {
 }
 
 /**
- * Sync repo fleet/*.json configs to FLEET_DIR (~/.config/aoi/fleet/).
+ * Sync repo fleet/*.json configs to FLEET_DIR (~/.config/ki/fleet/).
  * Symlinks each config so edits in either location stay in sync.
  */
 export async function cmdFleetSyncConfigs() {

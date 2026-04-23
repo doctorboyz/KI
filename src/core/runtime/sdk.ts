@@ -1,14 +1,14 @@
 /**
- * aoi SDK — typed, safe API for command plugins.
+ * ki SDK — typed, safe API for command plugins.
  *
  * Instead of execSync("curl ...") + JSON.parse, plugins use:
- *   import { aoi } from "@aoi/sdk";
- *   const id = await aoi.identity();  // typed!
+ *   import { ki } from "@ki/sdk";
+ *   const id = await ki.identity();  // typed!
  *
  * Three layers:
- *   aoi.*        — API calls to aoi serve (typed responses)
- *   aoi.tmux.*   — tmux operations (list, send, capture)
- *   aoi.print.*  — colored terminal output helpers
+ *   ki.*        — API calls to ki serve (typed responses)
+ *   ki.tmux.*   — tmux operations (list, send, capture)
+ *   ki.print.*  — colored terminal output helpers
  */
 
 import { loadConfig } from "../config";
@@ -50,7 +50,7 @@ async function api<T>(path: string, fallback: T): Promise<T> {
   }
 }
 
-/** Typed fetch against aoi serve. Throws on failure (unlike api() which swallows). */
+/** Typed fetch against ki serve. Throws on failure (unlike api() which swallows). */
 async function typedFetch<T>(path: string, init?: RequestInit & { timeout?: number }): Promise<T> {
   const { timeout = 5000, ...rest } = init || {};
   const res = await fetch(`${baseUrl()}${path}`, { signal: AbortSignal.timeout(timeout), ...rest });
@@ -93,7 +93,7 @@ async function config(): Promise<Record<string, unknown>> {
   return api("/api/config", {});
 }
 
-/** Wake an oracle */
+/** Wake an kappa */
 async function wake(target: string, task?: string): Promise<{ ok: boolean }> {
   try {
     const res = await fetch(`${baseUrl()}/api/wake`, {
@@ -108,7 +108,7 @@ async function wake(target: string, task?: string): Promise<{ ok: boolean }> {
   }
 }
 
-/** Sleep an oracle */
+/** Sleep an kappa */
 async function sleep(target: string): Promise<{ ok: boolean }> {
   try {
     const res = await fetch(`${baseUrl()}/api/sleep`, {
@@ -142,7 +142,7 @@ async function send(target: string, text: string): Promise<{ ok: boolean }> {
 
 export { print };
 
-export const aoi = {
+export const ki = {
   identity,
   federation,
   sessions,
@@ -158,4 +158,4 @@ export const aoi = {
   fetch: typedFetch,
 };
 
-export default aoi;
+export default ki;

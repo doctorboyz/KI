@@ -99,7 +99,7 @@ describe("resolveTmuxTarget — fleet stem tier (#394 Bug I)", () => {
   test("bare name with no match still produces a resolution with source label", async () => {
     const { resolveTmuxTarget } = await import("../../src/commands/plugins/tmux/impl");
     // This name won't match any fleet session but WILL match the final fallback.
-    const hit = resolveTmuxTarget("definitely-not-a-real-fleet-oracle-xyzzy");
+    const hit = resolveTmuxTarget("definitely-not-a-real-fleet-kappa-xyzzy");
     expect(hit).not.toBeNull();
     // Either fleet-stem (if fuzzy-matched) or session-name — both valid,
     // both include a :N suffix meaning "pane 0 of that session".

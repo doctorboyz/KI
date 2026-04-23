@@ -6,13 +6,13 @@ import { join } from "path";
 // We test findParent, findChildren, and the syncDir logic
 
 const TEST_DIR = join(import.meta.dir, ".test-soul-sync");
-const CHILD_PSI = join(TEST_DIR, "child-oracle", "ψ");
-const PARENT_PSI = join(TEST_DIR, "parent-oracle", "ψ");
+const CHILD_PSI = join(TEST_DIR, "child-kappa", "ψ");
+const PARENT_PSI = join(TEST_DIR, "parent-kappa", "ψ");
 
 function setup() {
   rmSync(TEST_DIR, { recursive: true, force: true });
 
-  // Create child oracle with learnings
+  // Create child kappa with learnings
   mkdirSync(join(CHILD_PSI, "memory/learnings"), { recursive: true });
   mkdirSync(join(CHILD_PSI, "memory/retrospectives/2026-04"), { recursive: true });
   mkdirSync(join(CHILD_PSI, "memory/traces/2026-04-06"), { recursive: true });
@@ -22,7 +22,7 @@ function setup() {
   writeFileSync(join(CHILD_PSI, "memory/retrospectives/2026-04/06-session.md"), "# Session retro\ngood work");
   writeFileSync(join(CHILD_PSI, "memory/traces/2026-04-06/2134_bitkub.md"), "# Trace: bitkub\nfound things");
 
-  // Create parent oracle with some existing files
+  // Create parent kappa with some existing files
   mkdirSync(join(PARENT_PSI, "memory/learnings"), { recursive: true });
   mkdirSync(join(PARENT_PSI, "memory/retrospectives"), { recursive: true });
   mkdirSync(join(PARENT_PSI, "memory/traces"), { recursive: true });
@@ -93,52 +93,52 @@ describe("soul-sync", () => {
   });
 
   describe("project_repos lookup (cell membrane)", () => {
-    test("findProjectsForOracle returns configured project_repos", () => {
-      const { findProjectsForOracleForTest } = require("./soul-sync-helpers");
+    test("findProjectsForKappa returns configured project_repos", () => {
+      const { findProjectsForKappaForTest } = require("./soul-sync-helpers");
       const fleet = [
-        { name: "08-mawjs", windows: [], project_repos: ["Soul-Brews-Studio/maw-js"] },
+        { name: "08-mawjs", windows: [], project_repos: ["doctorboyz/maw-js"] },
         { name: "01-pulse", windows: [] },
       ];
-      expect(findProjectsForOracleForTest("mawjs", fleet)).toEqual(["Soul-Brews-Studio/maw-js"]);
-      expect(findProjectsForOracleForTest("pulse", fleet)).toEqual([]);
-      expect(findProjectsForOracleForTest("missing", fleet)).toEqual([]);
+      expect(findProjectsForKappaForTest("mawjs", fleet)).toEqual(["doctorboyz/maw-js"]);
+      expect(findProjectsForKappaForTest("pulse", fleet)).toEqual([]);
+      expect(findProjectsForKappaForTest("missing", fleet)).toEqual([]);
     });
 
-    test("findOracleForProject returns owning oracle name", () => {
-      const { findOracleForProjectForTest } = require("./soul-sync-helpers");
+    test("findKappaForProject returns owning kappa name", () => {
+      const { findKappaForProjectForTest } = require("./soul-sync-helpers");
       const fleet = [
-        { name: "08-mawjs", windows: [], project_repos: ["Soul-Brews-Studio/maw-js"] },
+        { name: "08-mawjs", windows: [], project_repos: ["doctorboyz/maw-js"] },
         { name: "01-pulse", windows: [], project_repos: ["laris-co/floodboy", "laris-co/dustboy"] },
       ];
-      expect(findOracleForProjectForTest("Soul-Brews-Studio/maw-js", fleet)).toBe("mawjs");
-      expect(findOracleForProjectForTest("laris-co/dustboy", fleet)).toBe("pulse");
-      expect(findOracleForProjectForTest("nobody/orphan", fleet)).toBeNull();
+      expect(findKappaForProjectForTest("doctorboyz/maw-js", fleet)).toBe("mawjs");
+      expect(findKappaForProjectForTest("laris-co/dustboy", fleet)).toBe("pulse");
+      expect(findKappaForProjectForTest("nobody/orphan", fleet)).toBeNull();
     });
 
     test("resolveProjectSlug handles github.com-rooted ghqRoot (#193)", () => {
       const { resolveProjectSlug } = require("../src/commands/plugins/soul-sync/impl");
       const ghqRoot = "/home/neo/Code/github.com";
       expect(
-        resolveProjectSlug("/home/neo/Code/github.com/Soul-Brews-Studio/maw-js", ghqRoot)
-      ).toBe("Soul-Brews-Studio/maw-js");
+        resolveProjectSlug("/home/neo/Code/github.com/doctorboyz/maw-js", ghqRoot)
+      ).toBe("doctorboyz/maw-js");
     });
 
     test("resolveProjectSlug handles bare ghq root (#193 — was dropping repo segment)", () => {
       const { resolveProjectSlug } = require("../src/commands/plugins/soul-sync/impl");
       const ghqRoot = "/home/neo/Code";
-      // Before the fix this returned "github.com/Soul-Brews-Studio" (org-only) —
+      // Before the fix this returned "github.com/doctorboyz" (org-only) —
       // slice(0, 2) was grabbing [host, org] instead of [org, repo].
       expect(
-        resolveProjectSlug("/home/neo/Code/github.com/Soul-Brews-Studio/maw-js", ghqRoot)
-      ).toBe("Soul-Brews-Studio/maw-js");
+        resolveProjectSlug("/home/neo/Code/github.com/doctorboyz/maw-js", ghqRoot)
+      ).toBe("doctorboyz/maw-js");
     });
 
     test("resolveProjectSlug strips worktree suffix (#193)", () => {
       const { resolveProjectSlug } = require("../src/commands/plugins/soul-sync/impl");
       const ghqRoot = "/home/neo/Code/github.com";
       expect(
-        resolveProjectSlug("/home/neo/Code/github.com/Soul-Brews-Studio/maw-js.wt-issue-193", ghqRoot)
-      ).toBe("Soul-Brews-Studio/maw-js");
+        resolveProjectSlug("/home/neo/Code/github.com/doctorboyz/maw-js.wt-issue-193", ghqRoot)
+      ).toBe("doctorboyz/maw-js");
     });
 
     test("resolveProjectSlug returns null when repoRoot is outside ghqRoot (#193)", () => {
@@ -152,14 +152,14 @@ describe("soul-sync", () => {
       const { resolveProjectSlug } = require("../src/commands/plugins/soul-sync/impl");
       // Sitting at the org directory, no repo to resolve.
       expect(
-        resolveProjectSlug("/home/neo/Code/github.com/Soul-Brews-Studio", "/home/neo/Code/github.com")
+        resolveProjectSlug("/home/neo/Code/github.com/doctorboyz", "/home/neo/Code/github.com")
       ).toBeNull();
     });
 
-    test("project ψ/ syncs into oracle ψ/ across all SYNC_DIRS, new files only", () => {
-      // Build a fake project + oracle pair
+    test("project ψ/ syncs into kappa ψ/ across all SYNC_DIRS, new files only", () => {
+      // Build a fake project + kappa pair
       const PROJECT_PSI = join(TEST_DIR, "project-repo", "ψ");
-      const ORACLE_PSI = join(TEST_DIR, "owner-oracle", "ψ");
+      const KAPPA_PSI = join(TEST_DIR, "owner-kappa", "ψ");
 
       mkdirSync(join(PROJECT_PSI, "memory/learnings"), { recursive: true });
       mkdirSync(join(PROJECT_PSI, "memory/retrospectives/2026-04/07"), { recursive: true });
@@ -168,31 +168,31 @@ describe("soul-sync", () => {
       writeFileSync(join(PROJECT_PSI, "memory/retrospectives/2026-04/07/17.26_yeast.md"), "# yeast");
       writeFileSync(join(PROJECT_PSI, "memory/traces/2026-04-07/1802_maw-wire.md"), "# trace");
 
-      mkdirSync(join(ORACLE_PSI, "memory/learnings"), { recursive: true });
-      // Pre-existing file in oracle that must NOT be overwritten
-      writeFileSync(join(ORACLE_PSI, "memory/learnings/git-is-transport.md"), "# ORACLE VERSION");
+      mkdirSync(join(KAPPA_PSI, "memory/learnings"), { recursive: true });
+      // Pre-existing file in kappa that must NOT be overwritten
+      writeFileSync(join(KAPPA_PSI, "memory/learnings/git-is-transport.md"), "# KAPPA VERSION");
 
       const { syncDirForTest } = require("./soul-sync-helpers");
       const SYNC_DIRS = ["memory/learnings", "memory/retrospectives", "memory/traces"];
       let total = 0;
       for (const d of SYNC_DIRS) {
-        total += syncDirForTest(join(PROJECT_PSI, d), join(ORACLE_PSI, d));
+        total += syncDirForTest(join(PROJECT_PSI, d), join(KAPPA_PSI, d));
       }
 
       // 2 new files copied (retro + trace); learning was pre-existing → skipped
       expect(total).toBe(2);
-      expect(existsSync(join(ORACLE_PSI, "memory/retrospectives/2026-04/07/17.26_yeast.md"))).toBe(true);
-      expect(existsSync(join(ORACLE_PSI, "memory/traces/2026-04-07/1802_maw-wire.md"))).toBe(true);
-      expect(readFileSync(join(ORACLE_PSI, "memory/learnings/git-is-transport.md"), "utf-8")).toBe("# ORACLE VERSION");
+      expect(existsSync(join(KAPPA_PSI, "memory/retrospectives/2026-04/07/17.26_yeast.md"))).toBe(true);
+      expect(existsSync(join(KAPPA_PSI, "memory/traces/2026-04-07/1802_maw-wire.md"))).toBe(true);
+      expect(readFileSync(join(KAPPA_PSI, "memory/learnings/git-is-transport.md"), "utf-8")).toBe("# KAPPA VERSION");
     });
   });
 
   describe("findPeers (flat peer lookup)", () => {
-    test("returns empty for oracle without sync_peers", () => {
+    test("returns empty for kappa without sync_peers", () => {
       const { findPeersForTest } = require("./soul-sync-helpers");
       const fleet = [
-        { name: "01-pulse", windows: [{ name: "pulse-oracle", repo: "laris-co/pulse-oracle" }] },
-        { name: "06-floodboy", windows: [{ name: "floodboy-oracle", repo: "laris-co/floodboy-oracle" }] },
+        { name: "01-pulse", windows: [{ name: "pulse-kappa", repo: "laris-co/pulse-kappa" }] },
+        { name: "06-floodboy", windows: [{ name: "floodboy-kappa", repo: "laris-co/floodboy-kappa" }] },
       ];
       expect(findPeersForTest("floodboy", fleet)).toEqual([]);
     });
@@ -207,7 +207,7 @@ describe("soul-sync", () => {
       expect(findPeersForTest("pulse", fleet)).toEqual(["floodboy", "fireman"]);
     });
 
-    test("returns empty for oracle with empty sync_peers", () => {
+    test("returns empty for kappa with empty sync_peers", () => {
       const { findPeersForTest } = require("./soul-sync-helpers");
       const fleet = [
         { name: "06-floodboy", windows: [], sync_peers: [] },
@@ -217,14 +217,14 @@ describe("soul-sync", () => {
   });
 
   // #363 phase 1 — canonical collaboration docs (treaty-class) must ride
-  // through soul-sync so child oracles inherit them, not just learnings/
+  // through soul-sync so child kappas inherit them, not just learnings/
   // retros/traces. Regression guard against dropping the subdir.
   describe("collaborations propagation (#363 phase 1)", () => {
-    test("parent's memory/collaborations/ propagates to bud via syncOracleVaults", () => {
-      const { syncOracleVaults } = require("../src/commands/plugins/soul-sync/sync-helpers");
+    test("parent's memory/collaborations/ propagates to bud via syncKappaVaults", () => {
+      const { syncKappaVaults } = require("../src/commands/plugins/soul-sync/sync-helpers");
 
-      const budRoot = join(TEST_DIR, "bud-oracle");
-      const parentRoot = join(TEST_DIR, "mawjs-oracle");
+      const budRoot = join(TEST_DIR, "bud-kappa");
+      const parentRoot = join(TEST_DIR, "mawjs-kappa");
       const parentCollab = join(parentRoot, "ψ/memory/collaborations/white-wormhole/topics");
 
       mkdirSync(parentCollab, { recursive: true });
@@ -234,7 +234,7 @@ describe("soul-sync", () => {
       );
       mkdirSync(budRoot, { recursive: true });
 
-      const result = syncOracleVaults(parentRoot, budRoot, "mawjs", "bud");
+      const result = syncKappaVaults(parentRoot, budRoot, "mawjs", "bud");
 
       const budFile = join(budRoot, "ψ/memory/collaborations/white-wormhole/topics/claim-chain-and-sync-protocol.md");
       expect(existsSync(budFile)).toBe(true);
@@ -244,10 +244,10 @@ describe("soul-sync", () => {
     });
 
     test("collaborations sync skips files already present in bud (new-files-only)", () => {
-      const { syncOracleVaults } = require("../src/commands/plugins/soul-sync/sync-helpers");
+      const { syncKappaVaults } = require("../src/commands/plugins/soul-sync/sync-helpers");
 
-      const budRoot = join(TEST_DIR, "bud-oracle");
-      const parentRoot = join(TEST_DIR, "mawjs-oracle");
+      const budRoot = join(TEST_DIR, "bud-kappa");
+      const parentRoot = join(TEST_DIR, "mawjs-kappa");
       const parentCollab = join(parentRoot, "ψ/memory/collaborations/peer-x/topics");
       const budCollab = join(budRoot, "ψ/memory/collaborations/peer-x/topics");
 
@@ -256,21 +256,21 @@ describe("soul-sync", () => {
       writeFileSync(join(parentCollab, "treaty.md"), "# PARENT TREATY");
       writeFileSync(join(budCollab, "treaty.md"), "# BUD-LOCAL EDIT — must not be overwritten");
 
-      const result = syncOracleVaults(parentRoot, budRoot, "mawjs", "bud");
+      const result = syncKappaVaults(parentRoot, budRoot, "mawjs", "bud");
 
       expect(readFileSync(join(budCollab, "treaty.md"), "utf-8")).toContain("BUD-LOCAL EDIT");
       expect(result.total).toBe(0);
     });
 
     test("no memory/collaborations on parent → bud sync is a no-op (no error)", () => {
-      const { syncOracleVaults } = require("../src/commands/plugins/soul-sync/sync-helpers");
+      const { syncKappaVaults } = require("../src/commands/plugins/soul-sync/sync-helpers");
 
-      const budRoot = join(TEST_DIR, "bud-oracle");
-      const parentRoot = join(TEST_DIR, "mawjs-oracle");
+      const budRoot = join(TEST_DIR, "bud-kappa");
+      const parentRoot = join(TEST_DIR, "mawjs-kappa");
       mkdirSync(join(parentRoot, "ψ/memory/learnings"), { recursive: true });
       mkdirSync(budRoot, { recursive: true });
 
-      const result = syncOracleVaults(parentRoot, budRoot, "mawjs", "bud");
+      const result = syncKappaVaults(parentRoot, budRoot, "mawjs", "bud");
 
       expect(existsSync(join(budRoot, "ψ/memory/collaborations"))).toBe(false);
       expect(result.synced["memory/collaborations"]).toBeUndefined();

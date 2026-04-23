@@ -20,7 +20,7 @@ function modelTier(model: string): string {
 }
 
 function agentNameFromDir(dir: string): string {
-  // Dir like "-home-nat-Code-github-com-laris-co-neo-oracle"
+  // Dir like "-home-nat-Code-github-com-laris-co-neo-kappa"
   // Extract the last meaningful segment(s)
   const parts = dir.replace(/^-/, "").split("-");
   // Find github-com pattern and take org/repo after it

@@ -3,7 +3,7 @@ import { cmdAssign } from "./impl";
 
 export const command = {
   name: "assign",
-  description: "Assign a GitHub issue to an oracle.",
+  description: "Assign a GitHub issue to an kappa.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -21,12 +21,12 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
   try {
     const args = ctx.source === "cli" ? (ctx.args as string[]) : [];
     if (!args[0]) {
-      throw new Error("usage: aoi assign <issue-url> [--oracle <name>]");
+      throw new Error("usage: ki assign <issue-url> [--kappa <name>]");
     }
-    const oracleIdx = args.indexOf("--oracle");
-    const oracle = oracleIdx !== -1 ? args[oracleIdx + 1] : undefined;
-    const issueUrl = args.filter((a, i) => a !== "--oracle" && (oracleIdx === -1 || i !== oracleIdx + 1))[0];
-    await cmdAssign(issueUrl, { oracle });
+    const kappaIdx = args.indexOf("--kappa");
+    const kappa = kappaIdx !== -1 ? args[kappaIdx + 1] : undefined;
+    const issueUrl = args.filter((a, i) => a !== "--kappa" && (kappaIdx === -1 || i !== kappaIdx + 1))[0];
+    await cmdAssign(issueUrl, { kappa });
     return { ok: true, output: logs.join("\n") || undefined };
   } catch (e: any) {
     return { ok: false, error: logs.join("\n") || e.message, output: logs.join("\n") || undefined };

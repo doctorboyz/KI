@@ -5,9 +5,9 @@ import { loadConfig } from "../../../core/config";
 import { FLEET_DIR } from "../../../sdk";
 
 /**
- * aoi fleet consolidate [--dry-run] [--remove]
+ * ki fleet consolidate [--dry-run] [--remove]
  *
- * Cell cycle cleanup — for each disabled oracle:
+ * Cell cycle cleanup — for each disabled kappa:
  *   1. Check repo exists locally
  *   2. Merge all branches → main
  *   3. Commit uncommitted work
@@ -32,12 +32,12 @@ export async function cmdFleetConsolidate(opts: { dryRun?: boolean; remove?: boo
   const disabledFiles = readdirSync(FLEET_DIR).filter(f => f.endsWith(".disabled")).sort();
 
   if (disabledFiles.length === 0) {
-    console.log("\n  \x1b[32m✓\x1b[0m No disabled oracles to consolidate.\n");
+    console.log("\n  \x1b[32m✓\x1b[0m No disabled kappas to consolidate.\n");
     return;
   }
 
   console.log(`\n  \x1b[36m🧹 Fleet Consolidate\x1b[0m${opts.dryRun ? " \x1b[33m(dry run)\x1b[0m" : ""}\n`);
-  console.log(`  ${disabledFiles.length} disabled oracles to process\n`);
+  console.log(`  ${disabledFiles.length} disabled kappas to process\n`);
 
   const results: ConsolidateResult[] = [];
 

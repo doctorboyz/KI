@@ -7,7 +7,7 @@
  *   - Forward feed events and presence updates
  *   - Receive messages destined for local agents
  *
- * Config loaded from ~/.config/aoi/workspaces/*.json:
+ * Config loaded from ~/.config/ki/workspaces/*.json:
  *   { id, hubUrl, token, sharedAgents }
  *
  * Opens one WebSocket per workspace. Reconnects automatically on disconnect.

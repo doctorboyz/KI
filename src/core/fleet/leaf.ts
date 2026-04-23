@@ -12,7 +12,7 @@ export interface Signal {
 }
 
 /**
- * Drop a signal file into a parent oracle's ψ/memory/signals/ directory.
+ * Drop a signal file into a parent kappa's ψ/memory/signals/ directory.
  * Returns the absolute path of the written file.
  *
  * Path: <parentRoot>/ψ/memory/signals/<YYYY-MM-DD>_<budName>_<slug>.json

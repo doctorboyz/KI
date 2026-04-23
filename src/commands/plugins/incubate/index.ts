@@ -6,9 +6,9 @@ export const command = {
 };
 
 /**
- * aoi incubate — core plugin scaffold (#522).
+ * ki incubate — core plugin scaffold (#522).
  *
- * This is a migration scaffold for the Oracle skill `/incubate`. The full
+ * This is a migration scaffold for the Kappa skill `/incubate`. The full
  * implementation (ghq clone/create, origin symlink, .origins manifest,
  * INCUBATED_BY breadcrumb, hub file, --flash/--contribute/--status/--offload
  * workflow modes) lives in ~/.claude/skills/incubate/SKILL.md and ships in a
@@ -17,7 +17,7 @@ export const command = {
  * Today the plugin only:
  *   - registers the CLI verb + flags
  *   - validates positional args + flag shape
- *   - returns a stub message pointing users at the Oracle skill
+ *   - returns a stub message pointing users at the Kappa skill
  *
  * See issue #522 for the follow-up implementation tracker.
  */
@@ -48,7 +48,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (modes > 1) {
       return {
         ok: false,
-        error: "aoi incubate: --flash, --contribute, --status, --offload are mutually exclusive",
+        error: "ki incubate: --flash, --contribute, --status, --offload are mutually exclusive",
       };
     }
 
@@ -58,7 +58,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (unknown.length > 0) {
       return {
         ok: false,
-        error: `aoi incubate: unknown flag(s) ${unknown.join(", ")} (accepts --flash, --contribute, --status, --offload)`,
+        error: `ki incubate: unknown flag(s) ${unknown.join(", ")} (accepts --flash, --contribute, --status, --offload)`,
       };
     }
 
@@ -67,7 +67,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (mode !== "status" && !positional[0]) {
       return {
         ok: false,
-        error: "usage: aoi incubate <repo> [--flash|--contribute|--status|--offload]",
+        error: "usage: ki incubate <repo> [--flash|--contribute|--status|--offload]",
       };
     }
 

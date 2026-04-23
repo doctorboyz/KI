@@ -31,10 +31,10 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
 
       const first = flags._[0];
       if (first === "--help" || first === "-h") {
-        return { ok: false, error: "usage: aoi panes [target] [--pid] [--all|-a]" };
+        return { ok: false, error: "usage: ki panes [target] [--pid] [--all|-a]" };
       }
       if (first && first.startsWith("-")) {
-        return { ok: false, error: `"${first}" looks like a flag, not a target.\n  usage: aoi panes [target] [--pid] [--all|-a]` };
+        return { ok: false, error: `"${first}" looks like a flag, not a target.\n  usage: ki panes [target] [--pid] [--all|-a]` };
       }
       target = first;
       pid = !!flags["--pid"];

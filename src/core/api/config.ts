@@ -1,7 +1,7 @@
 import { Elysia, t} from "elysia";
 import { readdirSync, readFileSync, writeFileSync, renameSync, unlinkSync, existsSync } from "fs";
 import { join, basename } from "path";
-import { type AoiConfig, loadConfig, saveConfig, configForDisplay } from "../config";
+import { type KiConfig, loadConfig, saveConfig, configForDisplay } from "../config";
 import { FLEET_DIR as fleetDir } from "../paths";
 
 export const configApi = new Elysia();
@@ -9,10 +9,10 @@ export const configApi = new Elysia();
 // Rate limit: max 5 attempts per IP per minute
 const pinAttempts = new Map<string, { count: number; resetAt: number }>();
 
-// List all config files (aoi.config.json + fleet/*.json + fleet/*.json.disabled)
+// List all config files (ki.config.json + fleet/*.json + fleet/*.json.disabled)
 configApi.get("/config-files", () => {
   const files: { name: string; path: string; enabled: boolean }[] = [
-    { name: "aoi.config.json", path: "aoi.config.json", enabled: true },
+    { name: "ki.config.json", path: "ki.config.json", enabled: true },
   ];
   try {
     const entries = readdirSync(fleetDir).filter(f => f.endsWith(".json") || f.endsWith(".json.disabled")).sort();
@@ -33,8 +33,8 @@ configApi.get("/config-file", ({ query, set}) => {
   if (!existsSync(fullPath)) { set.status = 404; return { error: "not found" }; }
   try {
     const content = readFileSync(fullPath, "utf-8");
-    // For aoi.config.json, mask env values
-    if (filePath === "aoi.config.json") {
+    // For ki.config.json, mask env values
+    if (filePath === "ki.config.json") {
       const data = JSON.parse(content);
       const display = configForDisplay();
       data.env = display.envMasked;
@@ -52,15 +52,15 @@ configApi.get("/config-file", ({ query, set}) => {
 configApi.post("/config-file", async ({ query, body, set}) => {
   const filePath = query.path;
   if (!filePath) { set.status = 400; return { error: "path required" }; }
-  // Only allow aoi.config.json and fleet/ files
-  if (filePath !== "aoi.config.json" && !filePath.startsWith("fleet/")) {
+  // Only allow ki.config.json and fleet/ files
+  if (filePath !== "ki.config.json" && !filePath.startsWith("fleet/")) {
     set.status = 403; return { error: "invalid path" };
   }
   try {
     const { content } = body;
     JSON.parse(content); // validate JSON
     const fullPath = join(import.meta.dir, "../..", filePath);
-    if (filePath === "aoi.config.json") {
+    if (filePath === "ki.config.json") {
       // Handle masked env values
       const parsed = JSON.parse(content);
       if (parsed.env && typeof parsed.env === "object") {
@@ -172,7 +172,7 @@ configApi.post("/pin-verify", async ({ body, headers, set}) => {
 });
 
 // PUBLIC FEDERATION API (v1) — no auth. Shape is load-bearing for lens
-// clients (e.g. aoi-ui#8). See docs/federation.md before changing fields.
+// clients (e.g. ki-ui#8). See docs/federation.md before changing fields.
 configApi.get("/config", ({ query }) => {
   if (query.raw === "1") return loadConfig();
   return configForDisplay();
@@ -182,7 +182,7 @@ configApi.get("/config", ({ query }) => {
 
 configApi.post("/config", async ({ body, set}) => {
   try {
-    const data = body as Partial<AoiConfig>;
+    const data = body as Partial<KiConfig>;
     // If env has masked values (bullet chars), keep originals for those keys
     if (data.env && typeof data.env === "object") {
       const current = loadConfig();

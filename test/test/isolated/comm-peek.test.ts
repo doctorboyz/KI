@@ -204,8 +204,8 @@ afterAll(() => {
 
 describe("resolveSearchSessions", () => {
   const sessions: PaneSession[] = [
-    { name: "05-neo", windows: [{ index: 0, name: "neo-oracle", active: true }] },
-    { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: false }] },
+    { name: "05-neo", windows: [{ index: 0, name: "neo-kappa", active: true }] },
+    { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: false }] },
     { name: "99-other", windows: [{ index: 0, name: "other", active: false }] },
   ];
 
@@ -322,7 +322,7 @@ describe("cmdPeek — federation (node:agent)", () => {
   test("local-node prefix is stripped → falls through to local peek", async () => {
     configOverride = { node: "white", sessions: {} };
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     findWindowReturn = "08-mawjs:0";
     captureResponses = [{ match: /08-mawjs:0/, result: "local pane body" }];
@@ -461,7 +461,7 @@ describe("cmdPeek — fleet overview (no query)", () => {
       {
         name: "05-neo",
         windows: [
-          { index: 0, name: "neo-oracle", active: true },
+          { index: 0, name: "neo-kappa", active: true },
           { index: 1, name: "neo-helper", active: false },
         ],
       },
@@ -478,7 +478,7 @@ describe("cmdPeek — fleet overview (no query)", () => {
       { target: "05-neo:1", lines: 3 },
     ]);
     const joined = outs.join("\n");
-    expect(joined).toContain("neo-oracle");
+    expect(joined).toContain("neo-kappa");
     expect(joined).toContain("claude says hi");
     expect(joined).toContain("neo-helper");
     expect(joined).toContain("running tests");
@@ -557,7 +557,7 @@ describe("cmdPeek — local single-target peek", () => {
   test("findWindow hits → capture + prints header and body", async () => {
     configOverride = { sessions: {} };
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     findWindowReturn = "08-mawjs:0";
     captureResponses = [{ match: /08-mawjs:0/, result: "pane body here" }];
@@ -575,7 +575,7 @@ describe("cmdPeek — local single-target peek", () => {
   test("findWindow miss → error on stderr + exit 1 (capture NOT called)", async () => {
     configOverride = { sessions: {} };
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     findWindowReturn = null;
 
@@ -589,8 +589,8 @@ describe("cmdPeek — local single-target peek", () => {
   test("resolveSearchSessions narrows findWindow input when config.sessions maps query", async () => {
     configOverride = { sessions: { mawjs: "08-mawjs" } };
     listSessionsReturn = [
-      { name: "05-neo", windows: [{ index: 0, name: "neo-oracle", active: false }] },
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "05-neo", windows: [{ index: 0, name: "neo-kappa", active: false }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     findWindowReturn = "08-mawjs:0";
     captureResponses = [{ match: /08-mawjs:0/, result: "body" }];

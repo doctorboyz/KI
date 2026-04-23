@@ -37,7 +37,7 @@ export async function cmdWorkon(repo: string, task?: string): Promise<void> {
         for (const c of resolved.candidates) {
           console.error(`\x1b[90m    • ${c.name}\x1b[0m`);
         }
-        console.error(`\x1b[90m  use the full name: aoi workon ${repo} <exact-worktree>\x1b[0m`);
+        console.error(`\x1b[90m  use the full name: ki workon ${repo} <exact-worktree>\x1b[0m`);
         throw new Error(`'${task}' is ambiguous — matches ${resolved.candidates.length} worktrees`);
       case "none":
         match = null;

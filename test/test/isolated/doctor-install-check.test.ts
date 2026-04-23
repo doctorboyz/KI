@@ -174,10 +174,10 @@ describe("cmdDoctor install — binary missing → reinstall", () => {
     expect(out.ok).toBe(true);
     expect(out.checks[0].ok).toBe(true);
     expect(out.checks[0].message).toContain("reinstalled");
-    expect(out.checks[0].message).toContain("github:Soul-Brews-Studio/maw-js");
+    expect(out.checks[0].message).toContain("github:doctorboyz/maw-js");
     expect(execSyncCalls).toHaveLength(1);
     expect(execSyncCalls[0].cmd).toContain("bun add -g");
-    expect(execSyncCalls[0].cmd).toContain("Soul-Brews-Studio/maw-js");
+    expect(execSyncCalls[0].cmd).toContain("doctorboyz/maw-js");
   });
 
   test("execSync succeeds + binary still missing → ok false, message 'did not produce'", async () => {

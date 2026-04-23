@@ -16,7 +16,7 @@ export interface PeerConfig {
   url: string;
 }
 
-export interface AoiIntervals {
+export interface KiIntervals {
   capture?: number;
   sessions?: number;
   status?: number;
@@ -26,7 +26,7 @@ export interface AoiIntervals {
   crashCheck?: number;
 }
 
-export interface AoiTimeouts {
+export interface KiTimeouts {
   http?: number;
   health?: number;
   ping?: number;
@@ -37,7 +37,7 @@ export interface AoiTimeouts {
   wakeVerify?: number;
 }
 
-export interface AoiLimits {
+export interface KiLimits {
   feedMax?: number;
   feedDefault?: number;
   feedHistory?: number;
@@ -49,11 +49,11 @@ export interface AoiLimits {
   ptyRows?: number;
 }
 
-export interface AoiConfig {
+export interface KiConfig {
   host: string;
   port: number;
   ghqRoot: string;
-  oracleUrl: string;
+  kappaUrl: string;
   env: Record<string, string>;
   commands: Record<string, string>;
   sessions: Record<string, string>;
@@ -81,7 +81,7 @@ export interface AoiConfig {
    * bypass federation auth entirely.
    *
    * When `false`, loopback requests are required to sign like any
-   * other peer. Operators who run `aoi serve` behind any local
+   * other peer. Operators who run `ki serve` behind any local
    * reverse proxy, tunnel, or sidecar MUST set this to `false`.
    * Until CLI self-signing ships, setting this to `false` will
    * break interactive CLI commands; use with care.
@@ -98,9 +98,9 @@ export interface AoiConfig {
   namedPeers?: PeerConfig[];
   /** Agent → node mapping (e.g. { "homekeeper": "mba", "neo": "white" }) */
   agents?: Record<string, string>;
-  /** GitHub org for aoi bud (default: Soul-Brews-Studio) */
+  /** GitHub org for ki bud (default: doctorboyz) */
   githubOrg?: string;
-  /** GitHub orgs to scan for oracle repos (default: Soul-Brews-Studio, laris-co) */
+  /** GitHub orgs to scan for kappa repos (default: doctorboyz, laris-co) */
   githubOrgs?: string[];
   /** Fixed Claude session UUIDs per agent */
   sessionIds?: Record<string, string>;
@@ -109,11 +109,11 @@ export interface AoiConfig {
   /** TLS cert/key paths */
   tls?: { cert: string; key: string };
   /** Polling intervals (ms) */
-  intervals?: AoiIntervals;
+  intervals?: KiIntervals;
   /** HTTP/operation timeouts (ms) */
-  timeouts?: AoiTimeouts;
+  timeouts?: KiTimeouts;
   /** Buffer/display limits */
-  limits?: AoiLimits;
+  limits?: KiLimits;
   /** HMAC auth window (seconds) */
   hmacWindowSeconds?: number;
   /** PIN for web UI */

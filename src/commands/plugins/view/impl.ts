@@ -26,7 +26,7 @@ export async function cmdView(
 
   // Resolve agent → session via canonical matcher (exact > fuzzy > ambiguous > none).
   // Fallback: if no name match, check whether a window name contains the agent
-  // (e.g. `aoi view foo` hits a window named "foo-work" inside an unrelated session).
+  // (e.g. `ki view foo` hits a window named "foo-work" inside an unrelated session).
   const resolved = resolveSessionTarget(agent, candidateSessions);
   let sessionName: string | null = null;
   if (resolved.kind === "exact" || resolved.kind === "fuzzy") {
@@ -36,7 +36,7 @@ export async function cmdView(
     for (const s of resolved.candidates) {
       console.error(`  \x1b[90m    • ${s.name}\x1b[0m`);
     }
-    console.error(`  \x1b[90m  use the full name: aoi view <exact-session>\x1b[0m`);
+    console.error(`  \x1b[90m  use the full name: ki view <exact-session>\x1b[0m`);
     throw new Error(`'${agent}' is ambiguous — matches ${resolved.candidates.length} sessions`);
   } else {
     const agentLower = agent.toLowerCase();
@@ -50,12 +50,12 @@ export async function cmdView(
         console.error(`  \x1b[90m    • ${h.name}\x1b[0m`);
       }
     }
-    console.error(`  \x1b[90m  try: aoi ls\x1b[0m`);
+    console.error(`  \x1b[90m  try: ki ls\x1b[0m`);
     throw new Error(`session not found for: ${agent}`);
   }
 
   const t = new Tmux();
-  const host = process.env.AOI_HOST || loadConfig().host || "local";
+  const host = process.env.KI_HOST || loadConfig().host || "local";
   const isLocal = host === "local" || host === "localhost";
   const socket = resolveSocket();
 
@@ -121,7 +121,7 @@ export async function cmdView(
   }
 
   // Generate view name from RESOLVED session (not raw input) — prevents duplicates
-  // e.g. "aoi a worm" and "aoi a wormhole" both resolve to "102-white-wormhole"
+  // e.g. "ki a worm" and "ki a wormhole" both resolve to "102-white-wormhole"
   // and should reuse the same view session instead of creating worm-view + wormhole-view
   const viewBase = sessionName.replace(/^\d+-/, "");
   const viewName = `${viewBase}-view${windowHint ? `-${windowHint}` : ""}`;
@@ -207,9 +207,9 @@ export async function cmdView(
   }
 
   // #420: no auto-cleanup on detach. The view is grouped (shares state with
-  // the oracle session), so keeping it idle is cheap — and killing it here
-  // forces the next `aoi a <agent>` to pay the create cost again. Stale
-  // views are reaped by `aoi cleanup --zombie-agents` (#400/#418) or by
+  // the kappa session), so keeping it idle is cheap — and killing it here
+  // forces the next `ki a <agent>` to pay the create cost again. Stale
+  // views are reaped by `ki cleanup --zombie-agents` (#400/#418) or by
   // explicit `--kill` on this command.
   if (kill) {
     await t.killSession(viewName);

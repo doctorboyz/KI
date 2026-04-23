@@ -2,7 +2,7 @@ import type { InvokeContext, InvokeResult } from "../../../plugin/types";
 
 export const command = {
   name: "ui",
-  description: "Open or manage the aoi web UI.",
+  description: "Open or manage the ki web UI.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {

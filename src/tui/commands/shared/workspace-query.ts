@@ -2,14 +2,14 @@ import { cfgTimeout } from "../../../core/config";
 import { curlFetch } from "../../../sdk";
 import { resolveWorkspaceId, reportNoWorkspaceId, loadWorkspace, loadAllWorkspaces, saveWorkspace } from "./workspace-store";
 
-/** aoi workspace ls */
+/** ki workspace ls */
 export async function cmdWorkspaceLs() {
   const workspaces = loadAllWorkspaces();
 
   if (workspaces.length === 0) {
     console.log("\x1b[90mNo workspaces configured.\x1b[0m");
-    console.log("\x1b[90m  aoi workspace create <name>   Create a new workspace\x1b[0m");
-    console.log("\x1b[90m  aoi workspace join <code>     Join with invite code\x1b[0m");
+    console.log("\x1b[90m  ki workspace create <name>   Create a new workspace\x1b[0m");
+    console.log("\x1b[90m  ki workspace join <code>     Join with invite code\x1b[0m");
     return;
   }
 
@@ -35,7 +35,7 @@ export async function cmdWorkspaceLs() {
   console.log();
 }
 
-/** aoi workspace invite [workspace-id] */
+/** ki workspace invite [workspace-id] */
 export async function cmdWorkspaceInvite(workspaceId?: string) {
   const id = resolveWorkspaceId(workspaceId);
   if (!id) {
@@ -67,11 +67,11 @@ export async function cmdWorkspaceInvite(workspaceId?: string) {
   if (res.data?.expiry) {
     console.log(`  \x1b[36mExpires:\x1b[0m    ${res.data.expiry}`);
   }
-  console.log(`\n  \x1b[90mTo join:\x1b[0m  aoi workspace join ${joinCode} --hub ${ws.hubUrl}`);
+  console.log(`\n  \x1b[90mTo join:\x1b[0m  ki workspace join ${joinCode} --hub ${ws.hubUrl}`);
   console.log();
 }
 
-/** aoi workspace status */
+/** ki workspace status */
 export async function cmdWorkspaceStatus() {
   const workspaces = loadAllWorkspaces();
 

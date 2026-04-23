@@ -7,7 +7,7 @@ export interface ZoomOpts {
 }
 
 /**
- * aoi zoom <target> [--pane N]
+ * ki zoom <target> [--pane N]
  *
  * Toggle zoom state of a pane (full-screen that pane within its window).
  * Wraps `tmux resize-pane -Z` — idempotent toggle, same key-binding
@@ -15,7 +15,7 @@ export interface ZoomOpts {
  */
 export async function cmdZoom(target: string, opts: ZoomOpts = {}) {
   if (!target) {
-    throw new Error("usage: aoi zoom <target> [--pane N]\n  e.g. aoi zoom aoijs\n       aoi zoom neo:0 --pane 1");
+    throw new Error("usage: ki zoom <target> [--pane N]\n  e.g. ki zoom kijs\n       ki zoom neo:0 --pane 1");
   }
 
   let resolved: string;
@@ -49,7 +49,7 @@ export async function cmdZoom(target: string, opts: ZoomOpts = {}) {
         console.error(`  \x1b[90m  did you mean:\x1b[0m`);
         for (const s of r.hints) console.error(`  \x1b[90m    • ${s.name}\x1b[0m`);
       } else {
-        console.error(`  \x1b[90m  try: aoi ls\x1b[0m`);
+        console.error(`  \x1b[90m  try: ki ls\x1b[0m`);
       }
       throw new Error(`session '${target}' not found`);
     }

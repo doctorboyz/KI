@@ -1,7 +1,7 @@
 import { capture } from "../transport/ssh";
 import { tmux } from "../transport/tmux";
 import type { FeedEvent } from "../../lib/feed";
-import type { AoiWS } from "../types";
+import type { KiWS } from "../types";
 
 interface AgentState {
   hash: string;
@@ -17,8 +17,8 @@ const realFeedLastSeen = new Map<string, number>();
 const REAL_FEED_TTL = 60_000; // 60s — if real feed seen within this, skip synthetic
 
 /** Call this when a real feed event arrives (from POST /api/feed). */
-export function markRealFeedEvent(oracleName: string) {
-  realFeedLastSeen.set(oracleName, Date.now());
+export function markRealFeedEvent(kappaName: string) {
+  realFeedLastSeen.set(kappaName, Date.now());
 }
 
 export interface CrashedAgent {
@@ -61,7 +61,7 @@ export class StatusDetector {
 
   async detect(
     sessions: SessionInfo[],
-    clients: Set<AoiWS>,
+    clients: Set<KiWS>,
     feedListeners: Set<(event: FeedEvent) => void>,
   ) {
     if (clients.size === 0 || sessions.length === 0) return;
@@ -125,14 +125,14 @@ export class StatusDetector {
         // Skip synthetic events for agents with recent real feed events —
         // real Claude Code hooks are more accurate than screen-hash polling.
         // Still update internal state (for crash detection), just don't emit.
-        const oracleName = name.replace(/-oracle$/, "");
-        const lastReal = realFeedLastSeen.get(oracleName) || 0;
+        const kappaName = name.replace(/-kappa$/, "");
+        const lastReal = realFeedLastSeen.get(kappaName) || 0;
         const hasRealFeed = now - lastReal < REAL_FEED_TTL;
 
         if (!hasRealFeed) {
           const event: FeedEvent = {
             timestamp: new Date().toISOString(),
-            oracle: oracleName,
+            kappa: kappaName,
             host: "local",
             event: status === "busy" ? "PreToolUse" : status === "ready" ? "Stop" : status === "crashed" ? "PluginError" : "SessionEnd",
             project: session,
@@ -179,20 +179,20 @@ export class StatusDetector {
   /** Remove entries for targets no longer in active sessions (#145). */
   pruneState(sessions: SessionInfo[]) {
     const activeTargets = new Set<string>();
-    const activeOracles = new Set<string>();
+    const activeKappas = new Set<string>();
     for (const s of sessions) {
       for (const w of s.windows) {
         activeTargets.add(`${s.name}:${w.index}`);
-        activeOracles.add(w.name.replace(/-oracle$/, ""));
+        activeKappas.add(w.name.replace(/-kappa$/, ""));
       }
     }
     for (const key of this.state.keys()) {
       if (!activeTargets.has(key)) this.state.delete(key);
     }
     const now = Date.now();
-    for (const [oracle, ts] of realFeedLastSeen) {
-      if (!activeOracles.has(oracle) || now - ts > 3_600_000) {
-        realFeedLastSeen.delete(oracle);
+    for (const [kappa, ts] of realFeedLastSeen) {
+      if (!activeKappas.has(kappa) || now - ts > 3_600_000) {
+        realFeedLastSeen.delete(kappa);
       }
     }
   }

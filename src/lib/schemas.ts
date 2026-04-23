@@ -65,7 +65,7 @@ export type TSession = Static<typeof Session>;
 
 export const FeedEvent = Type.Object({
   timestamp: Type.String(),
-  oracle: Type.String(),
+  kappa: Type.String(),
   host: Type.String(),
   event: Type.String(),
   project: Type.String(),
@@ -126,7 +126,7 @@ export type TTriggerFireBody = Static<typeof TriggerFireBody>;
 
 /** POST /api/transport/send */
 export const TransportSendBody = Type.Object({
-  oracle: Type.String(),
+  kappa: Type.String(),
   message: Type.String(),
   host: Type.Optional(Type.String()),
   from: Type.Optional(Type.String()),

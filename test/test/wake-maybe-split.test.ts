@@ -110,8 +110,8 @@ describe("maybeSplit — no-op guards", () => {
 describe("maybeSplit — in-tmux (TMUX set)", () => {
   test("delegates to cmdSplit with the target", async () => {
     process.env.TMUX = "/tmp/tmux-1000/default,1234,0";
-    await maybeSplit("work:oracle", { split: true });
-    expect(cmdSplitCalls).toEqual(["work:oracle"]);
+    await maybeSplit("work:kappa", { split: true });
+    expect(cmdSplitCalls).toEqual(["work:kappa"]);
     // Happy path: no warning lines
     const joined = logs.join("\n");
     expect(joined).not.toContain("split failed");
@@ -123,8 +123,8 @@ describe("maybeSplit — in-tmux (TMUX set)", () => {
     cmdSplitImpl = async () => {
       throw new Error("boom");
     };
-    await maybeSplit("work:oracle", { split: true });
-    expect(cmdSplitCalls).toEqual(["work:oracle"]);
+    await maybeSplit("work:kappa", { split: true });
+    expect(cmdSplitCalls).toEqual(["work:kappa"]);
     const joined = logs.join("\n");
     expect(joined).toContain("⚠ split failed:");
     expect(joined).toContain("boom");
@@ -137,12 +137,12 @@ describe("maybeSplit — out-of-tmux, tmux server up", () => {
   test("logs 4-line attach runbook with target + derived session", async () => {
     // TMUX unset (beforeEach) — probeTmuxServer → true (hostExec resolves)
     hostExecImpl = async () => "work\n";
-    await maybeSplit("work:oracle", { split: true });
+    await maybeSplit("work:kappa", { split: true });
 
     const joined = logs.join("\n");
     expect(joined).toContain("⚠ --split skipped — shell is not attached to a tmux pane.");
     expect(joined).toContain("state created:");
-    expect(joined).toContain("work:oracle");
+    expect(joined).toContain("work:kappa");
     expect(joined).toContain("to view:");
     expect(joined).toContain("tmux attach -t work");
     expect(joined).toContain("to silence:");
@@ -160,12 +160,12 @@ describe("maybeSplit — out-of-tmux, no tmux server", () => {
     hostExecImpl = async () => {
       throw new Error("no server running on /tmp/tmux-1000/default");
     };
-    await maybeSplit("work:oracle", { split: true });
+    await maybeSplit("work:kappa", { split: true });
 
     const joined = logs.join("\n");
     expect(joined).toContain("⚠ --split skipped — tmux server not running.");
     expect(joined).toContain("state created:");
-    expect(joined).toContain("work:oracle");
+    expect(joined).toContain("work:kappa");
     expect(joined).toContain("to start tmux:");
     expect(joined).toContain("tmux new -s work");
     expect(joined).toContain("to silence:");

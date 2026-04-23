@@ -1,10 +1,10 @@
 /**
- * aoi artifacts — discover what teams produced.
+ * ki artifacts — discover what teams produced.
  *
- *   aoi artifacts              # list all
- *   aoi artifacts ls [team]    # list, optionally filtered
- *   aoi artifacts get <team> <task-id>  # show full artifact
- *   aoi artifacts --json       # machine-readable
+ *   ki artifacts              # list all
+ *   ki artifacts ls [team]    # list, optionally filtered
+ *   ki artifacts get <team> <task-id>  # show full artifact
+ *   ki artifacts --json       # machine-readable
  */
 
 import { listArtifacts, getArtifact } from "../../lib/artifacts";
@@ -43,7 +43,7 @@ export async function cmdArtifacts(sub: string, args: string[], flags: Record<st
   if (sub === "get" || sub === "show") {
     const team = args[0];
     const taskId = args[1];
-    if (!team || !taskId) { console.error("usage: aoi artifacts get <team> <task-id>"); process.exit(1); }
+    if (!team || !taskId) { console.error("usage: ki artifacts get <team> <task-id>"); process.exit(1); }
 
     const art = getArtifact(team, taskId);
     if (!art) { console.error(`artifact not found: ${team}/${taskId}`); process.exit(1); }
@@ -77,7 +77,7 @@ export async function cmdArtifacts(sub: string, args: string[], flags: Record<st
     return;
   }
 
-  console.error("usage: aoi artifacts [ls|get] [team] [task-id] [--json]");
+  console.error("usage: ki artifacts [ls|get] [team] [task-id] [--json]");
   process.exit(1);
 }
 

@@ -5,7 +5,7 @@ import type { InvokeContext } from "../../../plugin/types";
 mock.module("./impl", () => ({
   cmdContactsLs: async () => {
     console.log("CONTACTS (2):");
-    console.log("  neo           aoi: neo@white");
+    console.log("  neo           ki: neo@white");
   },
   cmdContactsAdd: async (name: string, args: string[]) => {
     console.log(`✓ contact ${name} saved`);
@@ -30,7 +30,7 @@ describe("contacts plugin", () => {
   });
 
   it("cli: add subcommand adds a contact", async () => {
-    const result = await handler({ source: "cli", args: ["add", "neo", "--aoi", "neo@white"] });
+    const result = await handler({ source: "cli", args: ["add", "neo", "--ki", "neo@white"] });
     expect(result.ok).toBe(true);
     expect(result.output).toContain("neo saved");
   });

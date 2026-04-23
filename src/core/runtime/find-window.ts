@@ -40,7 +40,7 @@ export class AmbiguousMatchError extends Error {
 /**
  * Match a session by name part. Tries (in order):
  *   1. Exact match
- *   2. Oracle-name match (strip leading `\d+-` from session name)
+ *   2. Kappa-name match (strip leading `\d+-` from session name)
  *   3. Substring match
  * Returns the first session that matches, or null.
  */
@@ -49,7 +49,7 @@ function matchSession(sessions: Session[], part: string, strict = false): Sessio
   if (!p) return null;
   // 1. Exact
   for (const s of sessions) if (s.name.toLowerCase() === p) return s;
-  // 2. Oracle-name (strip "NN-" prefix)
+  // 2. Kappa-name (strip "NN-" prefix)
   for (const s of sessions) if (s.name.toLowerCase().replace(/^\d+-/, "") === p) return s;
   // 3. Substring (skip in strict mode — prevents "white" matching "whitekeeper")
   if (!strict) {
@@ -62,7 +62,7 @@ export function findWindow(sessions: Session[], query: string): string | null {
   const q = query.toLowerCase();
 
   // session:window syntax — strict session match to prevent node:agent collision (#186)
-  // "white:aoijs" must NOT match "105-whitekeeper" via substring
+  // "white:kijs" must NOT match "105-whitekeeper" via substring
   if (query.includes(":")) {
     const [sessPart, winPart] = q.split(":", 2);
     const sess = matchSession(sessions, sessPart, true);
@@ -81,7 +81,7 @@ export function findWindow(sessions: Session[], query: string): string | null {
 
   // Two-pass bare-name resolution (#414):
   //   Pass 1 collects exact matches (window name, session name, stripped
-  //   oracle-name). Pass 2 collects substring matches only if Pass 1 was
+  //   kappa-name). Pass 2 collects substring matches only if Pass 1 was
   //   empty. Multi-candidate in either pass → AmbiguousMatchError.
   const exact = new Set<string>();
   for (const s of sessions) {
@@ -110,9 +110,9 @@ export function findWindow(sessions: Session[], query: string): string | null {
   if (sub.size === 1) return [...sub][0];
   if (sub.size > 1) throw new AmbiguousMatchError(query, [...sub]);
   // If query has ":" and the SESSION part matched a real session but the
-  // WINDOW part didn't → return raw query (user may mean index, e.g. "08-aoijs:1").
+  // WINDOW part didn't → return raw query (user may mean index, e.g. "08-kijs:1").
   // If the SESSION part didn't match anything local → return null so cmdSend
-  // falls through to federation routing (node:agent like "oracle-world:aoijs").
+  // falls through to federation routing (node:agent like "kappa-world:kijs").
   if (query.includes(":")) {
     const [sessPart] = query.toLowerCase().split(":", 2);
     const sessExists = matchSession(sessions, sessPart, true);

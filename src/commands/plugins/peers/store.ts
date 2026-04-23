@@ -1,7 +1,7 @@
 /**
- * aoi peers — storage layer (#568).
+ * ki peers — storage layer (#568).
  *
- * Atomic read/write of `~/.aoi/peers.json`. Writes go via a temp file
+ * Atomic read/write of `~/.ki/peers.json`. Writes go via a temp file
  * and rename(2) so a crash mid-write leaves either the old file intact
  * or the new file fully in place — never a truncated file. A stale tmp
  * file from a crashed previous write is ignored on load (the live file
@@ -30,7 +30,7 @@ export interface PeersFile {
 }
 
 export function peersPath(): string {
-  return process.env.PEERS_FILE || join(homedir(), ".aoi", "peers.json");
+  return process.env.PEERS_FILE || join(homedir(), ".ki", "peers.json");
 }
 
 export function emptyStore(): PeersFile {

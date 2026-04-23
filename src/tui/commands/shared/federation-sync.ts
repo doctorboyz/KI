@@ -1,15 +1,15 @@
 /**
- * aoi federation sync — active companion to `aoi fleet doctor`.
+ * ki federation sync — active companion to `ki fleet doctor`.
  *
  * Fleet doctor diagnoses config drift. Federation sync *treats* the biggest
- * class of drift — the one that aoiui caught tonight — by pulling live
+ * class of drift — the one that kiui caught tonight — by pulling live
  * identities from every namedPeer's /api/identity and populating the local
  * `config.agents` map automatically.
  *
- * Manually maintained config.agents is the reason `aoi hey volt-colab-ml`
- * failed tonight: white grew a new oracle and oracle-world didn't know about
+ * Manually maintained config.agents is the reason `ki hey volt-colab-ml`
+ * failed tonight: white grew a new kappa and kappa-world didn't know about
  * it. After this command, any fleet growth on any peer propagates by running
- * `aoi federation sync`.
+ * `ki federation sync`.
  *
  * Conservative by default: does not overwrite existing routes, does not
  * remove entries (use --prune). --force is required to change a route

@@ -141,7 +141,7 @@ describe("local-first routing (#411)", () => {
 
   test("(1) local hit — routes via tmux, no network", async () => {
     fakeSessions = [
-      { name: "08-mawjs", windows: [{ index: 1, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 1, name: "mawjs-kappa", active: true }] },
     ];
 
     await cmdSend("mawjs", "hello local");

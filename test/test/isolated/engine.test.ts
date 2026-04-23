@@ -118,7 +118,7 @@ describe("MawEngine (isolated)", () => {
   describe("handleOpen — no stale recent agents", () => {
     test("warm cache sends sessions instantly without recent message", async () => {
       mockSessions = [
-        { name: "oracles", windows: [{ index: 1, name: "pulse-oracle", active: true }] },
+        { name: "kappas", windows: [{ index: 1, name: "pulse-kappa", active: true }] },
       ];
 
       const engine = newEngine();
@@ -140,8 +140,8 @@ describe("MawEngine (isolated)", () => {
 
     test("cold cache fetches via tmux.listAll, no recent message", async () => {
       mockSessions = [
-        { name: "oracles", windows: [{ index: 1, name: "pulse-oracle", active: true }] },
-        { name: "hermes", windows: [{ index: 1, name: "hermes-oracle", active: false }] },
+        { name: "kappas", windows: [{ index: 1, name: "pulse-kappa", active: true }] },
+        { name: "hermes", windows: [{ index: 1, name: "hermes-kappa", active: false }] },
       ];
 
       const engine = newEngine();
@@ -169,7 +169,7 @@ describe("MawEngine (isolated)", () => {
     test("sends recent message when agents are running claude", async () => {
       sshResult = "claude";
       mockSessions = [
-        { name: "oracles", windows: [{ index: 1, name: "pulse-oracle", active: true }] },
+        { name: "kappas", windows: [{ index: 1, name: "pulse-kappa", active: true }] },
       ];
 
       const engine = newEngine();
@@ -184,9 +184,9 @@ describe("MawEngine (isolated)", () => {
       const recent = messages.find(m => m.type === "recent");
       expect(recent).toBeDefined();
       expect(recent!.agents).toHaveLength(1);
-      expect(recent!.agents[0].target).toBe("oracles:1");
-      expect(recent!.agents[0].name).toBe("pulse-oracle");
-      expect(recent!.agents[0].session).toBe("oracles");
+      expect(recent!.agents[0].target).toBe("kappas:1");
+      expect(recent!.agents[0].name).toBe("pulse-kappa");
+      expect(recent!.agents[0].session).toBe("kappas");
 
       engine.handleClose(ws as any);
     });
@@ -194,7 +194,7 @@ describe("MawEngine (isolated)", () => {
     test("no recent message when all agents are idle", async () => {
       sshResult = "zsh";
       mockSessions = [
-        { name: "oracles", windows: [{ index: 1, name: "pulse-oracle", active: true }] },
+        { name: "kappas", windows: [{ index: 1, name: "pulse-kappa", active: true }] },
       ];
 
       const engine = newEngine();
@@ -216,7 +216,7 @@ describe("MawEngine (isolated)", () => {
   describe("broadcastSessions — no terminal scraping", () => {
     test("broadcasts sessions without recent message", async () => {
       mockSessions = [
-        { name: "oracles", windows: [{ index: 1, name: "pulse-oracle", active: true }] },
+        { name: "kappas", windows: [{ index: 1, name: "pulse-kappa", active: true }] },
       ];
 
       const engine = newEngine();
@@ -244,10 +244,10 @@ describe("MawEngine (isolated)", () => {
     test("uses single tmux list-windows -a command", async () => {
       mockSessions = [
         {
-          name: "oracles",
+          name: "kappas",
           windows: [
-            { index: 1, name: "pulse-oracle", active: true },
-            { index: 2, name: "volt-oracle", active: false },
+            { index: 1, name: "pulse-kappa", active: true },
+            { index: 2, name: "volt-kappa", active: false },
           ],
         },
       ];

@@ -1,7 +1,7 @@
 /**
  * CLI verbs for plugins.lock (#487 Option A).
- *   aoi plugin pin <name> <tarball> [--version X.Y.Z] [--signer <id>]...
- *   aoi plugin unpin <name>
+ *   ki plugin pin <name> <tarball> [--version X.Y.Z] [--signer <id>]...
+ *   ki plugin unpin <name>
  */
 
 import { resolve } from "path";
@@ -17,7 +17,7 @@ export async function cmdPluginPin(args: string[]): Promise<void> {
   const name = flags._[0];
   const source = flags._[1];
   if (!name || !source) {
-    throw new Error("usage: aoi plugin pin <name> <tarball-path> [--version X.Y.Z] [--signer <id>]");
+    throw new Error("usage: ki plugin pin <name> <tarball-path> [--version X.Y.Z] [--signer <id>]");
   }
 
   const resolvedSource = resolve(source);
@@ -40,7 +40,7 @@ export async function cmdPluginPin(args: string[]): Promise<void> {
 export async function cmdPluginUnpin(args: string[]): Promise<void> {
   const flags = parseFlags(args, {}, 0);
   const name = flags._[0];
-  if (!name) throw new Error("usage: aoi plugin unpin <name>");
+  if (!name) throw new Error("usage: ki plugin unpin <name>");
   const { removed } = unpinPlugin(name);
   if (removed) {
     console.log(`\x1b[32m✓\x1b[0m unpinned ${name} (was ${removed.version}, ${removed.sha256})`);

@@ -28,19 +28,19 @@ export async function cmdDoctor(args: string[] = []): Promise<DoctorResult> {
 }
 
 async function checkInstall(): Promise<{ name: string; ok: boolean; message: string }> {
-  const binPath = join(homedir(), ".bun/bin/aoi");
+  const binPath = join(homedir(), ".bun/bin/ki");
   const exists = existsSync(binPath);
   if (!exists) {
-    console.log(`  ${YELLOW}⚠${RESET} aoi binary missing at ${binPath}`);
+    console.log(`  ${YELLOW}⚠${RESET} ki binary missing at ${binPath}`);
     console.log(`  ${GRAY}attempting reinstall…${RESET}`);
     try {
-      execSync("bun add -g github:Soul-Brews-Studio/aoi-js", { stdio: "inherit" });
+      execSync("bun add -g github:doctorboyz/ki-js", { stdio: "inherit" });
       const nowExists = existsSync(binPath);
       return {
         name: "install",
         ok: nowExists,
         message: nowExists
-          ? "reinstalled from github:Soul-Brews-Studio/aoi-js"
+          ? "reinstalled from github:doctorboyz/ki-js"
           : "reinstall did not produce the binary — manual intervention needed",
       };
     } catch (e: any) {
@@ -54,12 +54,12 @@ async function checkInstall(): Promise<{ name: string; ok: boolean; message: str
       return { name: "install", ok: false, message: `binary is a broken symlink → ${abs}` };
     }
   } catch { /* not a symlink — that's fine */ }
-  return { name: "install", ok: true, message: "aoi binary present and resolvable" };
+  return { name: "install", ok: true, message: "ki binary present and resolvable" };
 }
 
 function renderResults(checks: DoctorResult["checks"], ok: boolean): void {
   console.log("");
-  console.log(`  ${ok ? GREEN + "✓" : RED + "✗"} aoi doctor${RESET}`);
+  console.log(`  ${ok ? GREEN + "✓" : RED + "✗"} ki doctor${RESET}`);
   for (const c of checks) {
     const icon = c.ok ? GREEN + "✓" : RED + "✗";
     console.log(`    ${icon} ${c.name}${RESET}: ${c.message}`);

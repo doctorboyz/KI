@@ -1,4 +1,4 @@
-import type { FeedEvent, FeedEventType } from "../types/aoi";
+import type { FeedEvent, FeedEventType } from "../types/ki";
 
 const EVENT_COLORS: Record<FeedEventType, string> = {
   PreToolUse: "blue",
@@ -34,7 +34,7 @@ export function formatFeedLine(e: FeedEvent): string {
   const time = formatTime(e.ts);
   const evt = e.event;
   const msg = e.message ? ` ${truncate(e.message, 60)}` : "";
-  return `[${time}] ${e.oracle} ▸ ${evt}${msg}`;
+  return `[${time}] ${e.kappa} ▸ ${evt}${msg}`;
 }
 
 export function truncate(s: string, max: number): string {

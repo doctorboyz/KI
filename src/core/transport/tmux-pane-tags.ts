@@ -13,7 +13,7 @@ export interface TagPaneOpts {
 
 /**
  * Set pane title and/or @custom options. Programmatic counterpart to
- * `aoi tag` — callable from other plugins without forking a CLI.
+ * `ki tag` — callable from other plugins without forking a CLI.
  */
 export async function tagPane(target: string, opts: TagPaneOpts = {}): Promise<void> {
   const t = opts.tmux ?? tmux;

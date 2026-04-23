@@ -7,23 +7,23 @@ import { join } from "path";
 import { takeSnapshot } from "../../../../sdk";
 
 /**
- * aoi sleep <oracle> [window]
+ * ki sleep <kappa> [window]
  *
- * Gracefully stop a single Oracle agent's tmux window:
+ * Gracefully stop a single Kappa agent's tmux window:
  * 1. Send /exit to the Claude session
  * 2. Wait 3 seconds
  * 3. If window still exists, kill it
  * 4. Log the event
  */
-export async function cmdSleepOne(oracle: string, window?: string) {
+export async function cmdSleepOne(kappa: string, window?: string) {
   // Resolve session
-  const session = await detectSession(oracle);
+  const session = await detectSession(kappa);
   if (!session) {
-    throw new Error(`no running session found for '${oracle}'`);
+    throw new Error(`no running session found for '${kappa}'`);
   }
 
   // Determine window name
-  const windowName = window ? `${oracle}-${window}` : `${oracle}-oracle`;
+  const windowName = window ? `${kappa}-${window}` : `${kappa}-kappa`;
 
   // Save tab order before sleeping (so wake can restore positions)
   await saveTabOrder(session);
@@ -37,29 +37,29 @@ export async function cmdSleepOne(oracle: string, window?: string) {
   }
 
   // Normalize trailing dashes — tmux window names like "fireman-1w-test-"
-  // cause exact-match failures and strand aoi sleep (#206)
+  // cause exact-match failures and strand ki sleep (#206)
   const stripDash = (s: string) => s.replace(/-+$/, "");
 
   const target = windows.find(w => w.name === windowName || stripDash(w.name) === stripDash(windowName));
   if (!target) {
-    // Try partial match (e.g. oracle-N-name pattern)
-    const nameSuffix = window || "oracle";
+    // Try partial match (e.g. kappa-N-name pattern)
+    const nameSuffix = window || "kappa";
     const fuzzy = windows.find(w =>
       stripDash(w.name) === stripDash(windowName) ||
-      new RegExp(`^${oracle}-\\d+-${nameSuffix}-?$`).test(w.name)
+      new RegExp(`^${kappa}-\\d+-${nameSuffix}-?$`).test(w.name)
     );
     if (!fuzzy) {
       console.error(`\x1b[90mavailable:\x1b[0m ${windows.map(w => w.name).join(", ")}`);
       throw new Error(`window '${windowName}' not found in session '${session}'`);
     }
     // Use the fuzzy-matched name
-    return await doSleep(session, fuzzy.name, oracle);
+    return await doSleep(session, fuzzy.name, kappa);
   }
 
-  await doSleep(session, windowName, oracle);
+  await doSleep(session, windowName, kappa);
 }
 
-async function doSleep(session: string, windowName: string, oracle: string) {
+async function doSleep(session: string, windowName: string, kappa: string) {
   const target = `${session}:${windowName}`;
 
   // 1. Send /exit for graceful shutdown
@@ -94,12 +94,12 @@ async function doSleep(session: string, windowName: string, oracle: string) {
   }
 
   // 4. Log the sleep event
-  const logDir = join(homedir(), ".oracle");
-  const logFile = join(logDir, "aoi-log.jsonl");
+  const logDir = join(homedir(), ".kappa");
+  const logFile = join(logDir, "ki-log.jsonl");
   const line = JSON.stringify({
     ts: new Date().toISOString(),
     type: "sleep",
-    oracle,
+    kappa,
     window: windowName,
   }) + "\n";
   try {
@@ -107,7 +107,7 @@ async function doSleep(session: string, windowName: string, oracle: string) {
     await appendFile(logFile, line);
   } catch (e) { console.error(`\x1b[33m⚠\x1b[0m sleep log write failed: ${e}`); }
 
-  console.log(`\x1b[32msleep\x1b[0m ${oracle} (${windowName})`);
+  console.log(`\x1b[32msleep\x1b[0m ${kappa} (${windowName})`);
 
   // Snapshot after sleep
   takeSnapshot("sleep").catch(() => {});

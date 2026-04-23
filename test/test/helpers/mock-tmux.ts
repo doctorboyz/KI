@@ -20,11 +20,11 @@
  *     beforeEach(() => {
  *       installTmuxMock({
  *         sessions: [
- *           { name: "oracles", windows: [{ index: 1, name: "pulse-oracle", active: true }] },
+ *           { name: "kappas", windows: [{ index: 1, name: "pulse-kappa", active: true }] },
  *         ],
  *       });
  *       installPeersMock({ peers: [] });
- *       setPaneCommands({ "oracles:1": "claude" });
+ *       setPaneCommands({ "kappas:1": "claude" });
  *     });
  *     afterEach(() => resetMocks());
  *
@@ -304,7 +304,7 @@ export function installPeersMock(config: { peers: MockPeer[] }): void {
 
 /**
  * Configure what `getPaneCommand()` / `getPaneCommands()` returns for
- * each target. Example: `{ "oracles:1": "claude", "oracles:2": "zsh" }`.
+ * each target. Example: `{ "kappas:1": "claude", "kappas:2": "zsh" }`.
  * Replaces (not merges) the previous map — call this inside beforeEach.
  */
 export function setPaneCommands(cmds: Record<string, string>): void {

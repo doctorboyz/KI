@@ -1,5 +1,5 @@
 /**
- * Tests for aoi hey plugin:<name> routing in cmdSend.
+ * Tests for ki hey plugin:<name> routing in cmdSend.
  *
  * Stubs plugin/registry and config to avoid filesystem + tmux dependencies.
  */
@@ -56,7 +56,7 @@ mock.module("../../../commands/shared/wake", () => ({ resolveFleetSession: () =>
 
 import { cmdSend } from "../../../commands/shared/comm";
 
-describe("aoi hey plugin:<name> routing", () => {
+describe("ki hey plugin:<name> routing", () => {
   let exitCode: number | undefined;
   let consoleOut: string[] = [];
   let consoleErr: string[] = [];
@@ -122,10 +122,10 @@ describe("aoi hey plugin:<name> routing", () => {
   });
 
   test("non-plugin: prefix still routes normally (no regression)", async () => {
-    // "aoijs" has no plugin: prefix — falls through to normal routing
+    // "kijs" has no plugin: prefix — falls through to normal routing
     // resolveTarget returns error type → cmdSend exits with error (not a plugin error)
     await expect(
-      cmdSend("aoijs", "hello"),
+      cmdSend("kijs", "hello"),
     ).rejects.toThrow("process.exit");
 
     expect(exitCode).toBe(1);

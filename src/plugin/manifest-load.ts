@@ -20,9 +20,9 @@ export function loadManifestFromDir(dir: string): LoadedPlugin | null {
 
   // Entry resolution precedence:
   //   1. manifest.entry (legacy source-tree plugins)
-  //   2. manifest.artifact.path (v1 compiled plugins — aoi plugin build output)
+  //   2. manifest.artifact.path (v1 compiled plugins — ki plugin build output)
   //   3. manifest.wasm (WASM plugins)
-  // A JS bundle compiled via `aoi plugin build` has `target:"js"` + `artifact.path:"./index.js"`
+  // A JS bundle compiled via `ki plugin build` has `target:"js"` + `artifact.path:"./index.js"`
   // but no `entry`. Without this precedence, such plugins fall through to `kind:"wasm"` and
   // the loader tries to read the artifact as a WASM module.
   const hasWasm = !!manifest.wasm;

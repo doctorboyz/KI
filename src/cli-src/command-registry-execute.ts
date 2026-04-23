@@ -38,7 +38,7 @@ export async function executeCommand(desc: CommandDescriptor, remaining: string[
       // Write args as JSON to shared memory via allocator
       const json = JSON.stringify(remaining);
       const bytes = textEncoder.encode(json);
-      const argPtr = (wasm.instance.exports.aoi_alloc as Function)?.(bytes.length)
+      const argPtr = (wasm.instance.exports.ki_alloc as Function)?.(bytes.length)
         ?? 0; // fallback: write at offset 0 for legacy modules
       new Uint8Array(wasm.memory.buffer).set(bytes, argPtr);
 

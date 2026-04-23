@@ -76,8 +76,8 @@ describe("Tmux", () => {
 
   describe("hasSession", () => {
     test("returns true when session exists", async () => {
-      expect(await t.hasSession("oracles")).toBe(true);
-      expect(commands[0]).toBe("tmux has-session -t oracles");
+      expect(await t.hasSession("kappas")).toBe(true);
+      expect(commands[0]).toBe("tmux has-session -t kappas");
     });
   });
 
@@ -100,16 +100,16 @@ describe("Tmux", () => {
 
   describe("newGroupedSession", () => {
     test("creates grouped session without destroy-unattached", async () => {
-      await t.newGroupedSession("oracles", "maw-pty-1", { cols: 120, rows: 40 });
+      await t.newGroupedSession("kappas", "maw-pty-1", { cols: 120, rows: 40 });
       expect(commands).toEqual([
-        "tmux new-session -d -t oracles -s maw-pty-1 -x 120 -y 40",
+        "tmux new-session -d -t kappas -s maw-pty-1 -x 120 -y 40",
       ]);
     });
 
     test("with window selection", async () => {
-      await t.newGroupedSession("oracles", "maw-pty-2", { cols: 80, rows: 24, window: "3" });
+      await t.newGroupedSession("kappas", "maw-pty-2", { cols: 80, rows: 24, window: "3" });
       expect(commands).toEqual([
-        "tmux new-session -d -t oracles -s maw-pty-2 -x 80 -y 24",
+        "tmux new-session -d -t kappas -s maw-pty-2 -x 80 -y 24",
         "tmux select-window -t maw-pty-2:3",
       ]);
     });
@@ -119,13 +119,13 @@ describe("Tmux", () => {
 
   describe("newWindow", () => {
     test("basic uses trailing colon on -t (next-free-index semantics)", async () => {
-      await t.newWindow("oracles", "pulse-oracle");
-      expect(commands[0]).toBe("tmux new-window -t oracles: -n pulse-oracle");
+      await t.newWindow("kappas", "pulse-kappa");
+      expect(commands[0]).toBe("tmux new-window -t kappas: -n pulse-kappa");
     });
 
     test("with cwd", async () => {
-      await t.newWindow("oracles", "pulse", { cwd: "/home/nat/pulse" });
-      expect(commands[0]).toBe("tmux new-window -t oracles: -n pulse -c /home/nat/pulse");
+      await t.newWindow("kappas", "pulse", { cwd: "/home/nat/pulse" });
+      expect(commands[0]).toBe("tmux new-window -t kappas: -n pulse -c /home/nat/pulse");
     });
 
     test("regression: never emits bare `-t <session>` (collides on base-index≠0)", async () => {
@@ -141,26 +141,26 @@ describe("Tmux", () => {
 
   describe("selectWindow", () => {
     test("generates select-window command", async () => {
-      await t.selectWindow("oracles:3");
-      expect(commands[0]).toBe("tmux select-window -t oracles:3");
+      await t.selectWindow("kappas:3");
+      expect(commands[0]).toBe("tmux select-window -t kappas:3");
     });
   });
 
   describe("killWindow", () => {
     test("generates kill-window command", async () => {
-      await t.killWindow("oracles:2");
-      expect(commands[0]).toBe("tmux kill-window -t oracles:2");
+      await t.killWindow("kappas:2");
+      expect(commands[0]).toBe("tmux kill-window -t kappas:2");
     });
   });
 
   describe("listWindows", () => {
     test("parses window list", async () => {
-      sshResult = "0:neo-oracle:1\n1:pulse-oracle:0\n2:hermes-oracle:0";
-      const windows = await t.listWindows("oracles");
+      sshResult = "0:neo-kappa:1\n1:pulse-kappa:0\n2:hermes-kappa:0";
+      const windows = await t.listWindows("kappas");
       expect(windows).toEqual([
-        { index: 0, name: "neo-oracle", active: true },
-        { index: 1, name: "pulse-oracle", active: false },
-        { index: 2, name: "hermes-oracle", active: false },
+        { index: 0, name: "neo-kappa", active: true },
+        { index: 1, name: "pulse-kappa", active: false },
+        { index: 2, name: "hermes-kappa", active: false },
       ]);
     });
   });
@@ -195,8 +195,8 @@ describe("Tmux", () => {
 
   describe("splitWindow", () => {
     test("generates split-window command", async () => {
-      await t.splitWindow("oracles:page-1");
-      expect(commands[0]).toBe("tmux split-window -t oracles:page-1");
+      await t.splitWindow("kappas:page-1");
+      expect(commands[0]).toBe("tmux split-window -t kappas:page-1");
     });
   });
 
@@ -214,8 +214,8 @@ describe("Tmux", () => {
 
   describe("selectLayout", () => {
     test("generates select-layout command", async () => {
-      await t.selectLayout("oracles:page-1", "tiled");
-      expect(commands[0]).toBe("tmux select-layout -t oracles:page-1 tiled");
+      await t.selectLayout("kappas:page-1", "tiled");
+      expect(commands[0]).toBe("tmux select-layout -t kappas:page-1 tiled");
     });
   });
 

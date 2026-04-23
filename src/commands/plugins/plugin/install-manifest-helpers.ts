@@ -48,11 +48,11 @@ export function printInstallSuccess(
     typeof mode === "string" ? mode : `installed (sha256:${shortHash(mode.sha256)}…)`;
   const lines = [
     `\x1b[32m✓\x1b[0m ${manifest.name}@${manifest.version} installed${sourceNote ? " " + sourceNote : ""}`,
-    `  sdk: ${manifest.sdk} ✓ (aoi ${runtime})`,
+    `  sdk: ${manifest.sdk} ✓ (ki ${runtime})`,
     `  capabilities: ${caps}`,
     `  mode: ${modeLabel}`,
     `  dir: ${dest}`,
-    `try: aoi ${manifest.cli?.command ?? manifest.name}`,
+    `try: ki ${manifest.cli?.command ?? manifest.name}`,
   ];
   console.log(lines.join("\n"));
 }

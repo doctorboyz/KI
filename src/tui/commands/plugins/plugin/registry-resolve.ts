@@ -10,7 +10,7 @@
  *   • https://URL.tgz (or .tar.gz) → pass-through
  *
  * Returns null when the plugin isn't in the registry — callers should suggest
- * `aoi plugin install <url>` directly.
+ * `ki plugin install <url>` directly.
  */
 
 import type { RegistryManifest } from "./registry-fetch";

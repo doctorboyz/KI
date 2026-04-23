@@ -1,24 +1,24 @@
 /**
- * WASM Host Function Bridge — exposes aoi SDK to WASM plugins.
+ * WASM Host Function Bridge — exposes ki SDK to WASM plugins.
  *
  * Host functions injected via WebAssembly importObject:
- *   aoi_print(ptr, len)        — print string to stdout
- *   aoi_print_err(ptr, len)    — print string to stderr
- *   aoi_log(level, ptr, len)   — structured log (0=debug..3=error)
- *   aoi_identity()             — returns ptr to JSON identity
- *   aoi_federation()           — returns ptr to JSON federation status
- *   aoi_send(tPtr, tLen, mPtr, mLen) — send message, returns 1=ok 0=fail
- *   aoi_fetch(urlPtr, urlLen)  — GET fetch, returns async-result id
- *   aoi_async_result(id)       — poll for async result, returns ptr or 0
- *   aoi_alloc(size)            — fallback allocator when WASM lacks one
+ *   ki_print(ptr, len)        — print string to stdout
+ *   ki_print_err(ptr, len)    — print string to stderr
+ *   ki_log(level, ptr, len)   — structured log (0=debug..3=error)
+ *   ki_identity()             — returns ptr to JSON identity
+ *   ki_federation()           — returns ptr to JSON federation status
+ *   ki_send(tPtr, tLen, mPtr, mLen) — send message, returns 1=ok 0=fail
+ *   ki_fetch(urlPtr, urlLen)  — GET fetch, returns async-result id
+ *   ki_async_result(id)       — poll for async result, returns ptr or 0
+ *   ki_alloc(size)            — fallback allocator when WASM lacks one
  *
  * Memory protocol:
  *   Strings: UTF-8 (ptr, len) pairs
  *   Return values: 4-byte LE length prefix + UTF-8 payload
- *   WASM should export: memory + aoi_alloc(size) → ptr
+ *   WASM should export: memory + ki_alloc(size) → ptr
  */
 
-import { aoi } from "../core/runtime/sdk";
+import { ki } from "../core/runtime/sdk";
 import { trySilentAsync } from "../core/util/try-silent";
 
 // ---------------------------------------------------------------------------
@@ -58,7 +58,7 @@ export function writeString(
 }
 
 // ---------------------------------------------------------------------------
-// Async result stash — for aoi_fetch and future async host functions
+// Async result stash — for ki_fetch and future async host functions
 // ---------------------------------------------------------------------------
 
 const asyncResults = new Map<number, string>();
@@ -89,15 +89,15 @@ export function buildImportObject(
     env: {
       // --- Output -----------------------------------------------------------
 
-      aoi_print(ptr: number, len: number): void {
+      ki_print(ptr: number, len: number): void {
         process.stdout.write(readString(getMemory(), ptr, len));
       },
 
-      aoi_print_err(ptr: number, len: number): void {
+      ki_print_err(ptr: number, len: number): void {
         process.stderr.write(readString(getMemory(), ptr, len));
       },
 
-      aoi_log(level: number, ptr: number, len: number): void {
+      ki_log(level: number, ptr: number, len: number): void {
         const msg = readString(getMemory(), ptr, len);
         const tag = "[wasm]";
         switch (level) {
@@ -111,14 +111,14 @@ export function buildImportObject(
 
       // --- SDK queries (sync façade — pre-cached before handle()) -----------
 
-      aoi_identity(): number {
+      ki_identity(): number {
         if (!cachedIdentity) {
           cachedIdentity = '{"error":"identity not pre-cached"}';
         }
         return writeString(getMemory(), getAlloc(), cachedIdentity);
       },
 
-      aoi_federation(): number {
+      ki_federation(): number {
         if (!cachedFederation) {
           cachedFederation = '{"error":"federation not pre-cached"}';
         }
@@ -127,18 +127,18 @@ export function buildImportObject(
 
       // --- Messaging --------------------------------------------------------
 
-      aoi_send(tPtr: number, tLen: number, mPtr: number, mLen: number): number {
+      ki_send(tPtr: number, tLen: number, mPtr: number, mLen: number): number {
         const target = readString(getMemory(), tPtr, tLen);
         const text = readString(getMemory(), mPtr, mLen);
-        aoi.send(target, text).catch((e: Error) =>
-          console.error(`[wasm] aoi_send to ${target} failed:`, e.message),
+        ki.send(target, text).catch((e: Error) =>
+          console.error(`[wasm] ki_send to ${target} failed:`, e.message),
         );
         return 1;
       },
 
       // --- HTTP fetch -------------------------------------------------------
 
-      aoi_fetch(urlPtr: number, urlLen: number): number {
+      ki_fetch(urlPtr: number, urlLen: number): number {
         const url = readString(getMemory(), urlPtr, urlLen);
         const id = ++asyncSeq;
         fetch(url, { signal: AbortSignal.timeout(10_000) })
@@ -148,7 +148,7 @@ export function buildImportObject(
         return id;
       },
 
-      aoi_async_result(id: number): number {
+      ki_async_result(id: number): number {
         const result = asyncResults.get(id);
         if (result === undefined) return 0;
         asyncResults.delete(id);
@@ -157,14 +157,14 @@ export function buildImportObject(
 
       // --- Memory management (fallback) -------------------------------------
 
-      aoi_alloc(size: number): number {
+      ki_alloc(size: number): number {
         const mem = getMemory();
         const currentPages = mem.buffer.byteLength / 65_536;
         const needed = Math.ceil(size / 65_536);
         if (needed > 0) {
           if (currentPages + needed > maxPages) {
             throw new Error(
-              `[wasm-safety] aoi_alloc denied: ${currentPages + needed} pages would exceed ${maxPages}-page limit (${maxPages * 64}KB)`,
+              `[wasm-safety] ki_alloc denied: ${currentPages + needed} pages would exceed ${maxPages}-page limit (${maxPages * 64}KB)`,
             );
           }
           mem.grow(needed);
@@ -182,13 +182,13 @@ export function buildImportObject(
 /**
  * Pre-cache identity + federation data into a bridge instance.
  * Call this before invoking the WASM handle() function so that
- * aoi_identity() and aoi_federation() return real data.
+ * ki_identity() and ki_federation() return real data.
  */
 export async function preCacheBridge(bridge: WasmBridge): Promise<void> {
   await trySilentAsync(async () => {
     const [id, fed] = await Promise.all([
-      aoi.identity().catch(() => ({ error: "unreachable" })),
-      aoi.federation().catch(() => ({ error: "unreachable" })),
+      ki.identity().catch(() => ({ error: "unreachable" })),
+      ki.federation().catch(() => ({ error: "unreachable" })),
     ]);
     bridge._setCachedIdentity(JSON.stringify(id));
     bridge._setCachedFederation(JSON.stringify(fed));

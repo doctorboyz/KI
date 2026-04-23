@@ -37,13 +37,13 @@ describe("sendKeysToPeer — error visibility (#385 site 2)", () => {
     const origWarn = console.warn;
     console.warn = (...args: unknown[]) => { warns.push(args.map(String).join(" ")); };
     try {
-      const ok = await sendKeysToPeer("http://peer.example:3456", "oracle:main", "hey");
+      const ok = await sendKeysToPeer("http://peer.example:3456", "kappa:main", "hey");
       expect(ok).toBe(false);
       // User must be able to diagnose: status code, peer, and target must be greppable.
       const joined = warns.join("\n");
       expect(joined).toContain("401");
       expect(joined).toContain("http://peer.example:3456");
-      expect(joined).toContain("oracle:main");
+      expect(joined).toContain("kappa:main");
     } finally {
       console.warn = origWarn;
     }
@@ -57,7 +57,7 @@ describe("sendKeysToPeer — error visibility (#385 site 2)", () => {
     const origWarn = console.warn;
     console.warn = (...args: unknown[]) => { warns.push(args.map(String).join(" ")); };
     try {
-      const ok = await sendKeysToPeer("http://peer.example:3456", "oracle:main", "hey");
+      const ok = await sendKeysToPeer("http://peer.example:3456", "kappa:main", "hey");
       expect(ok).toBe(false);
       expect(warns.join("\n")).toContain("ETIMEDOUT");
     } finally {
@@ -74,7 +74,7 @@ describe("sendKeysToPeer — error visibility (#385 site 2)", () => {
     const origWarn = console.warn;
     console.warn = (...args: unknown[]) => { warns.push(args.map(String).join(" ")); };
     try {
-      const ok = await sendKeysToPeer("http://peer.example:3456", "oracle:main", "hey");
+      const ok = await sendKeysToPeer("http://peer.example:3456", "kappa:main", "hey");
       expect(ok).toBe(true);
       expect(warns.length).toBe(0);
     } finally {

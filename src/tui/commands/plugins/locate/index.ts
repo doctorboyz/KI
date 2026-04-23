@@ -4,7 +4,7 @@ import { parseFlags } from "../../../../cli-src/parse-args";
 
 export const command = {
   name: "locate",
-  description: "Locate an oracle — repo path, session, fleet config, federation node.",
+  description: "Locate an kappa — repo path, session, fleet config, federation node.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -15,7 +15,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     "--json": Boolean,
   }, 0);
 
-  const oracle = flags._[0];
+  const kappa = flags._[0];
 
   const logs: string[] = [];
   const origLog = console.log;
@@ -29,7 +29,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     else logs.push(a.map(String).join(" "));
   };
   try {
-    await cmdLocate(oracle, {
+    await cmdLocate(kappa, {
       path: flags["--path"],
       json: flags["--json"],
     });

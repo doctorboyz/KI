@@ -3,7 +3,7 @@ import { mkdirSync, existsSync, readdirSync, statSync, unlinkSync } from "fs";
 import { join, basename } from "path";
 import { homedir } from "os";
 
-const INBOX_DIR = join(homedir(), ".aoi", "inbox");
+const INBOX_DIR = join(homedir(), ".ki", "inbox");
 
 /** Ensure inbox dir exists on first use */
 function ensureInbox() {
@@ -62,7 +62,7 @@ uploadApi.get("/files/:name", ({ params, set }) => {
 uploadApi.delete("/files/:name", ({ params, set }) => {
   const filePath = join(ensureInbox(), basename(params.name));
   if (!existsSync(filePath)) { set.status = 404; return { error: "not found" }; }
-  const archive = `/tmp/aoi-inbox-${basename(params.name)}-${Date.now()}`;
+  const archive = `/tmp/ki-inbox-${basename(params.name)}-${Date.now()}`;
   Bun.write(archive, Bun.file(filePath));
   unlinkSync(filePath);
   return { ok: true, archived: archive };

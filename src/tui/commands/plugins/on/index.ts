@@ -2,7 +2,7 @@ import type { InvokeContext, InvokeResult } from "../../../../plugin/types";
 
 export const command = {
   name: "on",
-  description: "Create event triggers for oracle lifecycle events.",
+  description: "Create event triggers for kappa lifecycle events.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -23,7 +23,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
   try {
     const args = ctx.source === "cli" ? (ctx.args as string[]) : [];
 
-    const oracle = args[0];
+    const kappa = args[0];
     const event = args[1] as "agent-idle" | "agent-wake" | "agent-crash";
     const isOnce = args.includes("--once");
     const actionIdx = args.indexOf("--once") !== -1 ? args.indexOf("--once") + 1 : 2;
@@ -39,29 +39,29 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       return true;
     }).join(" ");
 
-    if (!oracle || !event || !action) {
-      console.log(`\x1b[36mUsage:\x1b[0m aoi on <oracle> <event> [--once] [--timeout N] "<action>"`);
+    if (!kappa || !event || !action) {
+      console.log(`\x1b[36mUsage:\x1b[0m ki on <kappa> <event> [--once] [--timeout N] "<action>"`);
       console.log(`\n\x1b[33mEvents:\x1b[0m agent-idle, agent-wake, agent-crash`);
       console.log(`\n\x1b[33mExamples:\x1b[0m`);
-      console.log(`  aoi on neo idle --once "aoi hey homekeeper 'neo done'"`);
-      console.log(`  aoi on neo crash "aoi wake neo"`);
+      console.log(`  ki on neo idle --once "ki hey homekeeper 'neo done'"`);
+      console.log(`  ki on neo crash "ki wake neo"`);
       return { ok: true, output: logs.join("\n") || undefined };
     }
 
     const config = loadConfig();
     const trigger = {
       on: `agent-${event}` as any,
-      repo: oracle,
+      repo: kappa,
       timeout,
       action,
-      name: `on-${oracle}-${event}`,
+      name: `on-${kappa}-${event}`,
       once: isOnce || undefined,
     };
     const triggers = [...(config.triggers || []), trigger];
     saveConfig({ triggers });
 
     const badge = isOnce ? " \x1b[33m[once]\x1b[0m" : "";
-    console.log(`\x1b[32m✓\x1b[0m trigger added: on ${oracle} ${event}${badge} → ${action}`);
+    console.log(`\x1b[32m✓\x1b[0m trigger added: on ${kappa} ${event}${badge} → ${action}`);
 
     return { ok: true, output: logs.join("\n") || undefined };
   } catch (e: any) {

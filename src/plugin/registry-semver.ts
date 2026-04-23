@@ -66,12 +66,12 @@ export function formatSdkMismatchError(
   runtimeVersion: string,
 ): string {
   return [
-    `\x1b[31m✗\x1b[0m plugin '${name}' requires aoi SDK ${manifestSdk}`,
-    `  your aoi: ${runtimeVersion}  (SDK ${runtimeVersion})`,
+    `\x1b[31m✗\x1b[0m plugin '${name}' requires ki SDK ${manifestSdk}`,
+    `  your ki: ${runtimeVersion}  (SDK ${runtimeVersion})`,
     ``,
     `  fix:`,
-    `    • aoi update                                    (upgrade aoi)`,
-    `    • aoi plugin install ${name}@<old-version>      (older compat release)`,
+    `    • ki update                                    (upgrade ki)`,
+    `    • ki plugin install ${name}@<old-version>      (older compat release)`,
     `    • (manual) edit plugin.json "sdk" to accept this version and rebuild`,
   ].join("\n");
 }

@@ -2,7 +2,7 @@ import type { InvokeContext, InvokeResult } from "../../../../plugin/types";
 
 export const command = {
   name: "completions",
-  description: "Generate shell completions for aoi CLI.",
+  description: "Generate shell completions for ki CLI.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {

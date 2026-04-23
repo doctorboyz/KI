@@ -201,12 +201,12 @@ describe("executeCommand — TS/JS dispatch", () => {
     `);
     await run(() => executeCommand(
       { name: "f", description: "", path, flags: { "--verbose": Boolean, "--name": String } },
-      ["pos1", "--verbose", "--name", "oracle"],
+      ["pos1", "--verbose", "--name", "kappa"],
     ));
     const cap = JSON.parse(readFileSync(capturePath, "utf8"));
     expect(cap.positional).toEqual(["pos1"]);
     expect(cap.flags["--verbose"]).toBe(true);
-    expect(cap.flags["--name"]).toBe("oracle");
+    expect(cap.flags["--name"]).toBe("kappa");
   });
 });
 

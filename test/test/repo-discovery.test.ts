@@ -71,7 +71,7 @@ describe("_normalize — cross-platform path handling", () => {
   });
 
   test("Linux passes through unchanged (identical to Unix POSIX)", () => {
-    const input = "/home/neo/Code/github.com/Soul-Brews-Studio/maw-js";
+    const input = "/home/neo/Code/github.com/doctorboyz/maw-js";
     expect(_normalize(input)).toEqual([input]);
   });
 
@@ -113,12 +113,12 @@ describe("findBySuffix — contract", () => {
   test("case-insensitive: /Maw-UI matches .../org/maw-ui", async () => {
     setRepos(
       makeFakeAdapter([
-        "/home/user/Code/github.com/Soul-Brews-Studio/maw-ui",
+        "/home/user/Code/github.com/doctorboyz/maw-ui",
         "/home/user/Code/github.com/laris-co/other",
       ]),
     );
     expect(await ghqFind("/Maw-UI")).toBe(
-      "/home/user/Code/github.com/Soul-Brews-Studio/maw-ui",
+      "/home/user/Code/github.com/doctorboyz/maw-ui",
     );
   });
 

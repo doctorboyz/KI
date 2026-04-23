@@ -29,7 +29,7 @@ function isValidPeerSession(item: unknown): boolean {
 describe("H5 — isValidPeerSession allowlist (unit)", () => {
   it("accepts valid session names", () => {
     const valid = [
-      { name: "mawjs-oracle", windows: [] },
+      { name: "mawjs-kappa", windows: [] },
       { name: "110-mawjs", windows: [{ index: 0, name: "main", active: true }] },
       { name: "mysession.1", windows: [] },
       { name: "session_with_underscores", windows: [] },
@@ -85,7 +85,7 @@ describe("H5 — fetchPeerSessions validation (integration via curlFetch mock)",
   // malformed names are absent from aggregated output in practice.
 
   it("valid session passes through: both name and windows present", () => {
-    const input = { name: "mawjs-oracle", windows: [{ index: 0, name: "claude", active: true }] };
+    const input = { name: "mawjs-kappa", windows: [{ index: 0, name: "claude", active: true }] };
     expect(isValidPeerSession(input)).toBe(true);
     // The session would appear in the valid[] array
   });
@@ -100,13 +100,13 @@ describe("H5 — fetchPeerSessions validation (integration via curlFetch mock)",
 
   it("mixed batch: only valid sessions pass", () => {
     const batch = [
-      { name: "mawjs-oracle", windows: [] },
+      { name: "mawjs-kappa", windows: [] },
       { name: "evil'; payload #", windows: [] },
       { name: "110-mawjs", windows: [{ index: 0, name: "main", active: true }] },
     ];
     const results = batch.filter(isValidPeerSession);
     expect(results.length).toBe(2);
-    expect(results.map(s => s.name)).toEqual(["mawjs-oracle", "110-mawjs"]);
+    expect(results.map(s => s.name)).toEqual(["mawjs-kappa", "110-mawjs"]);
   });
 
   it("session with empty windows array is valid", () => {

@@ -1,12 +1,12 @@
 /**
- * aoi fleet doctor — federation config health check.
+ * ki fleet doctor — federation config health check.
  *
  * Encodes the lessons of a rough night (2026-04-10) as preventive checks so
  * fleet growth can't silently re-introduce the same failure modes:
  *
  *   - #239  substring collision between peer name and session name
  *           ("white" hid inside "105-whitekeeper" and misrouted federation)
- *   - aoiui's catch: oracle visible on a peer but unreachable via bare name
+ *   - kiui's catch: kappa visible on a peer but unreachable via bare name
  *           because config.agents didn't know which node hosted it
  *   - #237  wake cold-start — fleet referenced a repo not in ghq
  *

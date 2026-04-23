@@ -1,6 +1,6 @@
-import type { AoiConfig } from "./types";
+import type { KiConfig } from "./types";
 
-/** @internal Validates basic scalar/map fields: host, port, ghqRoot, oracleUrl, env, commands, sessions, tmuxSocket */
+/** @internal Validates basic scalar/map fields: host, port, ghqRoot, kappaUrl, env, commands, sessions, tmuxSocket */
 export function validateBasicFields(
   raw: Record<string, unknown>,
   result: Record<string, unknown>,
@@ -34,12 +34,12 @@ export function validateBasicFields(
     }
   }
 
-  // oracleUrl: string
-  if ("oracleUrl" in raw) {
-    if (typeof raw.oracleUrl === "string" && raw.oracleUrl.length > 0) {
-      result.oracleUrl = raw.oracleUrl;
+  // kappaUrl: string
+  if ("kappaUrl" in raw) {
+    if (typeof raw.kappaUrl === "string" && raw.kappaUrl.length > 0) {
+      result.kappaUrl = raw.kappaUrl;
     } else {
-      warn("oracleUrl", "must be a non-empty string");
+      warn("kappaUrl", "must be a non-empty string");
     }
   }
 
@@ -98,7 +98,7 @@ export function validateConfigShape(config: unknown): string[] {
       errors.push("port must be an integer 1-65535");
   }
   if (c.ghqRoot !== undefined && typeof c.ghqRoot !== "string") errors.push("ghqRoot must be a string");
-  if (c.oracleUrl !== undefined && typeof c.oracleUrl !== "string") errors.push("oracleUrl must be a string");
+  if (c.kappaUrl !== undefined && typeof c.kappaUrl !== "string") errors.push("kappaUrl must be a string");
   if (c.tmuxSocket !== undefined && typeof c.tmuxSocket !== "string") errors.push("tmuxSocket must be a string");
   if (c.federationToken !== undefined && typeof c.federationToken !== "string") errors.push("federationToken must be a string");
 

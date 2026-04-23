@@ -7,29 +7,29 @@ import { join } from "path";
 import { existsSync, renameSync } from "fs";
 
 /**
- * aoi archive <oracle> [--dry-run]
+ * ki archive <kappa> [--dry-run]
  *
- * Apoptosis — graceful oracle death.
+ * Apoptosis — graceful kappa death.
  *   1. Final soul-sync to all peers
  *   2. Disable fleet config (.disabled)
  *   3. Archive GitHub repo
  *   4. Log death in family registry
  */
-export async function cmdArchive(oracleName: string, opts: { dryRun?: boolean } = {}) {
+export async function cmdArchive(kappaName: string, opts: { dryRun?: boolean } = {}) {
   const config = loadConfig();
   const ghqRoot = config.ghqRoot;
   const entries = loadFleetEntries();
 
-  const entry = entries.find(e => e.session.name.replace(/^\d+-/, "") === oracleName);
+  const entry = entries.find(e => e.session.name.replace(/^\d+-/, "") === kappaName);
   if (!entry) {
-    throw new Error(`oracle '${oracleName}' not found in fleet config`);
+    throw new Error(`kappa '${kappaName}' not found in fleet config`);
   }
 
   const mainWindow = entry.session.windows[0];
   const repoSlug = mainWindow?.repo || "";
   const repoPath = repoSlug ? join(ghqRoot, repoSlug) : "";
 
-  console.log(`\n  \x1b[36m⚰️  Archiving\x1b[0m — ${oracleName}\n`);
+  console.log(`\n  \x1b[36m⚰️  Archiving\x1b[0m — ${kappaName}\n`);
 
   // 1. Final soul-sync to all peers
   if (entry.session.sync_peers?.length) {
@@ -80,7 +80,7 @@ export async function cmdArchive(oracleName: string, opts: { dryRun?: boolean } 
   if (opts.dryRun) {
     console.log(`  \x1b[36m⬡\x1b[0m [dry-run] would log death to family registry`);
   } else {
-    console.log(`  \x1b[32m✓\x1b[0m ${oracleName} archived — ψ/ preserved locally, knowledge synced to peers`);
+    console.log(`  \x1b[32m✓\x1b[0m ${kappaName} archived — ψ/ preserved locally, knowledge synced to peers`);
   }
 
   console.log();

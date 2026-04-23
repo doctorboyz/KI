@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
-import { AoiWebSocket } from "../api/websocket";
+import { KiWebSocket } from "../api/websocket";
 import { useAgentStore } from "../stores/agent-store";
 import { useFeedStore } from "../stores/feed-store";
 import { useConnectionStore } from "../stores/connection-store";
 import type { WsMessage } from "../types/ws";
 
 export function useWebSocket() {
-  const wsRef = useRef<AoiWebSocket | null>(null);
+  const wsRef = useRef<KiWebSocket | null>(null);
 
   useEffect(() => {
     const handler = (msg: WsMessage) => {
@@ -29,7 +29,7 @@ export function useWebSocket() {
       }
     };
 
-    const ws = new AoiWebSocket(handler);
+    const ws = new KiWebSocket(handler);
     wsRef.current = ws;
 
     ws.setStatusCallback((status) => {

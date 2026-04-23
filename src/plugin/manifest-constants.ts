@@ -8,7 +8,7 @@ export const KNOWN_CAPABILITY_NAMESPACES = new Set([
   "net",    // network (fetch, sockets)
   "fs",     // filesystem
   "peer",   // federation peers (hey, send)
-  "sdk",    // aoi SDK calls (identity, federation, …)
+  "sdk",    // ki SDK calls (identity, federation, …)
   "proc",   // child processes
   "ffi",    // native FFI (bun:ffi)
 ]);

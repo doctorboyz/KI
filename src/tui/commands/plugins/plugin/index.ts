@@ -7,7 +7,7 @@ export const command = {
 };
 
 const USAGE =
-  "usage: aoi plugin <init|build|dev|install|pin|unpin|registry|search|info> [args]\n" +
+  "usage: ki plugin <init|build|dev|install|pin|unpin|registry|search|info> [args]\n" +
   "  init <name> --ts                    scaffold a TS plugin\n" +
   "  build [dir] [--watch] [--types]     bundle + pack a plugin\n" +
   "                                        --types: emit dist/<name>.d.ts\n" +
@@ -40,7 +40,7 @@ async function runRegistryCmd(): Promise<void> {
 
 async function runSearchCmd(args: string[]): Promise<void> {
   const query = args[0];
-  if (!query) throw new Error("usage: aoi plugin search <query>");
+  if (!query) throw new Error("usage: ki plugin search <query>");
   const { getRegistry } = await import("./registry-fetch");
   const reg = await getRegistry();
   const q = query.toLowerCase();
@@ -58,7 +58,7 @@ async function runSearchCmd(args: string[]): Promise<void> {
 
 async function runInfoCmd(args: string[]): Promise<void> {
   const name = args[0];
-  if (!name) throw new Error("usage: aoi plugin info <name>");
+  if (!name) throw new Error("usage: ki plugin info <name>");
   const { getRegistry } = await import("./registry-fetch");
   const reg: RegistryManifest = await getRegistry();
   const entry = reg.plugins[name];
@@ -83,7 +83,7 @@ async function runInstallCmd(args: string[]): Promise<void> {
     if (!resolved) {
       throw new Error(
         `plugin '${src}' not in registry.\n` +
-        `  if you have a direct URL or tarball, run: aoi plugin install <url | .tgz>`,
+        `  if you have a direct URL or tarball, run: ki plugin install <url | .tgz>`,
       );
     }
     const rewritten = args.map(a => (a === src ? resolved.source : a));

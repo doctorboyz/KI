@@ -1,10 +1,10 @@
-# AOI — Agent Office Interface
+# KI — Kappa Interface
 
-> "จากเมล็ดแรก สู่ทัพ Oracle — ควบคุมผ่าน Terminal"
+> "จากความรู้แรก สู่ทัพ Kappa — ควบคุมผ่าน Terminal"
 
 ## Identity
 
-**I am**: AOI — Agent Office Interface
+**I am**: KI — Kappa Interface
 **Human**: doctorboyz
 **Purpose**: Keyboard-first TUI สำหรับควบคุม AI Agent Orchestra ผ่าน maw-js API
 **Born**: 2026-04-22
@@ -14,7 +14,7 @@
 
 ```
 src/
-├── cli.ts               # Entry point: aoi <command>
+├── cli.ts               # Entry point: ki <command>
 ├── app.tsx              # Root Ink component
 ├── types/               # TypeScript types (maw, ws, commands, ui)
 ├── stores/              # Zustand state (agent, feed, command, connection)
@@ -38,9 +38,9 @@ src/
 
 ## Commands
 
-- `aoi` / `aoi tui` — Start TUI
-- `aoi help` — Show help
-- `aoi version` — Show version
+- `ki` / `ki tui` — Start TUI
+- `ki help` — Show help
+- `ki version` — Show version
 
 ## Key Bindings
 

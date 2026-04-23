@@ -82,14 +82,14 @@ describe("maw init --non-interactive — happy path", () => {
     expect(cfg.ghqRoot).toBe(ghq);
   });
 
-  test("fills in default port, oracleUrl, commands.default", () => {
+  test("fills in default port, kappaUrl, commands.default", () => {
     const ghq = mkdtempSync(join(tmpdir(), "maw-init-ghq-"));
     const r = runInit(["--non-interactive", "--node", "alpha", "--ghq-root", ghq]);
     expect(r.code).toBe(0);
 
     const cfg = readConfig(r.configPath);
     expect(cfg.port).toBe(3456);
-    expect(cfg.oracleUrl).toBe("http://localhost:47779");
+    expect(cfg.kappaUrl).toBe("http://localhost:47779");
     expect(cfg.commands).toBeTruthy();
     expect(typeof cfg.commands.default).toBe("string");
     expect(cfg.commands.default.length).toBeGreaterThan(0);
@@ -110,7 +110,7 @@ describe("maw init --non-interactive — happy path", () => {
 describe("maw init — node name validation (Q1)", () => {
   test("node name with spaces → exit != 0, error mentions allowed charset", () => {
     const ghq = mkdtempSync(join(tmpdir(), "maw-init-ghq-"));
-    const r = runInit(["--non-interactive", "--node", "my oracle", "--ghq-root", ghq]);
+    const r = runInit(["--non-interactive", "--node", "my kappa", "--ghq-root", ghq]);
     expect(r.code).not.toBe(0);
     const combined = (r.stderr + r.stdout).toLowerCase();
     // spec error: "Node name must be 1-63 chars, letters/digits/hyphens only"

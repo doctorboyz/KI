@@ -48,16 +48,16 @@ federationApi.get("/identity", async () => {
   };
 });
 
-/** Message log — query aoi-log.jsonl for federation link data */
+/** Message log — query ki-log.jsonl for federation link data */
 federationApi.get("/messages", ({ query }) => {
   const from = query.from;
   const to = query.to;
   const limit = Math.min(parseInt(query.limit || "100"), 1000);
-  const logFile = join(homedir(), ".oracle", "aoi-log.jsonl");
+  const logFile = join(homedir(), ".kappa", "ki-log.jsonl");
   try {
     const lines = readFileSync(logFile, "utf-8").trim().split("\n").filter(Boolean);
-    interface AoiMessage { ts: string; from: string; to: string; msg: string; host?: string; route?: string }
-    let messages: AoiMessage[] = lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+    interface KiMessage { ts: string; from: string; to: string; msg: string; host?: string; route?: string }
+    let messages: KiMessage[] = lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
     if (from) messages = messages.filter(m => m.from?.includes(from));
     if (to) messages = messages.filter(m => m.to?.includes(to));
     return { messages: messages.slice(-limit), total: messages.length };

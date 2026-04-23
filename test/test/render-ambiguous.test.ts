@@ -9,12 +9,12 @@ import { renderAmbiguousMatch } from "../src/core/util/render-ambiguous";
 // brittle enough without encoding colour in string literals.
 
 describe("renderAmbiguousMatch (#567)", () => {
-  const err = new AmbiguousMatchError("mawjs-oracle", ["101-mawjs:0", "mawjs-view:0"]);
-  const argv = ["hey", "mawjs-oracle", "hello"];
+  const err = new AmbiguousMatchError("mawjs-kappa", ["101-mawjs:0", "mawjs-view:0"]);
+  const argv = ["hey", "mawjs-kappa", "hello"];
   const out = renderAmbiguousMatch(err, argv);
 
   it("includes the ambiguous query in the primary error line", () => {
-    expect(out).toContain("'mawjs-oracle'");
+    expect(out).toContain("'mawjs-kappa'");
     expect(out).toContain("matches 2 candidates");
   });
 
@@ -30,7 +30,7 @@ describe("renderAmbiguousMatch (#567)", () => {
     // Ambiguous query string must not reappear in any rerun hint.
     const hintLines = out.split("\n").filter(l => l.startsWith("  maw "));
     expect(hintLines.length).toBe(2);
-    for (const h of hintLines) expect(h).not.toContain("mawjs-oracle");
+    for (const h of hintLines) expect(h).not.toContain("mawjs-kappa");
   });
 
   it("falls back to a generic hint when argv doesn't contain the query", () => {

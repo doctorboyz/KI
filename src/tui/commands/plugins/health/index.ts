@@ -3,7 +3,7 @@ import { cmdHealth } from "./impl";
 
 export const command = {
   name: "health",
-  description: "System health check — tmux, aoi server, disk, memory, pm2, peers.",
+  description: "System health check — tmux, ki server, disk, memory, pm2, peers.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {

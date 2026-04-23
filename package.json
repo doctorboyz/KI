@@ -1,12 +1,12 @@
 {
-  "name": "aoi",
+  "name": "ki",
   "version": "1.0.0",
-  "description": "AOI — Agent Office Interface. Multi-agent workflow with keyboard-first TUI.",
+  "description": "KI — Kappa Interface. Multi-agent workflow with keyboard-first TUI.",
   "type": "module",
   "license": "BUSL-1.1",
-  "repository": "doctorboyz/AOI",
+  "repository": "doctorboyz/KI",
   "bin": {
-    "aoi": "./src/cli.ts"
+    "ki": "./src/cli.ts"
   },
   "exports": {
     ".": "./src/cli.ts",

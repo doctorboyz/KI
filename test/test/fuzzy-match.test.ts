@@ -2,8 +2,8 @@ import { describe, it, expect } from "bun:test";
 import { distance, fuzzyMatch } from "../src/core/util/fuzzy";
 
 describe("distance", () => {
-  it("distance('oracle', 'oracl') = 1", () => {
-    expect(distance("oracle", "oracl")).toBe(1);
+  it("distance('kappa', 'oracl') = 1", () => {
+    expect(distance("kappa", "oracl")).toBe(1);
   });
   it("distance('hey', 'hek') = 1", () => {
     expect(distance("hey", "hek")).toBe(1);
@@ -22,11 +22,11 @@ describe("distance", () => {
 });
 
 describe("fuzzyMatch", () => {
-  const pool = ["oracle", "plugin", "peek", "hey", "ping", "find", "fleet"];
+  const pool = ["kappa", "plugin", "peek", "hey", "ping", "find", "fleet"];
 
   it("returns top-3 closest matches, sorted by distance", () => {
     const r = fuzzyMatch("oracl", pool);
-    expect(r[0]).toBe("oracle");
+    expect(r[0]).toBe("kappa");
     expect(r.length).toBeLessThanOrEqual(3);
   });
   it("suggests 'hey' for 'hek'", () => {
@@ -39,10 +39,10 @@ describe("fuzzyMatch", () => {
     expect(fuzzyMatch("xyz-not-a-command", pool)).toEqual([]);
   });
   it("is case-insensitive", () => {
-    expect(fuzzyMatch("ORACL", pool)).toContain("oracle");
+    expect(fuzzyMatch("ORACL", pool)).toContain("kappa");
   });
   it("deduplicates candidates", () => {
-    const r = fuzzyMatch("oracle", ["oracle", "oracle", "oracl"]);
-    expect(r.filter(n => n === "oracle").length).toBe(1);
+    const r = fuzzyMatch("kappa", ["kappa", "kappa", "oracl"]);
+    expect(r.filter(n => n === "kappa").length).toBe(1);
   });
 });

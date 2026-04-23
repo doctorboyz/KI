@@ -6,9 +6,9 @@ export const command = {
 };
 
 /**
- * aoi learn — core plugin scaffold (#521).
+ * ki learn — core plugin scaffold (#521).
  *
- * This is a migration scaffold for the Oracle skill `/learn`. The full
+ * This is a migration scaffold for the Kappa skill `/learn`. The full
  * implementation (parallel Haiku agents, ghq + symlink flow, .origins
  * manifest, docs generation) lives in ~/.claude/skills/learn/SKILL.md
  * and ships in a follow-up PR.
@@ -16,7 +16,7 @@ export const command = {
  * Today the plugin only:
  *   - registers the CLI verb + flags
  *   - validates positional args + flag shape
- *   - returns a stub message pointing users at the Oracle skill
+ *   - returns a stub message pointing users at the Kappa skill
  *
  * See issue #521 for the follow-up implementation tracker.
  */
@@ -43,7 +43,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (fast && deep) {
       return {
         ok: false,
-        error: "aoi learn: --fast and --deep are mutually exclusive",
+        error: "ki learn: --fast and --deep are mutually exclusive",
       };
     }
 
@@ -52,14 +52,14 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (unknown.length > 0) {
       return {
         ok: false,
-        error: `aoi learn: unknown flag(s) ${unknown.join(", ")} (accepts --fast, --deep)`,
+        error: `ki learn: unknown flag(s) ${unknown.join(", ")} (accepts --fast, --deep)`,
       };
     }
 
     if (!positional[0]) {
       return {
         ok: false,
-        error: "usage: aoi learn <repo> [--fast|--deep]",
+        error: "usage: ki learn <repo> [--fast|--deep]",
       };
     }
 

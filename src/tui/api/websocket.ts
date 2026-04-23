@@ -1,10 +1,10 @@
 import { getWsUrl, WS_RECONNECT_BASE_MS, WS_RECONNECT_MAX_MS } from "../utils/constants";
 import type { WsMessage, WsOutgoing } from "../types/ws";
-import type { FeedEvent, Session } from "../types/aoi";
+import type { FeedEvent, Session } from "../types/ki";
 
 export type WsHandler = (msg: WsMessage) => void;
 
-export class AoiWebSocket {
+export class KiWebSocket {
   private ws: WebSocket | null = null;
   private url: string;
   private handler: WsHandler;

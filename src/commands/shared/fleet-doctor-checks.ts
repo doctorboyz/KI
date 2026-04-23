@@ -22,10 +22,10 @@ export interface DoctorFinding {
 /**
  * Check 1 — Substring collisions between namedPeer names and local session names.
  *
- * Root cause of #239: `aoi hey white:aoijs-oracle` misrouted to `105-whitekeeper`
+ * Root cause of #239: `ki hey white:kijs-kappa` misrouted to `105-whitekeeper`
  * because findWindow's fallback substring-matched "white" against the longer
  * session name. The fix was code-level (strict matchSession), but a future
- * oracle whose name contains a peer name could re-expose the same class.
+ * kappa whose name contains a peer name could re-expose the same class.
  *
  * Flags the class, not the specific regression.
  */
@@ -53,9 +53,9 @@ export function checkCollisions(sessionNames: string[], peerNames: string[]): Do
 }
 
 /**
- * Check 2 — Oracles reachable on a peer but missing from config.agents map.
+ * Check 2 — Kappas reachable on a peer but missing from config.agents map.
  *
- * aoiui caught this tonight: `aoi hey volt-colab-ml` failed because nothing
+ * kiui caught this tonight: `ki hey volt-colab-ml` failed because nothing
  * told the local node which machine hosted it. Users had to fall back to
  * `white:volt-colab-ml`. Once added to config.agents, bare names route cleanly.
  *
@@ -67,15 +67,15 @@ export function checkMissingAgents(
   peerAgents: Record<string, string[]>,
 ): DoctorFinding[] {
   const findings: DoctorFinding[] = [];
-  for (const [peerNode, oracles] of Object.entries(peerAgents)) {
-    for (const oracle of oracles) {
-      if (localAgents[oracle]) continue;
+  for (const [peerNode, kappas] of Object.entries(peerAgents)) {
+    for (const kappa of kappas) {
+      if (localAgents[kappa]) continue;
       findings.push({
         level: "warn",
         check: "missing-agent",
         fixable: true,
-        message: `oracle '${oracle}' lives on peer '${peerNode}' but is absent from config.agents — bare \`aoi hey ${oracle}\` will not route`,
-        detail: { oracle, peerNode },
+        message: `kappa '${kappa}' lives on peer '${peerNode}' but is absent from config.agents — bare \`ki hey ${kappa}\` will not route`,
+        detail: { kappa, peerNode },
       });
     }
   }
@@ -95,14 +95,14 @@ export function checkOrphanRoutes(
 ): DoctorFinding[] {
   const known = new Set<string>([localNode, "local", ...peerNames]);
   const findings: DoctorFinding[] = [];
-  for (const [oracle, node] of Object.entries(agents)) {
+  for (const [kappa, node] of Object.entries(agents)) {
     if (!known.has(node)) {
       findings.push({
         level: "error",
         check: "orphan-route",
         fixable: false,
-        message: `config.agents['${oracle}'] = '${node}', but '${node}' is not a known node (not local, not in namedPeers)`,
-        detail: { oracle, node },
+        message: `config.agents['${kappa}'] = '${node}', but '${node}' is not a known node (not local, not in namedPeers)`,
+        detail: { kappa, node },
       });
     }
   }

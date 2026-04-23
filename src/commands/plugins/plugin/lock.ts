@@ -1,8 +1,8 @@
 /**
  * plugins.lock — registry-pinned plugin hashes (#487, Option A).
  *
- * A node-local JSON file (~/.aoi/plugins.lock) that maps plugin names to
- * approved {version, sha256, source} entries. `aoi plugin install` derives
+ * A node-local JSON file (~/.ki/plugins.lock) that maps plugin names to
+ * approved {version, sha256, source} entries. `ki plugin install` derives
  * the expected hash from here instead of from the tarball's own manifest,
  * closing the circular-trust bug where an attacker who controls the tarball
  * controls both the artifact AND its declared hash.
@@ -40,9 +40,9 @@ function emptyLock(): Lock {
   return { schema: LOCK_SCHEMA, updated: new Date().toISOString(), plugins: {} };
 }
 
-/** Resolve lock path. Honors AOI_PLUGINS_LOCK for tests. */
+/** Resolve lock path. Honors KI_PLUGINS_LOCK for tests. */
 export function lockPath(): string {
-  return process.env.AOI_PLUGINS_LOCK || join(homedir(), ".aoi", "plugins.lock");
+  return process.env.KI_PLUGINS_LOCK || join(homedir(), ".ki", "plugins.lock");
 }
 
 /** Validate sha256 is a canonical "sha256:" + 64 lowercase hex, or bare 64-hex. */
@@ -81,7 +81,7 @@ export function validateSchema(parsed: unknown): { ok: true; lock: Lock } | { ok
       ok: false,
       error:
         `plugins.lock: unknown schema ${schema} (this build supports ${LOCK_SCHEMA}).\n` +
-        `  migration: upgrade aoi-js or regenerate the lockfile with 'aoi plugin pin' on each entry.`,
+        `  migration: upgrade ki-js or regenerate the lockfile with 'ki plugin pin' on each entry.`,
     };
   }
   const plugins = obj.plugins;
@@ -179,14 +179,14 @@ function hashTarballArtifact(tarballPath: string): { ok: true; hash: string; ver
   if (!existsSync(tarballPath)) {
     return { ok: false, error: `source not found: ${tarballPath}` };
   }
-  const staging = mkdtempSync(join(tmpdir(), "aoi-pin-"));
+  const staging = mkdtempSync(join(tmpdir(), "ki-pin-"));
   try {
     const ex = extractTarball(tarballPath, staging);
     if (!ex.ok) return { ok: false, error: ex.error };
     const manifest = readManifest(staging);
     if (!manifest) return { ok: false, error: "failed to read plugin.json from tarball" };
     if (!manifest.artifact) {
-      return { ok: false, error: "tarball manifest has no 'artifact' field — rebuild with 'aoi plugin build'" };
+      return { ok: false, error: "tarball manifest has no 'artifact' field — rebuild with 'ki plugin build'" };
     }
     const artifactPath = join(staging, manifest.artifact.path);
     if (!existsSync(artifactPath)) {

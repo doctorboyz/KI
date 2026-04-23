@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync } from "fs";
 import { join } from "path";
 import { tmux } from "../../../../sdk";
-import { assertValidOracleName } from "../../../../core/fleet/validate";
+import { assertValidKappaName } from "../../../../core/fleet/validate";
 import { TEAMS_DIR, loadTeam, resolvePsi, writeShutdownRequest, cleanupTeamDir } from "./team-helpers";
 
 const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
@@ -47,7 +47,7 @@ export function mergeTeamKnowledge(name: string, teammates: Array<{ name: string
   }
 }
 
-// ─── aoi team shutdown <name> ───
+// ─── ki team shutdown <name> ───
 
 export async function cmdTeamShutdown(name: string, opts: { force?: boolean; merge?: boolean } = {}) {
   const team = loadTeam(name);
@@ -83,7 +83,7 @@ export async function cmdTeamShutdown(name: string, opts: { force?: boolean; mer
   // Step 1: Send shutdown_request via inbox files
   for (const m of alive) {
     try {
-      writeShutdownRequest(name, m.name, "team teardown via aoi team shutdown");
+      writeShutdownRequest(name, m.name, "team teardown via ki team shutdown");
       console.log(`  \x1b[90m↪ shutdown_request → ${m.name} (${m.tmuxPaneId})\x1b[0m`);
     } catch (e) {
       console.error(`  \x1b[31m✗\x1b[0m failed to send shutdown to ${m.name}: ${e}`);
@@ -114,7 +114,7 @@ export async function cmdTeamShutdown(name: string, opts: { force?: boolean; mer
     }
   }
 
-  // FUSION: merge team knowledge into individual oracle mailboxes
+  // FUSION: merge team knowledge into individual kappa mailboxes
   if (opts.merge) {
     mergeTeamKnowledge(name, teammates);
   }
@@ -123,9 +123,9 @@ export async function cmdTeamShutdown(name: string, opts: { force?: boolean; mer
   console.log(`\x1b[32m✓\x1b[0m team '${name}' shut down${opts.merge ? " (knowledge merged)" : ""}`);
 }
 
-// ─── aoi team create <name> ───
+// ─── ki team create <name> ───
 export function cmdTeamCreate(name: string, opts: { description?: string } = {}) {
-  assertValidOracleName(name);
+  assertValidKappaName(name);
 
   const PSI = resolvePsi();
   const teamDir = join(PSI, "memory", "mailbox", "teams", name);
@@ -148,7 +148,7 @@ export function cmdTeamCreate(name: string, opts: { description?: string } = {})
   console.log(`  \x1b[90m${teamDir}/manifest.json\x1b[0m`);
 }
 
-// ─── aoi team spawn <team> <role> ───
+// ─── ki team spawn <team> <role> ───
 export async function cmdTeamSpawn(
   teamName: string,
   role: string,
@@ -159,7 +159,7 @@ export async function cmdTeamSpawn(
   const manifestPath = join(teamDir, "manifest.json");
 
   if (!existsSync(manifestPath)) {
-    throw new Error(`team '${teamName}' not found — run: aoi team create ${teamName}`);
+    throw new Error(`team '${teamName}' not found — run: ki team create ${teamName}`);
   }
 
   // Check for past life

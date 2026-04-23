@@ -4,7 +4,7 @@ import { parseFlags } from "../../../cli-src/parse-args";
 
 export const command = {
   name: "bud",
-  description: "Create a new oracle (bud from parent)",
+  description: "Create a new kappa (bud from parent)",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -39,10 +39,10 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
 
       const name = flags._[0];
       if (!name || name === "--help" || name === "-h") {
-        return { ok: false, error: "usage: aoi bud <name> [--from <oracle>] [--root] [--seed] [--org <org>] [--repo org/repo] [--issue N] [--note <text>] [--fast] [--split] [--dry-run]\n       Default: born blank. Use --seed to pre-load parent's ψ at birth.\n       Pull memory later: aoi soul-sync <parent> --from" };
+        return { ok: false, error: "usage: ki bud <name> [--from <kappa>] [--root] [--seed] [--org <org>] [--repo org/repo] [--issue N] [--note <text>] [--fast] [--split] [--dry-run]\n       Default: born blank. Use --seed to pre-load parent's ψ at birth.\n       Pull memory later: ki soul-sync <parent> --from" };
       }
       if (name.startsWith("-")) {
-        return { ok: false, error: `"${name}" looks like a flag, not an oracle name.\n  usage: aoi bud <name> ${args.join(" ")}` };
+        return { ok: false, error: `"${name}" looks like a flag, not an kappa name.\n  usage: ki bud <name> ${args.join(" ")}` };
       }
 
       await cmdBud(name, {

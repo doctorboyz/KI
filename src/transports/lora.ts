@@ -3,7 +3,7 @@
  *
  * Stub implementation that registers in the transport factory
  * but always returns canReach() → false until hardware arrives.
- * Reserved via `aoi radio`.
+ * Reserved via `ki radio`.
  */
 
 import type { Transport, TransportTarget, TransportMessage, TransportPresence } from "../core/transport/transport";

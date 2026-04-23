@@ -33,10 +33,10 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
 
       target = flags._[0];
       if (!target || target === "--help" || target === "-h") {
-        return { ok: false, error: "usage: aoi capture <target> [--pane N] [--lines N] [--full]" };
+        return { ok: false, error: "usage: ki capture <target> [--pane N] [--lines N] [--full]" };
       }
       if (target.startsWith("-")) {
-        return { ok: false, error: `"${target}" looks like a flag, not a target.\n  usage: aoi capture <target>` };
+        return { ok: false, error: `"${target}" looks like a flag, not a target.\n  usage: ki capture <target>` };
       }
       opts = {
         pane: flags["--pane"],

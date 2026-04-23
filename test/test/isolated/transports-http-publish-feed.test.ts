@@ -32,7 +32,7 @@ import type { FeedEvent } from "../../src/lib/feed";
 
 const FEED_EVENT: FeedEvent = {
   type: "status",
-  from: { oracle: "test", host: "local" },
+  from: { kappa: "test", host: "local" },
   timestamp: Date.now(),
   data: { text: "hello" },
 } as unknown as FeedEvent;

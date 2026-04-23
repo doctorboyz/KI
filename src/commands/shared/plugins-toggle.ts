@@ -5,7 +5,7 @@
 import { discoverPackages, resetDiscoverCache } from "../../plugin/registry";
 
 export function doEnable(name: string): void {
-  const { loadConfig, saveConfig } = require("../../config");
+  const { loadConfig, saveConfig } = require("../../core/config");
   const config = loadConfig();
   const disabled = config.disabledPlugins ?? [];
   if (!disabled.includes(name)) {
@@ -18,7 +18,7 @@ export function doEnable(name: string): void {
 }
 
 export function doDisable(name: string): void {
-  const { loadConfig, saveConfig } = require("../../config");
+  const { loadConfig, saveConfig } = require("../../core/config");
   const config = loadConfig();
   const disabled = config.disabledPlugins ?? [];
   if (disabled.includes(name)) {

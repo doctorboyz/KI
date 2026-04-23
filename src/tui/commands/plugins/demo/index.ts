@@ -33,9 +33,9 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         return {
           ok: true,
           output: [
-            "aoi demo — simulated multi-agent session",
+            "ki demo — simulated multi-agent session",
             "",
-            "Usage: aoi demo [--fast]",
+            "Usage: ki demo [--fast]",
             "",
             "Spawns two mock agents in tmux panes, streams scripted output with",
             "realistic pauses, then shows $0.00 cost. No API key required.",
@@ -46,7 +46,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
             "",
             "Requires an active tmux session.",
             "  Run: tmux new-session -s demo",
-            "  Then: aoi demo",
+            "  Then: ki demo",
           ].join("\n"),
         };
       }

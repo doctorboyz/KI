@@ -3,7 +3,7 @@ import { cmdSleepOne } from "./impl";
 
 export const command = {
   name: ["sleep"],
-  description: "Gracefully stop a single Oracle agent's tmux window.",
+  description: "Gracefully stop a single Kappa agent's tmux window.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -19,30 +19,30 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     else logs.push(a.map(String).join(" "));
   };
   try {
-    let oracle: string;
+    let kappa: string;
     let window: string | undefined;
 
     if (ctx.source === "cli") {
       const args = ctx.args as string[];
       if (!args[0]) {
-        return { ok: false, error: "usage: aoi sleep <oracle> [window]" };
+        return { ok: false, error: "usage: ki sleep <kappa> [window]" };
       }
       if (args[0] === "--all-done") {
-        logs.push("(placeholder) aoi sleep --all-done — sleep ALL agents. Not yet implemented.");
+        logs.push("(placeholder) ki sleep --all-done — sleep ALL agents. Not yet implemented.");
         return { ok: true, output: logs.join("\n") };
       }
-      oracle = args[0];
+      kappa = args[0];
       window = args[1];
     } else {
       const args = ctx.args as Record<string, unknown>;
-      if (!args.oracle) {
-        return { ok: false, error: "oracle is required" };
+      if (!args.kappa) {
+        return { ok: false, error: "kappa is required" };
       }
-      oracle = args.oracle as string;
+      kappa = args.kappa as string;
       window = args.window as string | undefined;
     }
 
-    await cmdSleepOne(oracle, window);
+    await cmdSleepOne(kappa, window);
     return { ok: true, output: logs.join("\n") || undefined };
   } catch (e: any) {
     return { ok: false, error: logs.join("\n") || e.message, output: logs.join("\n") || undefined };

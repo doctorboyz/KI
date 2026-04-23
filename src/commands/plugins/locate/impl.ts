@@ -1,13 +1,13 @@
 /**
- * aoi locate — diagnostic "where is this oracle?" command.
+ * ki locate — diagnostic "where is this kappa?" command.
  *
- * Inspired by multi-agent-workflow-kit's `aoi warp` (kit uses a bash
- * function to cd the parent shell into a worktree). aoijs is a binary,
+ * Inspired by multi-agent-workflow-kit's `ki warp` (kit uses a bash
+ * function to cd the parent shell into a worktree). kijs is a binary,
  * so we can't cd the caller — instead we PRINT location info across
- * the oracle's full information space: ghq repo, ψ/ presence, tmux
+ * the kappa's full information space: ghq repo, ψ/ presence, tmux
  * session, fleet config, federation node.
  *
- * Use `cd $(aoi locate aoijs --path)` if you want the kit's warp
+ * Use `cd $(ki locate kijs --path)` if you want the kit's warp
  * behavior — the shell eval does the cd.
  */
 
@@ -35,10 +35,10 @@ interface LocateResult {
   inAgentsConfig: boolean;
 }
 
-async function gatherInfo(oracle: string): Promise<LocateResult> {
-  // ghq repo path — try `<name>-oracle` suffix first (canonical), then bare name
+async function gatherInfo(kappa: string): Promise<LocateResult> {
+  // ghq repo path — try `<name>-kappa` suffix first (canonical), then bare name
   const repoPath =
-    (await ghqFind(`/${oracle}-oracle`)) ?? (await ghqFind(`/${oracle}`));
+    (await ghqFind(`/${kappa}-kappa`)) ?? (await ghqFind(`/${kappa}`));
 
   // ψ/ presence
   const hasPsi = repoPath ? existsSync(join(repoPath, "ψ")) : false;
@@ -49,7 +49,7 @@ async function gatherInfo(oracle: string): Promise<LocateResult> {
   let windowCount = 0;
   try {
     const sessions = await listSessions();
-    const r = resolveSessionTarget(oracle, sessions);
+    const r = resolveSessionTarget(kappa, sessions);
     if (r.kind === "exact" || r.kind === "fuzzy") {
       sessionName = r.match.name;
       windowCount = r.match.windows?.length ?? 0;
@@ -58,15 +58,15 @@ async function gatherInfo(oracle: string): Promise<LocateResult> {
     /* tmux not running — leave session null */
   }
 
-  // Fleet config — check for a file matching this oracle
+  // Fleet config — check for a file matching this kappa
   let fleetConfigPath: string | null = null;
   if (sessionName) {
     const candidate = join(FLEET_DIR, `${sessionName}.json`);
     if (existsSync(candidate)) fleetConfigPath = candidate;
   }
   if (!fleetConfigPath) {
-    // Fallback: try `<oracle>-oracle.json` or `<oracle>.json`
-    for (const name of [`${oracle}-oracle`, oracle]) {
+    // Fallback: try `<kappa>-kappa.json` or `<kappa>.json`
+    for (const name of [`${kappa}-kappa`, kappa]) {
       const candidate = join(FLEET_DIR, `${name}.json`);
       if (existsSync(candidate)) {
         fleetConfigPath = candidate;
@@ -78,11 +78,11 @@ async function gatherInfo(oracle: string): Promise<LocateResult> {
   // Federation — config.agents map + node
   const config = loadConfig();
   const agents = config.agents ?? {};
-  const inAgentsConfig = oracle in agents;
-  const federationNode = inAgentsConfig ? agents[oracle]! : (config.node ?? null);
+  const inAgentsConfig = kappa in agents;
+  const federationNode = inAgentsConfig ? agents[kappa]! : (config.node ?? null);
 
   return {
-    name: oracle,
+    name: kappa,
     repoPath,
     hasPsi,
     sessionName,
@@ -93,18 +93,18 @@ async function gatherInfo(oracle: string): Promise<LocateResult> {
   };
 }
 
-export async function cmdLocate(oracle: string | undefined, opts: LocateOpts = {}): Promise<void> {
-  if (!oracle) {
-    console.error("usage: aoi locate <oracle> [--path | --json]");
-    console.error("  e.g. aoi locate aoijs");
-    throw new UserError("missing oracle name");
+export async function cmdLocate(kappa: string | undefined, opts: LocateOpts = {}): Promise<void> {
+  if (!kappa) {
+    console.error("usage: ki locate <kappa> [--path | --json]");
+    console.error("  e.g. ki locate kijs");
+    throw new UserError("missing kappa name");
   }
 
-  const info = await gatherInfo(oracle);
+  const info = await gatherInfo(kappa);
 
-  // Nothing found at all → not-found error (mirrors alpha.75 oracle-about fix)
+  // Nothing found at all → not-found error (mirrors alpha.75 kappa-about fix)
   if (!info.repoPath && !info.sessionName && !info.fleetConfigPath) {
-    throw new UserError(`no oracle named '${oracle}' — try: aoi oracle ls`);
+    throw new UserError(`no kappa named '${kappa}' — try: ki kappa ls`);
   }
 
   if (opts.json) {
@@ -113,10 +113,10 @@ export async function cmdLocate(oracle: string | undefined, opts: LocateOpts = {
   }
 
   if (opts.path) {
-    // --path emits ONE clean line for shell substitution: cd $(aoi locate X --path)
+    // --path emits ONE clean line for shell substitution: cd $(ki locate X --path)
     if (!info.repoPath) {
       throw new UserError(
-        `no repo path for '${oracle}' (session: ${info.sessionName ?? "none"}, fleet: ${info.fleetConfigPath ? "yes" : "no"})`,
+        `no repo path for '${kappa}' (session: ${info.sessionName ?? "none"}, fleet: ${info.fleetConfigPath ? "yes" : "no"})`,
       );
     }
     console.log(info.repoPath);
@@ -125,7 +125,7 @@ export async function cmdLocate(oracle: string | undefined, opts: LocateOpts = {
 
   // Default: human-readable multi-line summary. Omit missing fields rather
   // than faking values (per #390.2 — fake-success is worse than missing info).
-  console.log(`\n📍 ${oracle}`);
+  console.log(`\n📍 ${kappa}`);
   if (info.repoPath) {
     console.log(`   repo:     ${info.repoPath}`);
     console.log(`   ψ/:       ${info.hasPsi ? "present" : "missing"}`);

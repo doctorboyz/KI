@@ -24,7 +24,7 @@ export function pluginsView(plugins: { stats: () => { plugins: PluginRow[]; tota
       <html>
         <head>
           <meta charset="utf-8" />
-          <title>Plugins — aoi</title>
+          <title>Plugins — ki</title>
           <style>{css}</style>
         </head>
         <body>

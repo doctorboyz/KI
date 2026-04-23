@@ -1,13 +1,13 @@
 /**
  * Instance preset — parses `--as <name>` out of process.argv and sets
- * `AOI_HOME` BEFORE any state-touching module (like src/core/paths.ts) is
+ * `KI_HOME` BEFORE any state-touching module (like src/core/paths.ts) is
  * imported. Must be the first thing cli.ts does.
  *
  * Part of issue #566: multi-instance foundation. Enables running
- *   `aoi serve 5001 --as dev`
- *   `aoi serve 5002 --as prod`
+ *   `ki serve 5001 --as dev`
+ *   `ki serve 5002 --as prod`
  * as independent federation nodes on one host, each with their own
- * `~/.aoi/inst/<name>/` home.
+ * `~/.ki/inst/<name>/` home.
  *
  * When --as is absent OR the command is not `serve`, this is a no-op and
  * behavior is byte-identical to pre-#566.
@@ -16,7 +16,7 @@ import { join } from "path";
 import { homedir } from "os";
 import { mkdirSync } from "fs";
 
-/** Same shape as node/oracle names — lowercase, digits, dashes, underscores. */
+/** Same shape as node/kappa names — lowercase, digits, dashes, underscores. */
 export const INSTANCE_NAME_RE = /^[a-z0-9][a-z0-9_-]{0,31}$/;
 
 /**
@@ -24,7 +24,7 @@ export const INSTANCE_NAME_RE = /^[a-z0-9][a-z0-9_-]{0,31}$/;
  * non-flag positional is `serve` — other verbs do not get per-invocation
  * instance selection in this PR (follow-up).
  *
- * Mutates process.env.AOI_HOME on success. Exits(1) with a clear error
+ * Mutates process.env.KI_HOME on success. Exits(1) with a clear error
  * message on invalid name.
  */
 export function applyInstancePreset(argv: string[] = process.argv.slice(2)): void {
@@ -32,7 +32,7 @@ export function applyInstancePreset(argv: string[] = process.argv.slice(2)): voi
   const asIdx = argv.indexOf("--as");
   if (asIdx === -1) return;
 
-  // Only applies to `aoi serve` for now. Other verbs → silently ignore,
+  // Only applies to `ki serve` for now. Other verbs → silently ignore,
   // leaves the flag for downstream parsers (which today reject it as
   // unknown — that's acceptable; tracked as follow-up).
   const firstPositional = argv.find(a => !a.startsWith("-"));
@@ -41,7 +41,7 @@ export function applyInstancePreset(argv: string[] = process.argv.slice(2)): voi
   const name = argv[asIdx + 1];
   if (!name || name.startsWith("-")) {
     console.error(`\x1b[31m✗\x1b[0m --as requires an instance name`);
-    console.error(`  usage: aoi serve [port] --as <name>`);
+    console.error(`  usage: ki serve [port] --as <name>`);
     process.exit(1);
   }
 
@@ -51,17 +51,17 @@ export function applyInstancePreset(argv: string[] = process.argv.slice(2)): voi
     process.exit(1);
   }
 
-  const home = join(homedir(), ".aoi", "inst", name);
+  const home = join(homedir(), ".ki", "inst", name);
   mkdirSync(home, { recursive: true });
-  process.env.AOI_HOME = home;
+  process.env.KI_HOME = home;
 
-  // Convenience: symlink <home>/plugins → ~/.aoi/plugins so instances share
+  // Convenience: symlink <home>/plugins → ~/.ki/plugins so instances share
   // the plugin pool (plugins are not migrated per the #566 contract).
   // Atomic: symlinkSync throws EEXIST if the link is already there — we just
   // swallow it. No TOCTOU gap. Other errors are also non-fatal (best-effort).
   try {
     const { symlinkSync } = require("fs");
-    const target = join(homedir(), ".aoi", "plugins");
+    const target = join(homedir(), ".ki", "plugins");
     symlinkSync(target, join(home, "plugins"), "dir");
   } catch { /* already linked, target missing, or permissions — best-effort */ }
 }

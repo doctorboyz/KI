@@ -1,12 +1,12 @@
 /**
- * Transport abstraction layer for aoi.
+ * Transport abstraction layer for ki.
  *
  * The fleet currently communicates via tmux (local) and HTTP federation (peers).
  * This module introduces a pluggable transport interface so messaging can flow
- * through MQTT (oracle-mesh-signal), HTTP, or tmux depending on target location.
+ * through MQTT (kappa-mesh-signal), HTTP, or tmux depending on target location.
  *
  * Local targets → tmux (fast path, 50ms capture loop)
- * Remote targets → MQTT publish to oracle/{name}/inbox
+ * Remote targets → MQTT publish to kappa/{name}/inbox
  * Fallback → HTTP federation (existing peers[] mechanism)
  */
 
@@ -45,15 +45,15 @@ export function classifyError(err: unknown): { reason: TransportFailureReason; r
 
 /** Where a message should be delivered */
 export interface TransportTarget {
-  oracle: string;        // e.g. "neo", "pulse"
+  kappa: string;        // e.g. "neo", "pulse"
   host?: string;         // e.g. "white.local", "remote-host" — null = local
   tmuxTarget?: string;   // e.g. "main:3" — only for local tmux
 }
 
 /** A message flowing through the transport */
 export interface TransportMessage {
-  from: string;          // sender oracle name
-  to: string;            // recipient oracle name
+  from: string;          // sender kappa name
+  to: string;            // recipient kappa name
   body: string;          // the actual message text
   timestamp: number;     // epoch ms
   transport: "tmux" | "mqtt" | "http" | "hub";  // which channel carried it
@@ -61,7 +61,7 @@ export interface TransportMessage {
 
 /** Presence info broadcast by each host */
 export interface TransportPresence {
-  oracle: string;
+  kappa: string;
   host: string;
   status: "busy" | "ready" | "idle" | "crashed" | "offline";
   timestamp: number;
@@ -150,7 +150,7 @@ export class TransportRouter {
           const ok = await t.send(target, message);
           if (ok) return { ok: true, via: t.name, retryable: false };
           // Send returned false — try next transport
-          console.log(`[transport] ${t.name}: send failed for ${target.oracle}, trying next`);
+          console.log(`[transport] ${t.name}: send failed for ${target.kappa}, trying next`);
         } catch (err) {
           const { reason, retryable } = classifyError(err);
           console.log(`[transport] ${t.name}: ${reason}${retryable ? " (retryable)" : ""} — trying next`);

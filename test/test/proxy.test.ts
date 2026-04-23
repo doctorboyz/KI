@@ -4,7 +4,7 @@
  *
  * PROTOTYPE — iteration 6 of the federation-join-easy /loop. Drafted on
  * feat/api-proxy-http-peers. See
- * mawui-oracle/ψ/writing/federation-join-easy.md for full context.
+ * mawui-kappa/ψ/writing/federation-join-easy.md for full context.
  *
  * Follows wormhole.test.ts conventions: pure-function tests for helpers,
  * in-process Elysia app.handle() tests for the route, beforeEach/afterEach
@@ -33,10 +33,10 @@ import {
 
 describe("parseProxySignature", () => {
   test("parses [host:agent] into structured fields", () => {
-    const r = parseProxySignature("[oracle-world:mawjs-oracle]");
+    const r = parseProxySignature("[kappa-world:mawjs-kappa]");
     expect(r).toEqual({
-      originHost: "oracle-world",
-      originAgent: "mawjs-oracle",
+      originHost: "kappa-world",
+      originAgent: "mawjs-kappa",
       isAnon: false,
     });
   });
@@ -160,7 +160,7 @@ describe("resolveProxyPeerUrl", () => {
   });
 
   test("full http:// URL preserved", () => {
-    expect(resolveProxyPeerUrl("http://oracle-world:3456")).toBe("http://oracle-world:3456");
+    expect(resolveProxyPeerUrl("http://kappa-world:3456")).toBe("http://kappa-world:3456");
   });
 
   test("full https:// URL preserved", () => {

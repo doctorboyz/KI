@@ -19,17 +19,17 @@ export const feedApi = new Elysia();
 // clients filtering `event === "MessageSend"`. See docs/federation.md.
 feedApi.get("/feed", ({ query }) => {
   const limit = Math.min(200, +(query.limit || String(cfgLimit("feedDefault"))));
-  const oracle = query.oracle || undefined;
+  const kappa = query.kappa || undefined;
   let events = feedBuffer.slice(-limit);
-  if (oracle) events = events.filter(e => e.oracle === oracle);
+  if (kappa) events = events.filter(e => e.kappa === kappa);
   const activeMap = new Map<string, FeedEvent>();
   const cutoff = Date.now() - 5 * 60_000;
-  for (const e of feedBuffer) { if (e.ts >= cutoff) activeMap.set(e.oracle, e); }
-  return { events: events.reverse(), total: events.length, active_oracles: [...activeMap.keys()] };
+  for (const e of feedBuffer) { if (e.ts >= cutoff) activeMap.set(e.kappa, e); }
+  return { events: events.reverse(), total: events.length, active_kappas: [...activeMap.keys()] };
 }, {
   query: t.Object({
     limit: t.Optional(t.String()),
-    oracle: t.Optional(t.String()),
+    kappa: t.Optional(t.String()),
   }),
 });
 
@@ -37,7 +37,7 @@ feedApi.post("/feed", async ({ body }) => {
   const b = body as any;
   const event: FeedEvent = {
     timestamp: b.timestamp || new Date().toISOString(),
-    oracle: b.oracle || "unknown",
+    kappa: b.kappa || "unknown",
     host: b.host || "local",
     event: b.event || "Notification",
     project: b.project || "",
@@ -46,14 +46,14 @@ feedApi.post("/feed", async ({ body }) => {
     ts: b.ts || Date.now(),
   };
   pushFeedEvent(event);
-  markRealFeedEvent(event.oracle);
+  markRealFeedEvent(event.kappa);
   const wtMatch = event.project.match(/[.-]wt-(?:\d+-)?(.+)$/);
-  if (wtMatch) markRealFeedEvent(`${event.oracle}-${wtMatch[1]}`);
+  if (wtMatch) markRealFeedEvent(`${event.kappa}-${wtMatch[1]}`);
   return { ok: true };
 }, {
   body: t.Object({
     timestamp: t.Optional(t.String()),
-    oracle: t.Optional(t.String()),
+    kappa: t.Optional(t.String()),
     host: t.Optional(t.String()),
     event: t.Optional(t.String()),
     project: t.Optional(t.String()),

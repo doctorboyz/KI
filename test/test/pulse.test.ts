@@ -18,13 +18,13 @@ const { default: pulse } = await import("../src/commands/plugins/pulse/index");
 describe("pulse add flag parsing", () => {
   const ctx = (args: string[]): InvokeContext => ({ source: "cli", args });
 
-  it("extracts --oracle, --priority, --wt", async () => {
+  it("extracts --kappa, --priority, --wt", async () => {
     capturedTitle = undefined;
     capturedOpts = undefined;
-    const r = await pulse(ctx(["add", "test title", "--oracle", "neo", "--priority", "high", "--wt", "mywt"]));
+    const r = await pulse(ctx(["add", "test title", "--kappa", "neo", "--priority", "high", "--wt", "mywt"]));
     expect(r.ok).toBe(true);
     expect(capturedTitle).toBe("test title");
-    expect(capturedOpts?.oracle).toBe("neo");
+    expect(capturedOpts?.kappa).toBe("neo");
     expect(capturedOpts?.priority).toBe("high");
     expect(capturedOpts?.wt).toBe("mywt");
   });
@@ -39,14 +39,14 @@ describe("pulse add flag parsing", () => {
   it("title as first positional, flags anywhere", async () => {
     capturedTitle = undefined;
     capturedOpts = undefined;
-    await pulse(ctx(["add", "--oracle", "neo", "my task title", "--priority", "low"]));
+    await pulse(ctx(["add", "--kappa", "neo", "my task title", "--priority", "low"]));
     expect(capturedTitle).toBe("my task title");
-    expect(capturedOpts?.oracle).toBe("neo");
+    expect(capturedOpts?.kappa).toBe("neo");
     expect(capturedOpts?.priority).toBe("low");
   });
 
   it("returns error when title is missing", async () => {
-    const r = await pulse(ctx(["add", "--oracle", "neo"]));
+    const r = await pulse(ctx(["add", "--kappa", "neo"]));
     expect(r.ok).toBe(false);
     expect(r.error).toContain("usage:");
   });

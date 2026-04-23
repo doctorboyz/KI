@@ -1,8 +1,8 @@
 /**
  * Registry manifest fetcher (#515).
  *
- * Fetches the community registry manifest from `https://aoi.soulbrews.studio/registry.json`
- * (override via `AOI_REGISTRY_URL`), caches it to `~/.aoi/registry-cache.json`
+ * Fetches the community registry manifest from `https://ki.soulbrews.studio/registry.json`
+ * (override via `KI_REGISTRY_URL`), caches it to `~/.ki/registry-cache.json`
  * with a 5-minute TTL, and falls back to the cache on network failure.
  *
  * The registry only resolves "where to fetch <name>"; `plugins.lock` (see lock.ts)
@@ -13,7 +13,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { homedir } from "os";
 import { dirname, join } from "path";
 
-export const DEFAULT_REGISTRY_URL = "https://aoi.soulbrews.studio/registry.json";
+export const DEFAULT_REGISTRY_URL = "https://ki.soulbrews.studio/registry.json";
 export const CACHE_TTL_MS = 5 * 60 * 1000;
 
 export interface RegistryEntry {
@@ -34,11 +34,11 @@ export interface RegistryManifest {
 }
 
 export function registryUrl(override?: string): string {
-  return override || process.env.AOI_REGISTRY_URL || DEFAULT_REGISTRY_URL;
+  return override || process.env.KI_REGISTRY_URL || DEFAULT_REGISTRY_URL;
 }
 
 export function cachePath(): string {
-  return process.env.AOI_REGISTRY_CACHE || join(homedir(), ".aoi", "registry-cache.json");
+  return process.env.KI_REGISTRY_CACHE || join(homedir(), ".ki", "registry-cache.json");
 }
 
 interface CacheFile {

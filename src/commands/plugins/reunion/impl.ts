@@ -5,7 +5,7 @@ import { join, dirname } from "path";
 const SYNC_DIRS = ["memory/learnings", "memory/retrospectives", "memory/traces", "memory/collaborations"];
 
 /**
- * Resolve the main oracle repo root from a worktree cwd.
+ * Resolve the main kappa repo root from a worktree cwd.
  * Uses git --git-common-dir which points to the shared .git in the main repo.
  */
 async function resolveMainRepoRoot(cwd: string): Promise<string | null> {
@@ -62,9 +62,9 @@ export interface ReunionResult {
 }
 
 /**
- * aoi reunion [window]
+ * ki reunion [window]
  *
- * Sync ψ/memory/ from a worktree back to the main oracle repo.
+ * Sync ψ/memory/ from a worktree back to the main kappa repo.
  * Subdirs synced: memory/learnings, memory/retrospectives, memory/traces
  * Skip existing files (never overwrite main).
  */
@@ -106,7 +106,7 @@ export async function cmdReunion(windowName?: string): Promise<ReunionResult | n
     return null;
   }
 
-  // 3. Find main oracle repo
+  // 3. Find main kappa repo
   const mainRoot = await resolveMainRepoRoot(cwd);
   if (!mainRoot) {
     console.log(`  \x1b[90m○\x1b[0m reunion: not a worktree (already main), skipping`);

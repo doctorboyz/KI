@@ -1,7 +1,7 @@
 /**
  * dts-gen.ts — opt-in .d.ts generation for plugin-specific types.
  *
- * Phase B Wave 1C (#340): `aoi plugin build --types` emits
+ * Phase B Wave 1C (#340): `ki plugin build --types` emits
  * `dist/<name>.d.ts` alongside `dist/index.js`.
  *
  * Strategy: write a minimal tsconfig.emit.json into dist/, then run

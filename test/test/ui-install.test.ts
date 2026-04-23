@@ -17,7 +17,7 @@ import { parseUiArgs } from "../src/commands/plugins/ui/impl";
 
 describe("buildGhReleaseArgs", () => {
   test("omits tag arg when ref is undefined (gh picks latest release by default)", () => {
-    const args = buildGhReleaseArgs("Soul-Brews-Studio/maw-ui", undefined, "/tmp/maw-ui-xxx");
+    const args = buildGhReleaseArgs("doctorboyz/maw-ui", undefined, "/tmp/maw-ui-xxx");
     expect(args[0]).toBe("release");
     expect(args[1]).toBe("download");
     // Next arg should be -R, not a tag — because 'latest' would be treated
@@ -26,19 +26,19 @@ describe("buildGhReleaseArgs", () => {
   });
 
   test("uses provided version tag", () => {
-    const args = buildGhReleaseArgs("Soul-Brews-Studio/maw-ui", "v1.15.0", "/tmp/maw-ui-xxx");
+    const args = buildGhReleaseArgs("doctorboyz/maw-ui", "v1.15.0", "/tmp/maw-ui-xxx");
     expect(args[2]).toBe("v1.15.0");
   });
 
   test("includes -R <repo>", () => {
-    const args = buildGhReleaseArgs("Soul-Brews-Studio/maw-ui", "latest", "/tmp/x");
+    const args = buildGhReleaseArgs("doctorboyz/maw-ui", "latest", "/tmp/x");
     const rIdx = args.indexOf("-R");
     expect(rIdx).not.toBe(-1);
-    expect(args[rIdx + 1]).toBe("Soul-Brews-Studio/maw-ui");
+    expect(args[rIdx + 1]).toBe("doctorboyz/maw-ui");
   });
 
   test("includes --pattern maw-ui-dist.tar.gz", () => {
-    const args = buildGhReleaseArgs("Soul-Brews-Studio/maw-ui", "latest", "/tmp/x");
+    const args = buildGhReleaseArgs("doctorboyz/maw-ui", "latest", "/tmp/x");
     const pIdx = args.indexOf("--pattern");
     expect(pIdx).not.toBe(-1);
     expect(args[pIdx + 1]).toBe("maw-ui-dist.tar.gz");
@@ -46,7 +46,7 @@ describe("buildGhReleaseArgs", () => {
 
   test("includes --dir pointing at provided tmpDir", () => {
     const tmpDir = "/tmp/maw-ui-abc123";
-    const args = buildGhReleaseArgs("Soul-Brews-Studio/maw-ui", "latest", tmpDir);
+    const args = buildGhReleaseArgs("doctorboyz/maw-ui", "latest", tmpDir);
     const dIdx = args.indexOf("--dir");
     expect(dIdx).not.toBe(-1);
     expect(args[dIdx + 1]).toBe(tmpDir);

@@ -14,7 +14,7 @@ import type { Transport, TransportTarget, TransportMessage, TransportPresence } 
 import type { FeedEvent } from "../lib/feed";
 
 export interface HttpTransportConfig {
-  /** Peer URLs from aoi.config.json peers[] */
+  /** Peer URLs from ki.config.json peers[] */
   peers: string[];
   selfHost: string;
 }
@@ -50,9 +50,9 @@ export class HttpTransport implements Transport {
       const source = (session as any).source;
       if (!source || source === "local") continue;
 
-      const match = session.windows.some((w) => w.name.toLowerCase().includes(target.oracle.toLowerCase()));
+      const match = session.windows.some((w) => w.name.toLowerCase().includes(target.kappa.toLowerCase()));
       if (match) {
-        const tmuxTarget = findWindow([session], target.oracle);
+        const tmuxTarget = findWindow([session], target.kappa);
         if (tmuxTarget) {
           return sendKeysToPeer(source, tmuxTarget, message);
         }

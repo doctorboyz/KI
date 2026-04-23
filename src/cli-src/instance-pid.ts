@@ -1,11 +1,11 @@
 /**
- * PID handshake for `aoi serve` (#566).
+ * PID handshake for `ki serve` (#566).
  *
- * On serve start: write PID to `<AOI_HOME>/aoi.pid`. Refuse a second serve
+ * On serve start: write PID to `<KI_HOME>/ki.pid`. Refuse a second serve
  * invocation if a prior PID is still alive. Cleans up on SIGTERM/SIGINT.
  *
  * When --as is omitted, this still runs — it just uses the default
- * `~/.aoi/aoi.pid` location. Backward-compat: prior alpha never wrote a PID
+ * `~/.ki/ki.pid` location. Backward-compat: prior alpha never wrote a PID
  * file, so stale absence is the default state; nothing to reconcile.
  */
 import { openSync, readFileSync, writeSync, closeSync, unlinkSync, mkdirSync } from "fs";
@@ -13,11 +13,11 @@ import { join } from "path";
 import { homedir } from "os";
 
 function resolveHome(): string {
-  return process.env.AOI_HOME || join(homedir(), ".aoi");
+  return process.env.KI_HOME || join(homedir(), ".ki");
 }
 
 function pidFile(): string {
-  return join(resolveHome(), "aoi.pid");
+  return join(resolveHome(), "ki.pid");
 }
 
 /** Check if a process with `pid` is alive. Uses signal 0 (no-op probe). */
@@ -32,7 +32,7 @@ function isAlive(pid: number): boolean {
 }
 
 /**
- * Acquire the PID lock, or exit(1) with a clear error if another aoi serve
+ * Acquire the PID lock, or exit(1) with a clear error if another ki serve
  * is already running in this home.
  */
 export function acquirePidLock(instanceName: string | null): void {
@@ -56,7 +56,7 @@ export function acquirePidLock(instanceName: string | null): void {
       try { prior = parseInt(readFileSync(file, "utf-8").trim(), 10); } catch { /* malformed */ }
       if (Number.isFinite(prior) && isAlive(prior)) {
         const label = instanceName ? ` as ${instanceName}` : "";
-        console.error(`\x1b[31m✗\x1b[0m another aoi serve is already running${label} (PID ${prior}). Stop it first.`);
+        console.error(`\x1b[31m✗\x1b[0m another ki serve is already running${label} (PID ${prior}). Stop it first.`);
         process.exit(1);
       }
       // Stale PID — remove and retry the atomic create once.

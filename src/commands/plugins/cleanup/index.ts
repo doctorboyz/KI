@@ -24,9 +24,9 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (args.includes("--zombie-agents") || args.includes("--zombies")) {
       await cmdCleanupZombies({ yes: args.includes("--yes") || args.includes("-y") });
     } else {
-      logs.push("\x1b[36maoi cleanup\x1b[0m \u2014 Cleanup utilities\n");
-      logs.push("  aoi cleanup --zombie-agents [--yes]  Find and kill orphan zombie panes");
-      logs.push("  aoi cleanup --zombies [--yes]        Alias for --zombie-agents\n");
+      logs.push("\x1b[36mki cleanup\x1b[0m \u2014 Cleanup utilities\n");
+      logs.push("  ki cleanup --zombie-agents [--yes]  Find and kill orphan zombie panes");
+      logs.push("  ki cleanup --zombies [--yes]        Alias for --zombie-agents\n");
       logs.push("\x1b[90mWithout --yes, only lists zombies without killing them.\x1b[0m");
     }
 

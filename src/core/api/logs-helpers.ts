@@ -1,11 +1,11 @@
 import { join } from "path";
 import { readdirSync, readFileSync, statSync } from "fs";
 
-/** Extract agent name from project dir name, e.g. "-home-nat-Code-...-neo-oracle" → "neo-oracle" */
+/** Extract agent name from project dir name, e.g. "-home-nat-Code-...-neo-kappa" → "neo-kappa" */
 export function agentFromDir(dirName: string): string {
   const orgPrefixes = [
     "laris-co-",
-    "Soul-Brews-Studio-",
+    "doctorboyz-",
     "nazt-",
     "DustBoy-PM25-",
     "FloodBoy-CM-",

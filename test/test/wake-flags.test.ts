@@ -98,9 +98,9 @@ function formatIssuePrompt(num: number, item: { title: string; body?: string; la
 // Tests
 // ---------------------------------------------------------------------------
 
-// args format matches process.argv.slice(2): ["wake", "<oracle>", ...flags]
-// routeAgent(cmd, args) uses args[1] for oracle and parseFlags(args, spec, 2)
-// which slices to args[2..], so the oracle at index 1 is NOT in flags._
+// args format matches process.argv.slice(2): ["wake", "<kappa>", ...flags]
+// routeAgent(cmd, args) uses args[1] for kappa and parseFlags(args, spec, 2)
+// which slices to args[2..], so the kappa at index 1 is NOT in flags._
 
 describe("--task flag (fire-and-forget)", () => {
   test("--task sets prompt and noAttach, no window label created", () => {
@@ -140,9 +140,9 @@ describe("--issue --repo cross-repo", () => {
   });
 
   test("resolveRepo without --repo falls back to git remote detection", async () => {
-    const detectFromGit = async () => "Soul-Brews-Studio/maw-js";
+    const detectFromGit = async () => "doctorboyz/maw-js";
     const slug = await resolveRepoWith(undefined, detectFromGit);
-    expect(slug).toBe("Soul-Brews-Studio/maw-js");
+    expect(slug).toBe("doctorboyz/maw-js");
   });
 
   test("resolveRepo without --repo and no git remote throws", async () => {

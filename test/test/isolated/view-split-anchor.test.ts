@@ -109,7 +109,7 @@ afterAll(() => {
 // the fleet-numbered session 101-mawjs → viewName becomes "mawjs-view".
 function baseSessions(): FakeSession[] {
   return [
-    { name: "101-mawjs", windows: [{ index: 0, name: "oracle", active: true }] },
+    { name: "101-mawjs", windows: [{ index: 0, name: "kappa", active: true }] },
   ];
 }
 
@@ -149,7 +149,7 @@ describe("cmdView splitAnchor (#545)", () => {
   test("splitAnchor === '<name>' with NO <name>-view → bootstraps via newGroupedSession, anchorPane = '<name>-view:0'", async () => {
     fakeSessions = [
       ...baseSessions(),
-      { name: "102-other", windows: [{ index: 0, name: "oracle", active: true }] },
+      { name: "102-other", windows: [{ index: 0, name: "kappa", active: true }] },
     ];
     // No "other-view" pre-exists — resolveAnchorPane must bootstrap it.
     await cmdView("mawjs", undefined, false, false, "other");

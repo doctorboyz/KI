@@ -10,7 +10,7 @@ export const command = {
 /**
  * Inject a default numeric value after `--daily` when no value follows.
  * `arg` typed as Number throws "option requires argument" if --daily is bare
- * (e.g. `aoi costs --daily` or `aoi costs --daily --json`).
+ * (e.g. `ki costs --daily` or `ki costs --daily --json`).
  */
 function injectDailyDefault(args: string[]): string[] {
   const result: string[] = [];

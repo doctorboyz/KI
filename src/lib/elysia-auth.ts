@@ -86,8 +86,8 @@ export const federationAuth = new Elysia({ name: "federation-auth" })
     if (isLoopback(clientIp)) return;
 
     // Check for HMAC signature
-    const sig = request.headers.get("x-aoi-signature");
-    const ts = request.headers.get("x-aoi-timestamp");
+    const sig = request.headers.get("x-ki-signature");
+    const ts = request.headers.get("x-ki-timestamp");
 
     if (!sig || !ts) {
       set.status = 401;

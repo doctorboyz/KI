@@ -35,7 +35,7 @@ function discoverCommands(): string[] {
   } catch {
     // Fallback if dir scan fails (bundled)
     return ["ls", "peek", "hey", "wake", "fleet", "stop", "done", "overview",
-      "about", "oracle", "pulse", "view", "tab", "rename", "talk-to",
+      "about", "kappa", "pulse", "view", "tab", "rename", "talk-to",
       "workon", "park", "resume", "inbox", "contacts", "serve"];
   }
 }
@@ -43,15 +43,15 @@ function discoverCommands(): string[] {
 export async function cmdCompletions(sub: string) {
   if (sub === "commands") {
     console.log(discoverCommands().join(" "));
-  } else if (sub === "oracles" || sub === "windows") {
+  } else if (sub === "kappas" || sub === "windows") {
     const fleetDir = FLEET_DIR;
     const names = new Set<string>();
     try {
       for (const f of readdirSync(fleetDir).filter(f => f.endsWith(".json") && !f.endsWith(".disabled"))) {
         const config = JSON.parse(readFileSync(join(fleetDir, f), "utf-8"));
         for (const w of (config.windows || [])) {
-          if (sub === "oracles") {
-            if (w.name.endsWith("-oracle")) names.add(w.name.replace(/-oracle$/, ""));
+          if (sub === "kappas") {
+            if (w.name.endsWith("-kappa")) names.add(w.name.replace(/-kappa$/, ""));
           } else {
             names.add(w.name);
           }

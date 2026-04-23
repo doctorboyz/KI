@@ -4,11 +4,11 @@
  * Today only `ghq` is implemented (GhqDiscovery), but this seam lets future
  * backends plug in without changing call sites: plain filesystem scan,
  * jj repos, custom manifests, etc. Selection happens in ./index via
- * `AOI_REPO_DISCOVERY` env var.
+ * `KI_REPO_DISCOVERY` env var.
  *
  * Contract guarantees every implementation MUST honor:
  *   - Paths are normalized to forward slashes (`\\` → `/`). This matches
- *     what aoi call sites expect — they build path patterns with `/`.
+ *     what ki call sites expect — they build path patterns with `/`.
  *   - Suffix matching is **case-insensitive**. GitHub treats repo names as
  *     case-preserving but case-insensitive; ghq stores them case-preserving
  *     but users don't think in the stored case.
@@ -31,7 +31,7 @@ export interface RepoDiscovery {
   /**
    * First path ending with `suffix` (case-insensitive).
    * Returns `null` on no match. Use a leading `/` to anchor at a path
-   * boundary (e.g. `/aoi-ui` matches `.../org/aoi-ui` but not `.../foo-aoi-ui`).
+   * boundary (e.g. `/ki-ui` matches `.../org/ki-ui` but not `.../foo-ki-ui`).
    */
   findBySuffix(suffix: string): Promise<string | null>;
 

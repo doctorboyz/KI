@@ -1,15 +1,15 @@
 /**
  * artifact-manager — TS plugin for task artifact lifecycle.
  *
- * Drop this in ~/.oracle/commands/ or install via `aoi plugins install`.
- * No WASM, no compilation — pure TypeScript, full access to aoi internals.
+ * Drop this in ~/.kappa/commands/ or install via `ki plugins install`.
+ * No WASM, no compilation — pure TypeScript, full access to ki internals.
  *
  * Usage:
- *   aoi art ls [team]                    # list artifacts
- *   aoi art get <team> <task-id>         # show full artifact
- *   aoi art write <team> <task-id> <msg> # write result
- *   aoi art attach <team> <task-id> <file> # add attachment
- *   aoi art init <team> <task-id> <subject> <desc> # create manually
+ *   ki art ls [team]                    # list artifacts
+ *   ki art get <team> <task-id>         # show full artifact
+ *   ki art write <team> <task-id> <msg> # write result
+ *   ki art attach <team> <task-id> <file> # add attachment
+ *   ki art init <team> <task-id> <subject> <desc> # create manually
  */
 
 import {
@@ -67,7 +67,7 @@ export default async function handler(args: string[], flags: Record<string, any>
     case "get":
     case "show": {
       const [, team, taskId] = args;
-      if (!team || !taskId) { console.error("usage: aoi art get <team> <task-id>"); return; }
+      if (!team || !taskId) { console.error("usage: ki art get <team> <task-id>"); return; }
       const art = getArtifact(team, taskId);
       if (!art) { console.error(`not found: ${team}/${taskId}`); return; }
       if (json) { console.log(JSON.stringify(art, null, 2)); return; }
@@ -93,7 +93,7 @@ export default async function handler(args: string[], flags: Record<string, any>
     case "write": {
       const [, team, taskId, ...rest] = args;
       if (!team || !taskId || rest.length === 0) {
-        console.error("usage: aoi art write <team> <task-id> <message...>");
+        console.error("usage: ki art write <team> <task-id> <message...>");
         return;
       }
       writeResult(team, taskId, rest.join(" "));
@@ -104,7 +104,7 @@ export default async function handler(args: string[], flags: Record<string, any>
     case "attach": {
       const [, team, taskId, filePath] = args;
       if (!team || !taskId || !filePath) {
-        console.error("usage: aoi art attach <team> <task-id> <file-path>");
+        console.error("usage: ki art attach <team> <task-id> <file-path>");
         return;
       }
       const data = readFileSync(filePath);
@@ -117,7 +117,7 @@ export default async function handler(args: string[], flags: Record<string, any>
     case "create": {
       const [, team, taskId, subject, ...descParts] = args;
       if (!team || !taskId || !subject) {
-        console.error("usage: aoi art init <team> <task-id> <subject> [description...]");
+        console.error("usage: ki art init <team> <task-id> <subject> [description...]");
         return;
       }
       const dir = createArtifact(team, taskId, subject, descParts.join(" ") || subject);
@@ -126,7 +126,7 @@ export default async function handler(args: string[], flags: Record<string, any>
     }
 
     default:
-      console.error("usage: aoi art [ls|get|write|attach|init] [--json]");
+      console.error("usage: ki art [ls|get|write|attach|init] [--json]");
   }
 }
 

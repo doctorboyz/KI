@@ -145,11 +145,11 @@ describe("resolveProxyPeerUrl — config.namedPeers branch", () => {
     configStore = {
       namedPeers: [
         { name: "white", url: "http://white.lan:3456" },
-        { name: "oracle-world", url: "http://oracle-world.lan:3456" },
+        { name: "kappa-world", url: "http://kappa-world.lan:3456" },
       ],
     };
     expect(resolveProxyPeerUrl("white")).toBe("http://white.lan:3456");
-    expect(resolveProxyPeerUrl("oracle-world")).toBe("http://oracle-world.lan:3456");
+    expect(resolveProxyPeerUrl("kappa-world")).toBe("http://kappa-world.lan:3456");
   });
 
   test("named peer beats host:port heuristic when both could match", () => {
@@ -454,7 +454,7 @@ describe("proxy-routes (bonus) — POST /api/proxy branches", () => {
         peer: "white",
         method: "GET",
         path: "/api/config",
-        signature: "[local:mawjs-oracle]",
+        signature: "[local:mawjs-kappa]",
       }),
     }));
 
@@ -487,7 +487,7 @@ describe("proxy-routes (bonus) — POST /api/proxy branches", () => {
         method: "POST",
         path: "/api/ping",
         body: '{"hi":1}',
-        signature: "[trusted-host:mawjs-oracle]",
+        signature: "[trusted-host:mawjs-kappa]",
       }),
     }));
 
@@ -540,7 +540,7 @@ describe("proxy-routes (bonus) — POST /api/proxy branches", () => {
         peer: "white",
         method: "GET",
         path: "/api/config",
-        signature: "[local:mawjs-oracle]",
+        signature: "[local:mawjs-kappa]",
       }),
     }));
 
@@ -565,7 +565,7 @@ describe("proxy-routes (bonus) — POST /api/proxy branches", () => {
         peer: "white",
         method: "GET",
         path: "/api/config",
-        signature: "[local:mawjs-oracle]",
+        signature: "[local:mawjs-kappa]",
       }),
     }));
     expect(res.status).toBe(502);
@@ -586,7 +586,7 @@ describe("proxy-routes (bonus) — POST /api/proxy branches", () => {
         peer: "white",
         method: "GET",
         path: "/api/config",
-        signature: "[local:mawjs-oracle]",
+        signature: "[local:mawjs-kappa]",
       }),
     }));
 

@@ -4,7 +4,7 @@
  * Background: the /contacts skill canonical schema (SKILL.md) specifies five
  * per-contact fields: `maw`, `thread`, `inbox`, `repo`, `notes`. The maw-js
  * CLI originally supported only three (`--maw`, `--thread`, `--notes`), so
- * contacts written by other oracles via /contacts came through canonical but
+ * contacts written by other kappas via /contacts came through canonical but
  * `maw contacts add` couldn't populate `inbox` or `repo`. This test locks the
  * fix: all five flags parse, persist, and round-trip through the JSON file.
  *
@@ -59,9 +59,9 @@ describe("cmdContactsAdd — canonical schema flag parsing", () => {
   });
 
   test("--repo flag persists repo field", async () => {
-    await cmdContactsAdd("gamma", ["--repo", "laris-co/gamma-oracle"]);
+    await cmdContactsAdd("gamma", ["--repo", "laris-co/gamma-kappa"]);
     const data = readContacts();
-    expect(data.contacts.gamma.repo).toBe("laris-co/gamma-oracle");
+    expect(data.contacts.gamma.repo).toBe("laris-co/gamma-kappa");
   });
 
   test("all five canonical flags together round-trip cleanly", async () => {
@@ -69,7 +69,7 @@ describe("cmdContactsAdd — canonical schema flag parsing", () => {
       "--maw", "white:delta",
       "--thread", "channel:delta",
       "--inbox", "https://delta.example/inbox",
-      "--repo", "Soul-Brews-Studio/delta-oracle",
+      "--repo", "doctorboyz/delta-kappa",
       "--notes", "canonical five-field contact",
     ]);
     const data = readContacts();
@@ -77,7 +77,7 @@ describe("cmdContactsAdd — canonical schema flag parsing", () => {
       maw: "white:delta",
       thread: "channel:delta",
       inbox: "https://delta.example/inbox",
-      repo: "Soul-Brews-Studio/delta-oracle",
+      repo: "doctorboyz/delta-kappa",
       notes: "canonical five-field contact",
     });
   });

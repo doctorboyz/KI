@@ -22,7 +22,7 @@ describe("annotatePane — #395 pure annotation logic", () => {
     expect(annotatePane(p, fleet, new Map())).toBe("view: maw-view");
   });
 
-  test("per-oracle '*-view' session → 'view: <session>'", () => {
+  test("per-kappa '*-view' session → 'view: <session>'", () => {
     const p = { id: "%201", target: "mawjs-view:0.0", command: "claude" };
     expect(annotatePane(p, fleet, new Map())).toBe("view: mawjs-view");
   });

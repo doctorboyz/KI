@@ -7,25 +7,25 @@ export interface KillOpts {
 }
 
 /**
- * aoi kill <target>[:window] [--pane N]
+ * ki kill <target>[:window] [--pane N]
  *
  * Trust the user — if they typed it, they meant it. No --force gate.
  *
- *   aoi kill <session>            → kill whole session
- *   aoi kill <session>:<window>   → kill that window
- *   aoi kill <target> --pane N    → kill pane N of target window
+ *   ki kill <session>            → kill whole session
+ *   ki kill <session>:<window>   → kill that window
+ *   ki kill <target> --pane N    → kill pane N of target window
  *
- * Target resolution mirrors aoi split: bare session names go through the
+ * Target resolution mirrors ki split: bare session names go through the
  * canonical `resolveSessionTarget` matcher. Silent wrong-answer is worse
  * than a loud failure.
  */
 export async function cmdKill(target: string, opts: KillOpts = {}) {
   if (!target) {
-    console.error("usage: aoi kill <target>[:window] [--pane N]");
-    console.error("  e.g. aoi kill aoijs");
-    console.error("       aoi kill aoijs:0");
-    console.error("       aoi kill aoijs --pane 1");
-    throw new Error("usage: aoi kill <target>[:window] [--pane N]");
+    console.error("usage: ki kill <target>[:window] [--pane N]");
+    console.error("  e.g. ki kill kijs");
+    console.error("       ki kill kijs:0");
+    console.error("       ki kill kijs --pane 1");
+    throw new Error("usage: ki kill <target>[:window] [--pane N]");
   }
 
   const [rawSession, rawWindow] = target.includes(":")
@@ -41,7 +41,7 @@ export async function cmdKill(target: string, opts: KillOpts = {}) {
     for (const s of r.candidates) {
       console.error(`  \x1b[90m    • ${s.name}\x1b[0m`);
     }
-    console.error(`  \x1b[90m  use the full name: aoi kill <exact-session>\x1b[0m`);
+    console.error(`  \x1b[90m  use the full name: ki kill <exact-session>\x1b[0m`);
     throw new Error(`'${rawSession}' is ambiguous`);
   }
   if (r.kind === "none") {
@@ -50,7 +50,7 @@ export async function cmdKill(target: string, opts: KillOpts = {}) {
       console.error(`  \x1b[90m  did you mean:\x1b[0m`);
       for (const s of r.hints) console.error(`  \x1b[90m    • ${s.name}\x1b[0m`);
     } else {
-      console.error(`  \x1b[90m  try: aoi ls\x1b[0m`);
+      console.error(`  \x1b[90m  try: ki ls\x1b[0m`);
     }
     throw new Error(`session '${rawSession}' not found`);
   }

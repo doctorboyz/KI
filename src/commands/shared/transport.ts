@@ -1,5 +1,5 @@
 /**
- * aoi transport status — show transport layer connectivity.
+ * ki transport status — show transport layer connectivity.
  */
 
 import { getTransportRouter } from "../../transports";
@@ -42,7 +42,7 @@ export async function cmdTransportStatus() {
   if (!config.peers?.length) hints.push(`peers: "peers": ["http://host:3456"]`);
   if (!config.agents) hints.push(`agents: "agents": { "neo": "white" }`);
   if (hints.length > 0) {
-    console.log(`\n  \x1b[90mConfigure in aoi.config.json:\x1b[0m`);
+    console.log(`\n  \x1b[90mConfigure in ki.config.json:\x1b[0m`);
     for (const h of hints) console.log(`    \x1b[90m${h}\x1b[0m`);
   }
 

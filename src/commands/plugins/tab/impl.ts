@@ -29,16 +29,16 @@ async function listTabs(session: string): Promise<{ index: number; name: string;
 }
 
 /**
- * aoi tab          — list tabs in current session
- * aoi tab N        — peek tab N
- * aoi tab N "msg"  — hey tab N
- * aoi tab N --talk "msg" — talk-to tab N (future: #78)
+ * ki tab          — list tabs in current session
+ * ki tab N        — peek tab N
+ * ki tab N "msg"  — hey tab N
+ * ki tab N --talk "msg" — talk-to tab N (future: #78)
  */
 export async function cmdTab(tabArgs: string[]) {
   const session = await currentSession();
   const tabNum = tabArgs[0] ? parseInt(tabArgs[0], 10) : NaN;
 
-  // aoi tab — list all tabs
+  // ki tab — list all tabs
   if (isNaN(tabNum)) {
     const tabs = await listTabs(session);
     console.log(`\x1b[36m${session}\x1b[0m tabs:`);
@@ -61,7 +61,7 @@ export async function cmdTab(tabArgs: string[]) {
   const remaining = tabArgs.slice(1).filter(a => a !== "--force" && a !== "--talk");
   const force = tabArgs.includes("--force");
 
-  // aoi tab N — peek
+  // ki tab N — peek
   if (!remaining.length) {
     await cmdPeek(tab.name);
     return;
@@ -69,12 +69,12 @@ export async function cmdTab(tabArgs: string[]) {
 
   const message = remaining.join(" ");
 
-  // aoi tab N --talk "msg" — talk-to (MCP + hey)
+  // ki tab N --talk "msg" — talk-to (MCP + hey)
   if (hasTalk) {
     await cmdTalkTo(tab.name, message, force);
     return;
   }
 
-  // aoi tab N "msg" — hey
+  // ki tab N "msg" — hey
   await cmdSend(tab.name, message, force);
 }

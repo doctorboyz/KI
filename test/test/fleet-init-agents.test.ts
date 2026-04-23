@@ -39,14 +39,14 @@ describe("fleet init --agents (#215)", () => {
   test("adds missing local fleet windows to agents map", () => {
     const existing = {};
     const fleet: FleetSession[] = [
-      { windows: [{ name: "pulse-oracle" }, { name: "neo-oracle" }] },
-      { windows: [{ name: "mawjs-oracle" }] },
+      { windows: [{ name: "pulse-kappa" }, { name: "neo-kappa" }] },
+      { windows: [{ name: "mawjs-kappa" }] },
     ];
     const result = mergeAgents(existing, fleet, []);
     expect(result).toEqual({
-      "pulse-oracle": "local",
-      "neo-oracle": "local",
-      "mawjs-oracle": "local",
+      "pulse-kappa": "local",
+      "neo-kappa": "local",
+      "mawjs-kappa": "local",
     });
   });
 
@@ -55,15 +55,15 @@ describe("fleet init --agents (#215)", () => {
       // user manually pinned volt to mba (maybe it's on a different host)
       volt: "mba",
       // local override that should not be replaced even though fleet says "local"
-      "pulse-oracle": "white",
+      "pulse-kappa": "white",
     };
     const fleet: FleetSession[] = [
-      { windows: [{ name: "pulse-oracle" }, { name: "neo-oracle" }] },
+      { windows: [{ name: "pulse-kappa" }, { name: "neo-kappa" }] },
     ];
     const result = mergeAgents(existing, fleet, []);
     expect(result.volt).toBe("mba");               // untouched
-    expect(result["pulse-oracle"]).toBe("white");  // not replaced with "local"
-    expect(result["neo-oracle"]).toBe("local");    // new, added
+    expect(result["pulse-kappa"]).toBe("white");  // not replaced with "local"
+    expect(result["neo-kappa"]).toBe("local");    // new, added
   });
 
   test("adopts peer's local agents under peer.name", () => {
@@ -93,25 +93,25 @@ describe("fleet init --agents (#215)", () => {
   test("local wins over peer attribution when both present", () => {
     const existing = {};
     const fleet: FleetSession[] = [
-      { windows: [{ name: "mawjs-oracle" }] },
+      { windows: [{ name: "mawjs-kappa" }] },
     ];
     const peers: Peer[] = [
       {
         name: "white",
-        // white ALSO claims mawjs-oracle (it exists on both nodes as a bud)
-        agents: { "mawjs-oracle": "local" },
+        // white ALSO claims mawjs-kappa (it exists on both nodes as a bud)
+        agents: { "mawjs-kappa": "local" },
       },
     ];
     const result = mergeAgents(existing, fleet, peers);
-    // Local scan runs first, so mawjs-oracle gets "local" and the peer
+    // Local scan runs first, so mawjs-kappa gets "local" and the peer
     // adoption loop skips it because it's already present.
-    expect(result["mawjs-oracle"]).toBe("local");
+    expect(result["mawjs-kappa"]).toBe("local");
   });
 
   test("multi-peer merge without collisions", () => {
     const existing = {};
     const fleet: FleetSession[] = [
-      { windows: [{ name: "mawjs-oracle" }] },
+      { windows: [{ name: "mawjs-kappa" }] },
     ];
     const peers: Peer[] = [
       { name: "white", agents: { pulse: "local", floodboy: "local" } },
@@ -120,7 +120,7 @@ describe("fleet init --agents (#215)", () => {
     ];
     const result = mergeAgents(existing, fleet, peers);
     expect(result).toEqual({
-      "mawjs-oracle": "local",
+      "mawjs-kappa": "local",
       pulse: "white",
       floodboy: "white",
       homekeeper: "mba",
@@ -138,12 +138,12 @@ describe("fleet init --agents (#215)", () => {
   test("skips windows with missing name gracefully", () => {
     const existing = {};
     const fleet: FleetSession[] = [
-      { windows: [{ name: "" }, { name: "pulse-oracle" }] },
+      { windows: [{ name: "" }, { name: "pulse-kappa" }] },
       // @ts-expect-error — intentionally malformed window to exercise the guard
       { windows: [{ name: null }] },
     ];
     const result = mergeAgents(existing, fleet, []);
     // Only the valid window is added; empty/null are skipped.
-    expect(result).toEqual({ "pulse-oracle": "local" });
+    expect(result).toEqual({ "pulse-kappa": "local" });
   });
 });

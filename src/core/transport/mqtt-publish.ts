@@ -3,7 +3,7 @@
  * Publishes feed events to configurable broker.
  * Browser subscribes via CF Worker bridge.
  *
- * Config: aoi.config.json → mqttPublish: { broker: "mqtt://..." }
+ * Config: ki.config.json → mqttPublish: { broker: "mqtt://..." }
  */
 
 import mqtt from "mqtt";
@@ -17,7 +17,7 @@ function getClient(): mqtt.MqttClient | null {
   const broker = (config as any).mqttPublish?.broker;
   if (!broker) return null;
   client = mqtt.connect(broker, {
-    clientId: `aoi-${config.node ?? "local"}-${Date.now()}`,
+    clientId: `ki-${config.node ?? "local"}-${Date.now()}`,
     clean: true,
     reconnectPeriod: 5000,
   });

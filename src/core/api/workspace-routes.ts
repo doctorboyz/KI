@@ -18,8 +18,8 @@ function authWorkspace(
   const workspaceId = params.id;
   const url = new URL(request.url);
   const ws = authenticateWorkspace(workspaceId, request.method, url.pathname, {
-    sig: headers["x-aoi-signature"],
-    ts: headers["x-aoi-timestamp"],
+    sig: headers["x-ki-signature"],
+    ts: headers["x-ki-timestamp"],
   });
   if (!ws) return { error: "workspace auth failed" };
   return { ws };

@@ -21,23 +21,23 @@ export function applySyncDiff(
   const applied: string[] = [];
 
   for (const a of diff.add) {
-    agents[a.oracle] = a.peerNode;
-    applied.push(`+ agents['${a.oracle}'] = '${a.peerNode}'  (from peer '${a.fromPeer}')`);
+    agents[a.kappa] = a.peerNode;
+    applied.push(`+ agents['${a.kappa}'] = '${a.peerNode}'  (from peer '${a.fromPeer}')`);
   }
 
   if (opts.force) {
     for (const c of diff.conflict) {
-      agents[c.oracle] = c.proposed;
+      agents[c.kappa] = c.proposed;
       applied.push(
-        `~ agents['${c.oracle}']: '${c.current}' → '${c.proposed}'  (from peer '${c.fromPeer}', --force)`,
+        `~ agents['${c.kappa}']: '${c.current}' → '${c.proposed}'  (from peer '${c.fromPeer}', --force)`,
       );
     }
   }
 
   if (opts.prune) {
     for (const s of diff.stale) {
-      delete agents[s.oracle];
-      applied.push(`- agents['${s.oracle}']  (was '${s.peerNode}', no longer hosted there)`);
+      delete agents[s.kappa];
+      applied.push(`- agents['${s.kappa}']  (was '${s.peerNode}', no longer hosted there)`);
     }
   }
 

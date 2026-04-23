@@ -417,18 +417,18 @@ describe("invokePlugin — CLI -h/--help", () => {
   test("#388.1 — --help anywhere in args triggers help (not just args[0])", async () => {
     const plug: LoadedPlugin = {
       manifest: {
-        name: "oracle", version: "1", sdk: "*",
-        cli: { command: "oracle" },
+        name: "kappa", version: "1", sdk: "*",
+        cli: { command: "kappa" },
       },
       dir: "/d", wasmPath: "", kind: "ts",
     };
-    // Subcommand + flag: `maw oracle scan --help` pattern.
+    // Subcommand + flag: `maw kappa scan --help` pattern.
     const result = await invokePlugin(plug, {
       source: "cli",
       args: ["scan", "--help"],
     });
     expect(result.ok).toBe(true);
-    expect(result.output).toContain("oracle v1");
+    expect(result.output).toContain("kappa v1");
   });
 });
 

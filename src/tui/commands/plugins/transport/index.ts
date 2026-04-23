@@ -29,7 +29,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (!sub || sub === "status") {
       await cmdTransportStatus();
     } else {
-      logs.push("usage: aoi transport [status]");
+      logs.push("usage: ki transport [status]");
       return { ok: false, error: `unknown subcommand: ${sub}` };
     }
 

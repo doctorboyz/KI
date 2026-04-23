@@ -1,7 +1,7 @@
 /**
- * Tests for resolveFromWorktrees — the worktree fallback in resolveOracle.
+ * Tests for resolveFromWorktrees — the worktree fallback in resolveKappa.
  *
- * When ghq doesn't know about an oracle (e.g. on a machine where ghq isn't
+ * When ghq doesn't know about an kappa (e.g. on a machine where ghq isn't
  * configured or the ghq root was moved), but `maw ls` can see a worktree for
  * it, `maw wake` should still work. Nat's insight: "if we have a worktree we
  * have a git repo for sure."
@@ -13,14 +13,14 @@ import { describe, test, expect } from "bun:test";
 import { resolveFromWorktrees } from "../src/commands/shared/wake-resolve-impl";
 import type { WorktreeInfo } from "../src/core/fleet/worktrees-scan";
 
-const MAIN_PATH = "/home/user/ghq/github.com/Soul-Brews-Studio/wireboy-oracle";
+const MAIN_PATH = "/home/user/ghq/github.com/doctorboyz/wireboy-kappa";
 const GIT_COMMON = `${MAIN_PATH}/.git`;
 
 const orphanWorktree: WorktreeInfo = {
   path: `${MAIN_PATH}.wt-1-jera-pagination-srakaew`,
   branch: "(prunable)",
-  repo: "github.com/Soul-Brews-Studio/wireboy-oracle.wt-1-jera-pagination-srakaew",
-  mainRepo: "github.com/Soul-Brews-Studio/wireboy-oracle",
+  repo: "github.com/doctorboyz/wireboy-kappa.wt-1-jera-pagination-srakaew",
+  mainRepo: "github.com/doctorboyz/wireboy-kappa",
   name: "1-jera-pagination-srakaew",
   status: "orphan",
 };
@@ -31,7 +31,7 @@ const execGitCommon = async (cmd: string) => {
 };
 
 describe("resolveFromWorktrees — worktree fallback", () => {
-  test("resolves oracle when worktree exists and main repo is on disk", async () => {
+  test("resolves kappa when worktree exists and main repo is on disk", async () => {
     const result = await resolveFromWorktrees(
       "wireboy",
       async () => [orphanWorktree],
@@ -41,11 +41,11 @@ describe("resolveFromWorktrees — worktree fallback", () => {
 
     expect(result).not.toBeNull();
     expect(result!.repoPath).toBe(MAIN_PATH);
-    expect(result!.repoName).toBe("wireboy-oracle");
-    expect(result!.parentDir).toBe("/home/user/ghq/github.com/Soul-Brews-Studio");
+    expect(result!.repoName).toBe("wireboy-kappa");
+    expect(result!.parentDir).toBe("/home/user/ghq/github.com/doctorboyz");
   });
 
-  test("returns null when no worktree matches the oracle name", async () => {
+  test("returns null when no worktree matches the kappa name", async () => {
     const result = await resolveFromWorktrees(
       "notexist",
       async () => [orphanWorktree],
@@ -79,7 +79,7 @@ describe("resolveFromWorktrees — worktree fallback", () => {
     const active: WorktreeInfo = {
       ...orphanWorktree,
       status: "active",
-      tmuxWindow: "wireboy-oracle",
+      tmuxWindow: "wireboy-kappa",
     };
     const result = await resolveFromWorktrees(
       "wireboy",
@@ -91,12 +91,12 @@ describe("resolveFromWorktrees — worktree fallback", () => {
     expect(result!.repoPath).toBe(MAIN_PATH);
   });
 
-  test("picks the correct oracle when multiple worktrees are present", async () => {
+  test("picks the correct kappa when multiple worktrees are present", async () => {
     const otherWorktree: WorktreeInfo = {
-      path: "/home/user/ghq/github.com/Soul-Brews-Studio/neo-oracle.wt-1-feature",
+      path: "/home/user/ghq/github.com/doctorboyz/neo-kappa.wt-1-feature",
       branch: "main",
-      repo: "github.com/Soul-Brews-Studio/neo-oracle.wt-1-feature",
-      mainRepo: "github.com/Soul-Brews-Studio/neo-oracle",
+      repo: "github.com/doctorboyz/neo-kappa.wt-1-feature",
+      mainRepo: "github.com/doctorboyz/neo-kappa",
       name: "1-feature",
       status: "stale",
     };
@@ -115,7 +115,7 @@ describe("resolveFromWorktrees — worktree fallback", () => {
     );
 
     expect(result).not.toBeNull();
-    expect(result!.repoName).toBe("wireboy-oracle");
+    expect(result!.repoName).toBe("wireboy-kappa");
   });
 
   test("returns null for empty worktree list", async () => {

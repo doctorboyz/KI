@@ -1,5 +1,5 @@
 /**
- * wake-cmd.ts — cmdWake() is the `maw wake <oracle>` entry. Big branching:
+ * wake-cmd.ts — cmdWake() is the `maw wake <kappa>` entry. Big branching:
  *   - input normalize + -view reject
  *   - --incubate: ghq-clone slug, default wt
  *   - detectSession hit vs. miss (create new session, auto-register agent)
@@ -45,7 +45,7 @@ let mockActive = false;
 const _rWakeResolve = await import("../../src/commands/shared/wake-resolve");
 const realFetchIssuePrompt = _rWakeResolve.fetchIssuePrompt;
 const realFetchGitHubPrompt = _rWakeResolve.fetchGitHubPrompt;
-const realResolveOracle = _rWakeResolve.resolveOracle;
+const realResolveKappa = _rWakeResolve.resolveKappa;
 const realFindWorktrees = _rWakeResolve.findWorktrees;
 const realGetSessionMap = _rWakeResolve.getSessionMap;
 const realResolveFleetSession = _rWakeResolve.resolveFleetSession;
@@ -83,9 +83,9 @@ const realCmdSplit = _rSplit.cmdSplit;
 // ─── State captured by mock wrappers (reset per-test) ───────────────────────
 
 // wake-resolve
-let resolveOracleReturn: { repoPath: string; repoName: string; parentDir: string } | Error = {
-  repoPath: "/ghq/github.com/Org/foo-oracle",
-  repoName: "foo-oracle",
+let resolveKappaReturn: { repoPath: string; repoName: string; parentDir: string } | Error = {
+  repoPath: "/ghq/github.com/Org/foo-kappa",
+  repoName: "foo-kappa",
   parentDir: "/ghq/github.com/Org",
 };
 let findWorktreesReturn: { path: string; name: string }[] = [];
@@ -98,20 +98,20 @@ let setSessionEnvCalls: string[] = [];
 let attachToSessionCalls: string[] = [];
 let ensureSessionRunningCalls: Array<{ session: string; excludeNames: Set<string> | undefined }> = [];
 let ensureSessionRunningReturn = 0;
-let createWorktreeCalls: Array<{ repoPath: string; oracle: string; name: string }> = [];
+let createWorktreeCalls: Array<{ repoPath: string; kappa: string; name: string }> = [];
 let createWorktreeReturn: { wtPath: string; windowName: string } = {
-  wtPath: "/ghq/Org/foo-oracle.wt-1-task",
+  wtPath: "/ghq/Org/foo-kappa.wt-1-task",
   windowName: "foo-1-task",
 };
 // ghq
-let ghqFindReturn: string | null = "/ghq/github.com/Org/foo-oracle";
+let ghqFindReturn: string | null = "/ghq/github.com/Org/foo-kappa";
 let ghqFindCalls: string[] = [];
 // config
 let configOverride: any = {
   host: "local",
   port: 3456,
   ghqRoot: "/ghq",
-  oracleUrl: "http://localhost:47779",
+  kappaUrl: "http://localhost:47779",
   env: {},
   commands: { default: "claude" },
   sessions: {},
@@ -141,10 +141,10 @@ mock.module(
   () => ({
     fetchIssuePrompt: (...a: any[]) => (mockActive ? "" : (realFetchIssuePrompt as any)(...a)),
     fetchGitHubPrompt: (...a: any[]) => (mockActive ? "" : (realFetchGitHubPrompt as any)(...a)),
-    resolveOracle: async (oracle: string) => {
-      if (!mockActive) return realResolveOracle(oracle);
-      if (resolveOracleReturn instanceof Error) throw resolveOracleReturn;
-      return resolveOracleReturn;
+    resolveKappa: async (kappa: string) => {
+      if (!mockActive) return realResolveKappa(kappa);
+      if (resolveKappaReturn instanceof Error) throw resolveKappaReturn;
+      return resolveKappaReturn;
     },
     findWorktrees: async (parentDir: string, repoName: string) => {
       if (!mockActive) return realFindWorktrees(parentDir, repoName);
@@ -153,10 +153,10 @@ mock.module(
       return findWorktreesReturn;
     },
     getSessionMap: () => (mockActive ? sessionMapReturn : realGetSessionMap()),
-    resolveFleetSession: (oracle: string) =>
-      mockActive ? resolveFleetSessionReturn : realResolveFleetSession(oracle),
-    detectSession: async (oracle: string) =>
-      mockActive ? detectSessionReturn : realDetectSession(oracle),
+    resolveFleetSession: (kappa: string) =>
+      mockActive ? resolveFleetSessionReturn : realResolveFleetSession(kappa),
+    detectSession: async (kappa: string) =>
+      mockActive ? detectSessionReturn : realDetectSession(kappa),
     setSessionEnv: async (session: string) => {
       if (!mockActive) return realSetSessionEnv(session);
       setSessionEnvCalls.push(session);
@@ -182,7 +182,7 @@ mock.module(
       if (!mockActive) return (realCreateWorktree as any)(...args);
       createWorktreeCalls.push({
         repoPath: args[0] as string,
-        oracle: args[3] as string,
+        kappa: args[3] as string,
         name: args[4] as string,
       });
       return createWorktreeReturn;
@@ -310,9 +310,9 @@ beforeEach(() => {
   console.log = () => {};
   console.error = () => {};
   mockActive = true;
-  resolveOracleReturn = {
-    repoPath: "/ghq/github.com/Org/foo-oracle",
-    repoName: "foo-oracle",
+  resolveKappaReturn = {
+    repoPath: "/ghq/github.com/Org/foo-kappa",
+    repoName: "foo-kappa",
     parentDir: "/ghq/github.com/Org",
   };
   findWorktreesReturn = [];
@@ -326,16 +326,16 @@ beforeEach(() => {
   ensureSessionRunningReturn = 0;
   createWorktreeCalls = [];
   createWorktreeReturn = {
-    wtPath: "/ghq/Org/foo-oracle.wt-1-task",
+    wtPath: "/ghq/Org/foo-kappa.wt-1-task",
     windowName: "foo-1-task",
   };
-  ghqFindReturn = "/ghq/github.com/Org/foo-oracle";
+  ghqFindReturn = "/ghq/github.com/Org/foo-kappa";
   ghqFindCalls = [];
   configOverride = {
     host: "local",
     port: 3456,
     ghqRoot: "/ghq",
-    oracleUrl: "http://localhost:47779",
+    kappaUrl: "http://localhost:47779",
     env: {},
     commands: { default: "claude" },
     sessions: {},
@@ -373,13 +373,13 @@ afterAll(() => {
 // Little helpers
 const tmuxOp = (op: string) => tmuxCalls.filter(c => c.op === op);
 
-// ─── 1. Input validation (normalizeTarget + assertValidOracleName) ──────────
+// ─── 1. Input validation (normalizeTarget + assertValidKappaName) ──────────
 
 describe("cmdWake — input validation", () => {
-  test("strips trailing `/` from oracle name (tab-completion artifact)", async () => {
+  test("strips trailing `/` from kappa name (tab-completion artifact)", async () => {
     await cmdWake("foo/", {});
-    // resolveOracle would be called with the normalized name
-    // We can't directly spy on it, but tmux.newSession uses session=oracle
+    // resolveKappa would be called with the normalized name
+    // We can't directly spy on it, but tmux.newSession uses session=kappa
     // (via fallback chain) → session param should be 'foo', not 'foo/'.
     const newSess = tmuxOp("newSession");
     expect(newSess).toHaveLength(1);
@@ -397,7 +397,7 @@ describe("cmdWake — input validation", () => {
     try { await cmdWake("foo-view", {}); } catch (e) { caught = e as Error; }
     expect(caught).not.toBeNull();
     expect(caught!.message).toContain("cannot end in '-view'");
-    // Never reached resolveOracle / tmux
+    // Never reached resolveKappa / tmux
     expect(tmuxCalls).toHaveLength(0);
   });
 });
@@ -443,14 +443,14 @@ describe("cmdWake — --incubate", () => {
 // ─── 3. No session exists — new session creation ────────────────────────────
 
 describe("cmdWake — new session creation (detectSession miss)", () => {
-  test("tmux.newSession called with oracle name + main window + cwd=repoPath", async () => {
+  test("tmux.newSession called with kappa name + main window + cwd=repoPath", async () => {
     detectSessionReturn = null;
     await cmdWake("foo", {});
 
     const newSess = tmuxOp("newSession");
     expect(newSess).toHaveLength(1);
     expect(newSess[0].args[0]).toBe("foo");
-    expect(newSess[0].args[1]).toMatchObject({ window: "foo-oracle", cwd: "/ghq/github.com/Org/foo-oracle" });
+    expect(newSess[0].args[1]).toMatchObject({ window: "foo-kappa", cwd: "/ghq/github.com/Org/foo-kappa" });
   });
 
   test("setSessionEnv invoked after new session with the resolved session name", async () => {
@@ -462,11 +462,11 @@ describe("cmdWake — new session creation (detectSession miss)", () => {
     await cmdWake("foo", {});
     const sends = tmuxOp("sendText");
     // First sendText is for main window
-    expect(sends[0].args[0]).toBe("foo:foo-oracle");
-    expect(sends[0].args[1]).toBe("CMD[foo-oracle@/ghq/github.com/Org/foo-oracle]");
+    expect(sends[0].args[0]).toBe("foo:foo-kappa");
+    expect(sends[0].args[1]).toBe("CMD[foo-kappa@/ghq/github.com/Org/foo-kappa]");
   });
 
-  test("agent auto-registered in config.agents when oracle absent", async () => {
+  test("agent auto-registered in config.agents when kappa absent", async () => {
     configOverride.agents = { other: "remote" };
     configOverride.node = "green";
     await cmdWake("foo", {});
@@ -481,7 +481,7 @@ describe("cmdWake — new session creation (detectSession miss)", () => {
     expect(saveConfigCalls).toHaveLength(0);
   });
 
-  test("session name uses getSessionMap → resolveFleetSession → oracle fallback chain (map hit)", async () => {
+  test("session name uses getSessionMap → resolveFleetSession → kappa fallback chain (map hit)", async () => {
     sessionMapReturn = { foo: "custom-session" };
     await cmdWake("foo", {});
     const newSess = tmuxOp("newSession");
@@ -498,8 +498,8 @@ describe("cmdWake — new session creation (detectSession miss)", () => {
 
   test("spawns worktree windows when --task/--wt not set", async () => {
     findWorktreesReturn = [
-      { path: "/ghq/org/foo-oracle.wt-1-alpha", name: "1-alpha" },
-      { path: "/ghq/org/foo-oracle.wt-2-beta", name: "2-beta" },
+      { path: "/ghq/org/foo-kappa.wt-1-alpha", name: "1-alpha" },
+      { path: "/ghq/org/foo-kappa.wt-2-beta", name: "2-beta" },
     ];
     await cmdWake("foo", {});
 
@@ -513,8 +513,8 @@ describe("cmdWake — new session creation (detectSession miss)", () => {
   test("worktree name collision → falls back to full wt.name", async () => {
     // Two worktrees that strip to same taskPart — second should use raw name.
     findWorktreesReturn = [
-      { path: "/ghq/org/foo-oracle.wt-1-alpha", name: "1-alpha" },
-      { path: "/ghq/org/foo-oracle.wt-2-alpha", name: "2-alpha" },
+      { path: "/ghq/org/foo-kappa.wt-1-alpha", name: "1-alpha" },
+      { path: "/ghq/org/foo-kappa.wt-2-alpha", name: "2-alpha" },
     ];
     await cmdWake("foo", {});
     const names = tmuxOp("newWindow").map(c => c.args[1] as string);
@@ -529,7 +529,7 @@ describe("cmdWake — existing session (detectSession hit)", () => {
   test("listWindows queried → preExistingWindows honored", async () => {
     detectSessionReturn = "foo";
     tmuxListWindowsByName["foo"] = [
-      { index: 0, name: "foo-oracle", active: true },
+      { index: 0, name: "foo-kappa", active: true },
     ];
     await cmdWake("foo", {});
 
@@ -542,12 +542,12 @@ describe("cmdWake — existing session (detectSession hit)", () => {
   test("respawns missing worktree windows only (skip already-present)", async () => {
     detectSessionReturn = "foo";
     tmuxListWindowsByName["foo"] = [
-      { index: 0, name: "foo-oracle", active: true },
+      { index: 0, name: "foo-kappa", active: true },
       { index: 1, name: "foo-alpha", active: false },
     ];
     findWorktreesReturn = [
-      { path: "/ghq/org/foo-oracle.wt-1-alpha", name: "1-alpha" }, // already exists
-      { path: "/ghq/org/foo-oracle.wt-2-beta", name: "2-beta" },   // missing
+      { path: "/ghq/org/foo-kappa.wt-1-alpha", name: "1-alpha" }, // already exists
+      { path: "/ghq/org/foo-kappa.wt-2-beta", name: "2-beta" },   // missing
     ];
     await cmdWake("foo", {});
 
@@ -559,14 +559,14 @@ describe("cmdWake — existing session (detectSession hit)", () => {
   test("ensureSessionRunning called with preExistingWindows set", async () => {
     detectSessionReturn = "foo";
     tmuxListWindowsByName["foo"] = [
-      { index: 0, name: "foo-oracle", active: true },
+      { index: 0, name: "foo-kappa", active: true },
     ];
     ensureSessionRunningReturn = 2;
     await cmdWake("foo", {});
 
     expect(ensureSessionRunningCalls).toHaveLength(1);
     expect(ensureSessionRunningCalls[0].session).toBe("foo");
-    expect(ensureSessionRunningCalls[0].excludeNames?.has("foo-oracle")).toBe(true);
+    expect(ensureSessionRunningCalls[0].excludeNames?.has("foo-kappa")).toBe(true);
   });
 });
 
@@ -575,26 +575,26 @@ describe("cmdWake — existing session (detectSession hit)", () => {
 describe("cmdWake — --list-wt", () => {
   test("returns session:window and logs each worktree", async () => {
     detectSessionReturn = "foo";
-    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-oracle", active: true }];
+    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-kappa", active: true }];
     findWorktreesReturn = [
-      { path: "/ghq/org/foo-oracle.wt-1-a", name: "1-a" },
+      { path: "/ghq/org/foo-kappa.wt-1-a", name: "1-a" },
     ];
     const logs: string[] = [];
     console.log = (...a) => { logs.push(a.map(String).join(" ")); };
 
     const ret = await cmdWake("foo", { listWt: true });
-    expect(ret).toBe("foo:foo-oracle");
+    expect(ret).toBe("foo:foo-kappa");
     // Listing block logs the worktree name
     expect(logs.some(l => l.includes("1-a"))).toBe(true);
   });
 
   test("no worktrees → returns session:window without error", async () => {
     detectSessionReturn = "foo";
-    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-oracle", active: true }];
+    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-kappa", active: true }];
     findWorktreesReturn = [];
 
     const ret = await cmdWake("foo", { listWt: true });
-    expect(ret).toBe("foo:foo-oracle");
+    expect(ret).toBe("foo:foo-kappa");
   });
 });
 
@@ -603,9 +603,9 @@ describe("cmdWake — --list-wt", () => {
 describe("cmdWake — --task / --new-wt worktree resolution", () => {
   test("exact match on existing worktree → reuses (no createWorktree)", async () => {
     detectSessionReturn = "foo";
-    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-oracle", active: true }];
+    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-kappa", active: true }];
     findWorktreesReturn = [
-      { path: "/ghq/Org/foo-oracle.wt-1-payments", name: "1-payments" },
+      { path: "/ghq/Org/foo-kappa.wt-1-payments", name: "1-payments" },
     ];
     // resolveWorktreeTarget("payments", ...) will match "1-payments" via suffix
     await cmdWake("foo", { task: "payments" });
@@ -618,10 +618,10 @@ describe("cmdWake — --task / --new-wt worktree resolution", () => {
 
   test("no match → createWorktree is called with sanitized name", async () => {
     detectSessionReturn = "foo";
-    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-oracle", active: true }];
+    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-kappa", active: true }];
     findWorktreesReturn = [];
     createWorktreeReturn = {
-      wtPath: "/ghq/Org/foo-oracle.wt-1-my-task",
+      wtPath: "/ghq/Org/foo-kappa.wt-1-my-task",
       windowName: "foo-my-task",
     };
 
@@ -629,14 +629,14 @@ describe("cmdWake — --task / --new-wt worktree resolution", () => {
 
     expect(createWorktreeCalls).toHaveLength(1);
     expect(createWorktreeCalls[0].name).toBe("my-task"); // sanitizeBranchName lowercases/strips
-    expect(createWorktreeCalls[0].oracle).toBe("foo");
+    expect(createWorktreeCalls[0].kappa).toBe("foo");
   });
 
   test("--fresh skips resolveWorktreeTarget even when exact match exists", async () => {
     detectSessionReturn = "foo";
-    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-oracle", active: true }];
+    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-kappa", active: true }];
     findWorktreesReturn = [
-      { path: "/ghq/Org/foo-oracle.wt-1-existing", name: "1-existing" },
+      { path: "/ghq/Org/foo-kappa.wt-1-existing", name: "1-existing" },
     ];
 
     await cmdWake("foo", { task: "existing", fresh: true });
@@ -646,10 +646,10 @@ describe("cmdWake — --task / --new-wt worktree resolution", () => {
 
   test("ambiguous match throws with candidate list", async () => {
     detectSessionReturn = "foo";
-    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-oracle", active: true }];
+    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-kappa", active: true }];
     findWorktreesReturn = [
-      { path: "/ghq/Org/foo-oracle.wt-1-pay-v1", name: "1-pay-v1" },
-      { path: "/ghq/Org/foo-oracle.wt-2-pay-v2", name: "2-pay-v2" },
+      { path: "/ghq/Org/foo-kappa.wt-1-pay-v1", name: "1-pay-v1" },
+      { path: "/ghq/Org/foo-kappa.wt-2-pay-v2", name: "2-pay-v2" },
     ];
 
     let caught: Error | null = null;
@@ -662,7 +662,7 @@ describe("cmdWake — --task / --new-wt worktree resolution", () => {
 
   test("--wt uses the same resolution path as --task", async () => {
     detectSessionReturn = "foo";
-    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-oracle", active: true }];
+    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-kappa", active: true }];
     findWorktreesReturn = [];
     await cmdWake("foo", { wt: "newone" });
     expect(createWorktreeCalls).toHaveLength(1);
@@ -675,7 +675,7 @@ describe("cmdWake — --task / --new-wt worktree resolution", () => {
 describe("cmdWake — --prompt handling", () => {
   test("prompt sent with -p 'escaped' when creating fresh window", async () => {
     detectSessionReturn = "foo";
-    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-oracle", active: true }];
+    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-kappa", active: true }];
     await cmdWake("foo", { prompt: "hello" });
 
     // Last sendText is the new main window with prompt
@@ -686,7 +686,7 @@ describe("cmdWake — --prompt handling", () => {
 
   test("single quotes in prompt → escaped via '\\'' shell trick", async () => {
     detectSessionReturn = "foo";
-    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-oracle", active: true }];
+    tmuxListWindowsByName["foo"] = [{ index: 0, name: "foo-kappa", active: true }];
     await cmdWake("foo", { prompt: "it's alive" });
 
     const sends = tmuxOp("sendText");
@@ -697,7 +697,7 @@ describe("cmdWake — --prompt handling", () => {
   test("existing window + prompt → selectWindow then sendText with -p", async () => {
     detectSessionReturn = "foo";
     tmuxListWindowsByName["foo"] = [
-      { index: 0, name: "foo-oracle", active: true },
+      { index: 0, name: "foo-kappa", active: true },
     ];
 
     await cmdWake("foo", { prompt: "hi" });
@@ -705,7 +705,7 @@ describe("cmdWake — --prompt handling", () => {
     // Selected the pre-existing main window
     expect(tmuxOp("selectWindow").length).toBeGreaterThanOrEqual(1);
     const selects = tmuxOp("selectWindow");
-    expect(selects[0].args[0]).toBe("foo:foo-oracle");
+    expect(selects[0].args[0]).toBe("foo:foo-kappa");
   });
 
   test("fresh window + prompt → newWindow, then sendText with -p 'escaped'", async () => {
@@ -734,7 +734,7 @@ describe("cmdWake — --attach", () => {
   test("existing window + --attach → selectWindow then attach", async () => {
     detectSessionReturn = "foo";
     tmuxListWindowsByName["foo"] = [
-      { index: 0, name: "foo-oracle", active: true },
+      { index: 0, name: "foo-kappa", active: true },
     ];
     await cmdWake("foo", { attach: true });
 
@@ -789,22 +789,22 @@ describe("cmdWake — tail effects", () => {
 
   test("returns 'session:window' identifier", async () => {
     const ret = await cmdWake("foo", {});
-    expect(ret).toBe("foo:foo-oracle");
+    expect(ret).toBe("foo:foo-kappa");
   });
 });
 
 // ─── 11. Existing window NN-prefix sibling match ────────────────────────────
 
 describe("cmdWake — existing window detection", () => {
-  test("finds existing window by `${oracle}-\\d+-${name}` sibling pattern", async () => {
+  test("finds existing window by `${kappa}-\\d+-${name}` sibling pattern", async () => {
     detectSessionReturn = "foo";
-    // The main foo-oracle plus a sibling worktree window named foo-1-alpha.
+    // The main foo-kappa plus a sibling worktree window named foo-1-alpha.
     tmuxListWindowsByName["foo"] = [
-      { index: 0, name: "foo-oracle", active: true },
+      { index: 0, name: "foo-kappa", active: true },
       { index: 1, name: "foo-1-alpha", active: false },
     ];
     findWorktreesReturn = [
-      { path: "/ghq/Org/foo-oracle.wt-1-alpha", name: "1-alpha" },
+      { path: "/ghq/Org/foo-kappa.wt-1-alpha", name: "1-alpha" },
     ];
     // --task "alpha" → sanitized = "alpha" → resolveWorktreeTarget finds 1-alpha
     // → reuses, windowName = "foo-alpha". Then sibling scan matches foo-1-alpha.

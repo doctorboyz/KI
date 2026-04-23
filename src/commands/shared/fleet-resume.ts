@@ -2,39 +2,39 @@ import { hostExec as ssh, tmux } from "../../sdk";
 import { loadConfig, buildCommand } from "../../core/config";
 import type { FleetSession } from "./fleet-load";
 
-/** After fleet spawn, send /recap to oracles with active Pulse board items */
+/** After fleet spawn, send /recap to kappas with active Pulse board items */
 export async function resumeActiveItems() {
-  const repo = "laris-co/pulse-oracle";
+  const repo = "laris-co/pulse-kappa";
   try {
     const issuesJson = await ssh(
       `gh issue list --repo ${repo} --state open --json number,title,labels --limit 50`
     );
     const issues: { number: number; title: string; labels: { name: string }[] }[] = JSON.parse(issuesJson || "[]");
 
-    // Find issues assigned to oracles (label: oracle:<name>)
-    const oracleItems = issues
+    // Find issues assigned to kappas (label: kappa:<name>)
+    const kappaItems = issues
       .filter(i => !i.labels.some(l => l.name === "daily-thread"))
       .map(i => ({
         ...i,
-        oracle: i.labels.find(l => l.name.startsWith("oracle:"))?.name.replace("oracle:", ""),
+        kappa: i.labels.find(l => l.name.startsWith("kappa:"))?.name.replace("kappa:", ""),
       }))
-      .filter(i => i.oracle);
+      .filter(i => i.kappa);
 
-    if (!oracleItems.length) {
+    if (!kappaItems.length) {
       console.log("  \x1b[90mNo active board items to resume.\x1b[0m");
       return;
     }
 
-    // Group by oracle, send /recap once per oracle
-    const byOracle = new Map<string, typeof oracleItems>();
-    for (const item of oracleItems) {
-      const list = byOracle.get(item.oracle!) || [];
+    // Group by kappa, send /recap once per kappa
+    const byKappa = new Map<string, typeof kappaItems>();
+    for (const item of kappaItems) {
+      const list = byKappa.get(item.kappa!) || [];
       list.push(item);
-      byOracle.set(item.oracle!, list);
+      byKappa.set(item.kappa!, list);
     }
 
-    for (const [oracle, items] of byOracle) {
-      const windowName = `${oracle}-oracle`;
+    for (const [kappa, items] of byKappa) {
+      const windowName = `${kappa}-kappa`;
       // Find which session has this window
       const sessions = await tmux.listSessions();
       for (const sess of sessions) {
@@ -46,7 +46,7 @@ export async function resumeActiveItems() {
             // Wait for Claude to be ready (give it time to start)
             await new Promise(r => setTimeout(r, 2000));
             await tmux.sendText(`${sess.name}:${win.name}`, `/recap --deep — Resume after reboot. Active items: ${titles}`);
-            console.log(`  \x1b[32m↻\x1b[0m ${oracle}: /recap sent (${titles})`);
+            console.log(`  \x1b[32m↻\x1b[0m ${kappa}: /recap sent (${titles})`);
             break;
           }
         } catch { /* window not found in this session */ }
@@ -69,12 +69,12 @@ export async function respawnMissingWorktrees(sessions: FleetSession[]): Promise
   for (const sess of sessions) {
     if (sess.skip_command) continue;
 
-    // Find oracle main windows (pattern: {name}-oracle)
-    const mainWindows = sess.windows.filter(w => w.name.endsWith("-oracle"));
+    // Find kappa main windows (pattern: {name}-kappa)
+    const mainWindows = sess.windows.filter(w => w.name.endsWith("-kappa"));
     const registeredNames = new Set(sess.windows.map(w => w.name));
 
     for (const main of mainWindows) {
-      const oracleName = main.name.replace(/-oracle$/, "");
+      const kappaName = main.name.replace(/-kappa$/, "");
       const repoPath = `${ghqRoot}/${main.repo}`;
       const repoName = main.repo.split("/").pop()!;
       const parentDir = repoPath.replace(/\/[^/]+$/, "");
@@ -98,14 +98,14 @@ export async function respawnMissingWorktrees(sessions: FleetSession[]): Promise
         const wtBase = wtPath.split("/").pop()!;
         const suffix = wtBase.replace(`${repoName}.wt-`, "");
         const taskPart = suffix.replace(/^\d+-/, "");
-        let windowName = `${oracleName}-${taskPart}`;
+        let windowName = `${kappaName}-${taskPart}`;
         if (usedNames.has(windowName)) {
           // If collision is with fleet config or running window, this worktree is already covered
           if (registeredNames.has(windowName) || runningWindows.includes(windowName)) continue;
           // True collision with another worktree in this loop → use numbered fallback
-          windowName = `${oracleName}-${suffix}`;
+          windowName = `${kappaName}-${suffix}`;
         }
-        const altName = `${oracleName}-${suffix}`; // old-style name with number
+        const altName = `${kappaName}-${suffix}`; // old-style name with number
 
         // Skip if already registered in fleet config or running
         if (registeredNames.has(windowName) || registeredNames.has(altName)) continue;

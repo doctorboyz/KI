@@ -39,7 +39,7 @@ export class TmuxTransport implements Transport {
       let tmuxTarget = target.tmuxTarget;
       if (!tmuxTarget) {
         const sessions = await listSessions();
-        tmuxTarget = findWindow(sessions, target.oracle) ?? undefined;
+        tmuxTarget = findWindow(sessions, target.kappa) ?? undefined;
         if (!tmuxTarget) return false;
       }
 
@@ -53,7 +53,7 @@ export class TmuxTransport implements Transport {
   /** Presence is handled by the StatusDetector — no-op here */
   async publishPresence(_presence: TransportPresence): Promise<void> {}
 
-  /** Feed events are handled by the AoiEngine — no-op here */
+  /** Feed events are handled by the KiEngine — no-op here */
   async publishFeed(_event: FeedEvent): Promise<void> {}
 
   onMessage(handler: (msg: TransportMessage) => void) {

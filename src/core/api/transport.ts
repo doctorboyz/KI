@@ -23,18 +23,18 @@ transportApi.get("/transport/status", () => {
 
 // POST /api/transport/send — send a message through the transport router
 transportApi.post("/transport/send", async ({ body }) => {
-  const { oracle, host, message, from } = body as TTransportSendBody;
+  const { kappa, host, message, from } = body as TTransportSendBody;
 
   const router = getTransportRouter();
   const result = await router.send(
-    { oracle, host: host || undefined },
+    { kappa, host: host || undefined },
     message,
     from || "api",
   );
 
   return {
     ...result,
-    target: oracle,
+    target: kappa,
     host: host || "local",
   };
 }, {

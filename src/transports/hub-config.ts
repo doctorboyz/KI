@@ -9,7 +9,7 @@ export const HEARTBEAT_MS = 30_000;
 export const RECONNECT_BASE_MS = 1_000;
 export const RECONNECT_MAX_MS = 60_000;
 
-/** Workspace config from ~/.config/aoi/workspaces/*.json */
+/** Workspace config from ~/.config/ki/workspaces/*.json */
 export interface WorkspaceConfig {
   id: string;
   hubUrl: string;        // "wss://hub.example.com" or "ws://vps:3456"
@@ -17,7 +17,7 @@ export interface WorkspaceConfig {
   sharedAgents: string[];
 }
 
-/** Load all workspace configs from ~/.config/aoi/workspaces/*.json */
+/** Load all workspace configs from ~/.config/ki/workspaces/*.json */
 export function loadWorkspaceConfigs(): WorkspaceConfig[] {
   if (!existsSync(WORKSPACES_DIR)) {
     mkdirSync(WORKSPACES_DIR, { recursive: true });

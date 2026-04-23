@@ -18,8 +18,8 @@ export interface FleetInitAgentsResult {
  *     the peer marks as "local" → agents[name] = peer.name (unless already set)
  *   - Never overwrites user-set values, never deletes
  *
- * Fixes the drift reported in #215 (boonkeeper on oracle-world had a stale
- * agents map that cost vpnkeeper 30+ minutes diagnosing a `aoi hey volt`
+ * Fixes the drift reported in #215 (boonkeeper on kappa-world had a stale
+ * agents map that cost vpnkeeper 30+ minutes diagnosing a `ki hey volt`
  * failure). Additive-only preserves any hand-tuned overrides.
  */
 export async function cmdFleetInitAgents(

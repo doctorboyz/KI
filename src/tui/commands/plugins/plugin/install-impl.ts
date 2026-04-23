@@ -1,8 +1,8 @@
 /**
- * aoi plugin install <src>
+ * ki plugin install <src>
  *
  * Accepts three source types (detected by prefix / extension):
- *   • Directory   — e.g. ./hello/            → symlink to ~/.aoi/plugins/<name>/
+ *   • Directory   — e.g. ./hello/            → symlink to ~/.ki/plugins/<name>/
  *                                              label: "linked (dev)"
  *   • Tarball     — e.g. ./hello-0.1.0.tgz  → extract + hash verify
  *                                              label: "installed (sha256:abc…)"
@@ -14,11 +14,11 @@
  *
  * Phase A labels output (per plan §Author-facing surface):
  *   ✓ <name>@<version> installed
- *     sdk: <range> ✓ (aoi <version>)
+ *     sdk: <range> ✓ (ki <version>)
  *     capabilities: <list>
  *     mode: linked (dev) | installed (sha256:<prefix>…)
- *     dir: ~/.aoi/plugins/<name>
- *   try: aoi <name>
+ *     dir: ~/.ki/plugins/<name>
+ *   try: ki <name>
  */
 
 import { parseFlags } from "../../../../cli-src/parse-args";
@@ -53,7 +53,7 @@ export async function cmdPluginInstall(args: string[]): Promise<void> {
   const src = flags._[0];
 
   if (!src || src === "--help" || src === "-h") {
-    throw new Error("usage: aoi plugin install <dir | .tgz | URL> [--link] [--force] [--pin] [--category core|standard|extra]");
+    throw new Error("usage: ki plugin install <dir | .tgz | URL> [--link] [--force] [--pin] [--category core|standard|extra]");
   }
 
   ensureInstallRoot();

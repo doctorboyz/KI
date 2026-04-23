@@ -1,12 +1,12 @@
 /**
- * aoi plugin build [dir] [--watch] [--types]
+ * ki plugin build [dir] [--watch] [--types]
  *
  * Phase B bundler (Wave 1A):
  *   1. Read + validate <dir>/plugin.json (reject target:"wasm" → Phase C).
  *   2. `bun build src/index.ts --outfile dist/index.js --target=bun --format=esm`
  *      (SDK bundled into plugin — no external flag, per sdk-foundation's plan).
  *   3. AST-based capability inference (Phase B default). Regex path kept behind
- *      AOI_PLUGIN_CAP_INFER=regex for rollback. Default: AOI_PLUGIN_CAP_INFER=ast.
+ *      KI_PLUGIN_CAP_INFER=regex for rollback. Default: KI_PLUGIN_CAP_INFER=ast.
  *   4. sha256 of the bundle, prefixed "sha256:" per architect's schema.
  *   5. Emit dist/plugin.json — copy of source manifest with capabilities filled
  *      in and artifact.{path,sha256} rewritten to the built bundle.
@@ -14,7 +14,7 @@
  *   7. [--types only] Run tsc --emitDeclarationOnly → dist/<name>.d.ts
  *      Phase B Wave 1C (#340): opt-in typed output for plugin authors.
  *
- * Feature flag: AOI_PLUGIN_CAP_INFER=regex|ast (default: ast)
+ * Feature flag: KI_PLUGIN_CAP_INFER=regex|ast (default: ast)
  *   Set to "regex" to fall back to Phase A regex inference if AST hits edge cases.
  *
  * Invariant: AST outputs are equal-or-stricter than regex. Never more permissive.
@@ -29,19 +29,19 @@ import { inferCapabilitiesAst } from "../../../plugin/cap-infer-ast";
 // ─── Capability inference ────────────────────────────────────────────────────
 
 /**
- * Phase A regex rules over source. Kept as fallback behind AOI_PLUGIN_CAP_INFER=regex.
+ * Phase A regex rules over source. Kept as fallback behind KI_PLUGIN_CAP_INFER=regex.
  *
  * Blind spots (all caught by Phase B AST path):
- *   • Destructured usage: `const { identity } = aoi; identity()` — escapes `aoi\.(\w+)`
- *   • Aliased binding: `const m = aoi; m.identity()` — escapes `aoi\.` regex
- *   • Bracket access: `aoi["wake"]()` — escapes `aoi\.\w+` regex
+ *   • Destructured usage: `const { identity } = ki; identity()` — escapes `ki\.(\w+)`
+ *   • Aliased binding: `const m = ki; m.identity()` — escapes `ki\.` regex
+ *   • Bracket access: `ki["wake"]()` — escapes `ki\.\w+` regex
  *   • Dynamic require/import of risky modules not caught by static import regex
  */
 export function inferCapabilitiesRegex(source: string): string[] {
   const caps = new Set<string>();
 
-  // aoi.<verb> — SDK method access
-  for (const m of source.matchAll(/\baoi\.(\w+)\b/g)) {
+  // ki.<verb> — SDK method access
+  for (const m of source.matchAll(/\bki\.(\w+)\b/g)) {
     caps.add(`sdk:${m[1]}`);
   }
 
@@ -50,23 +50,23 @@ export function inferCapabilitiesRegex(source: string): string[] {
   if (/import\s+[^;]*?['"]node:child_process['"]/.test(source)) caps.add("proc:spawn");
   if (/import\s+[^;]*?['"]bun:ffi['"]/.test(source)) caps.add("ffi:any");
 
-  // global fetch() — not a member access (aoi.fetch() is caught by sdk:fetch above)
+  // global fetch() — not a member access (ki.fetch() is caught by sdk:fetch above)
   if (/(?:^|[^.\w])fetch\s*\(/.test(source)) caps.add("net:fetch");
 
   return [...caps].sort();
 }
 
 /**
- * inferCapabilities — dispatch to AST or regex based on AOI_PLUGIN_CAP_INFER.
+ * inferCapabilities — dispatch to AST or regex based on KI_PLUGIN_CAP_INFER.
  *
- * Default: "ast" (Phase B). Set AOI_PLUGIN_CAP_INFER=regex to fall back to
+ * Default: "ast" (Phase B). Set KI_PLUGIN_CAP_INFER=regex to fall back to
  * Phase A regex inference.
  *
  * The exported name `inferCapabilities` is kept stable so callers (build,
  * install, check commands) and existing tests don't change.
  */
 export function inferCapabilities(source: string, fileName?: string): string[] {
-  const mode = process.env.AOI_PLUGIN_CAP_INFER ?? "ast";
+  const mode = process.env.KI_PLUGIN_CAP_INFER ?? "ast";
   if (mode === "regex") {
     return inferCapabilitiesRegex(source);
   }
@@ -105,7 +105,7 @@ export async function cmdPluginBuild(args: string[]): Promise<void> {
 }
 
 /**
- * aoi plugin dev [dir]
+ * ki plugin dev [dir]
  *
  * First-class DX verb (Phase B6). Equivalent to `build --watch` today;
  * in a future sub-issue it will also `--link` the plugin after each build.
@@ -115,7 +115,7 @@ export async function cmdPluginDev(args: string[]): Promise<void> {
   const flags = parseFlags(args, { "--types": Boolean }, 0);
   const dir = resolve(flags._[0] || ".");
   const emitTypes = flags["--types"] === true;
-  console.log(`\x1b[36maoi plugin dev\x1b[0m — watch mode (Ctrl-C to stop)`);
+  console.log(`\x1b[36mki plugin dev\x1b[0m — watch mode (Ctrl-C to stop)`);
   console.log(`  dir: ${dir}`);
   await runWatch(dir, emitTypes);
 }
@@ -198,7 +198,7 @@ async function runBuild(dir: string, emitTypes = false): Promise<BuildSummary> {
   // --- Capability inference + declared-diff ---
   // AST mode: scan the pre-bundle source file (structured imports preserved).
   // Regex mode: scan the bundled output (Phase A compatibility — text search).
-  const mode = process.env.AOI_PLUGIN_CAP_INFER ?? "ast";
+  const mode = process.env.KI_PLUGIN_CAP_INFER ?? "ast";
   const scanSource = mode === "regex" ? bundleSource : readFileSync(srcPath, "utf8");
   const inferred = inferCapabilities(scanSource, srcPath);
   const declared = Array.isArray(manifest.capabilities) ? (manifest.capabilities as string[]) : [];
@@ -267,7 +267,7 @@ async function runBuild(dir: string, emitTypes = false): Promise<BuildSummary> {
   if (dtsPath) {
     console.log(`  types:        dist/${name}.d.ts \x1b[2m(--types)\x1b[0m`);
   }
-  console.log(`\x1b[32m✓\x1b[0m ready. install with: aoi plugin install ./${tgzName}`);
+  console.log(`\x1b[32m✓\x1b[0m ready. install with: ki plugin install ./${tgzName}`);
 
   return {
     name, version, dir, bundlePath: outFile, sizeBytes, elapsedMs,

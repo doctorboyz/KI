@@ -3,9 +3,9 @@ import { tmux } from "../../../../sdk";
 import { buildCommandInDir } from "../../../../core/config";
 
 /**
- * aoi take <source-session>:<window> [target-session]
+ * ki take <source-session>:<window> [target-session]
  *
- * Vesicle transport — move a tmux window from one oracle session to another.
+ * Vesicle transport — move a tmux window from one kappa session to another.
  * If target-session is omitted, uses the current tmux session.
  *
  * The window's worktree/cwd stays the same. Only the tmux home changes.
@@ -15,9 +15,9 @@ export async function cmdTake(source: string, targetSession?: string) {
   const [srcSession, srcWindow] = source.includes(":") ? source.split(":", 2) : [source, ""];
 
   if (!srcWindow) {
-    console.error("usage: aoi take <session>:<window> [target-session]");
-    console.error("  e.g. aoi take neo:neo-skills pulse");
-    throw new Error("usage: aoi take <session>:<window> [target-session]");
+    console.error("usage: ki take <session>:<window> [target-session]");
+    console.error("  e.g. ki take neo:neo-skills pulse");
+    throw new Error("usage: ki take <session>:<window> [target-session]");
   }
 
   // Resolve target session

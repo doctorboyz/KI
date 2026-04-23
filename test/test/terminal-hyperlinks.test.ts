@@ -117,7 +117,7 @@ describe("tlink()", () => {
 
   test("returns plain text when unsupported (the regression)", () => {
     process.env.NO_HYPERLINKS = "1";
-    const url = "https://github.com/Soul-Brews-Studio/foo";
+    const url = "https://github.com/doctorboyz/foo";
     expect(tlink(url)).toBe(url);
     expect(tlink(url, "label")).toBe("label");
     // critical: must NOT contain the OSC-8 escape prefix that showed up raw

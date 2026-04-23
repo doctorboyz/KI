@@ -6,8 +6,8 @@ import { FLEET_DIR } from "../../../../sdk";
 import { readdirSync as readDir } from "fs";
 
 /**
- * aoi fleet health — Cell cycle checkpoint.
- * Oracle-level health: activity, dormancy, zombies, islands, anti-patterns.
+ * ki fleet health — Cell cycle checkpoint.
+ * Kappa-level health: activity, dormancy, zombies, islands, anti-patterns.
  */
 export async function cmdFleetHealth() {
   const entries = loadFleetEntries();
@@ -20,8 +20,8 @@ export async function cmdFleetHealth() {
   const rows: { name: string; status: string; age: string; peers: number; flag: string }[] = [];
 
   for (const entry of entries) {
-    const oracleName = entry.session.name.replace(/^\d+-/, "");
-    const sess = sessions.find(s => s.name.toLowerCase() === oracleName.toLowerCase() || s.name.toLowerCase() === entry.session.name.toLowerCase());
+    const kappaName = entry.session.name.replace(/^\d+-/, "");
+    const sess = sessions.find(s => s.name.toLowerCase() === kappaName.toLowerCase() || s.name.toLowerCase() === entry.session.name.toLowerCase());
     const isAwake = !!sess;
 
     let lastActivity = "";
@@ -53,7 +53,7 @@ export async function cmdFleetHealth() {
     const status = isAwake ? "\x1b[32m●\x1b[0m awake" : "\x1b[90m○ sleep\x1b[0m";
 
     rows.push({
-      name: oracleName,
+      name: kappaName,
       status,
       age: lastActivity || "—",
       peers: peerCount,
@@ -70,7 +70,7 @@ export async function cmdFleetHealth() {
   const maxName = Math.max(...rows.map(r => r.name.length), 6);
   const maxAge = Math.max(...rows.map(r => r.age.length), 4);
 
-  console.log(`  ${"Oracle".padEnd(maxName)}  Status       ${"Last".padEnd(maxAge)}  Peers  Health`);
+  console.log(`  ${"Kappa".padEnd(maxName)}  Status       ${"Last".padEnd(maxAge)}  Peers  Health`);
   console.log(`  ${"─".repeat(maxName)}  ───────────  ${"─".repeat(maxAge)}  ─────  ──────`);
 
   for (const r of rows) {
@@ -82,7 +82,7 @@ export async function cmdFleetHealth() {
   const islands = rows.filter(r => r.flag.includes("island")).length;
   const zombies = rows.filter(r => r.flag.includes("zombie")).length;
 
-  // Show disabled oracles with detail
+  // Show disabled kappas with detail
   const disabledFiles = readDir(FLEET_DIR).filter((f: string) => f.endsWith(".disabled"));
   if (disabledFiles.length > 0) {
     console.log();
@@ -106,7 +106,7 @@ export async function cmdFleetHealth() {
 
   console.log();
   console.log(`  \x1b[90m${rows.length} active | ${awake} awake | ${disabledFiles.length} disabled | ${dormant} dormant | ${islands} islands | ${zombies} zombies\x1b[0m`);
-  if (dormant > 0) console.log(`  \x1b[33m⚠\x1b[0m ${dormant} inactive >90d — consider: aoi archive <name>`);
+  if (dormant > 0) console.log(`  \x1b[33m⚠\x1b[0m ${dormant} inactive >90d — consider: ki archive <name>`);
   if (islands > 0) console.log(`  \x1b[33m⚠\x1b[0m ${islands} have zero sync_peers — knowledge trapped`);
   if (zombies > 0) console.log(`  \x1b[33m⚠\x1b[0m ${zombies} awake but inactive >14d — zombie?`);
   console.log();

@@ -7,7 +7,7 @@ export interface OverviewTarget {
   session: string;
   window: number;
   windowName: string;
-  oracle: string;
+  kappa: string;
 }
 
 export const PANES_PER_PAGE = 9;
@@ -17,12 +17,12 @@ export function buildTargets(sessions: Session[], filters: string[]): OverviewTa
     .filter(s => /^\d+-/.test(s.name) && s.name !== "0-overview")
     .map(s => {
       const active = s.windows.find(w => w.active) || s.windows[0];
-      const oracleName = s.name.replace(/^\d+-/, "");
-      return { session: s.name, window: active?.index ?? 1, windowName: active?.name ?? oracleName, oracle: oracleName };
+      const kappaName = s.name.replace(/^\d+-/, "");
+      return { session: s.name, window: active?.index ?? 1, windowName: active?.name ?? kappaName, kappa: kappaName };
     });
 
   if (filters.length) {
-    targets = targets.filter(t => filters.some(f => t.oracle.includes(f) || t.session.includes(f)));
+    targets = targets.filter(t => filters.some(f => t.kappa.includes(f) || t.session.includes(f)));
   }
 
   return targets;
@@ -46,7 +46,7 @@ export function paneColor(index: number): string {
 }
 
 export function paneTitle(t: OverviewTarget): string {
-  return `${t.oracle} (${t.session}:${t.window})`;
+  return `${t.kappa} (${t.session}:${t.window})`;
 }
 
 export function processMirror(raw: string, lines: number): string {
@@ -87,11 +87,11 @@ export async function cmdOverview(filterArgs: string[]) {
   await tmux.killSession("0-overview");
   if (kill) { console.log("overview killed"); return; }
 
-  // Gather oracle targets
+  // Gather kappa targets
   const sessions = await listSessions();
   const targets = buildTargets(sessions, filters);
 
-  if (!targets.length) { console.error("no oracle sessions found"); return; }
+  if (!targets.length) { console.error("no kappa sessions found"); return; }
 
   const pages = chunkTargets(targets);
 
@@ -108,7 +108,7 @@ export async function cmdOverview(filterArgs: string[]) {
   await tmux.set("0-overview", "status-style", "bg=colour235,fg=colour248");
   await tmux.set("0-overview", "status-left-length", "40");
   await tmux.set("0-overview", "status-right-length", "60");
-  await tmux.set("0-overview", "status-left", `#[fg=colour16,bg=colour204,bold] \u2588 AOI #[fg=colour204,bg=colour238] #[fg=colour255,bg=colour238] ${targets.length} oracles #[fg=colour238,bg=colour235] `);
+  await tmux.set("0-overview", "status-left", `#[fg=colour16,bg=colour204,bold] \u2588 KI #[fg=colour204,bg=colour238] #[fg=colour255,bg=colour238] ${targets.length} kappas #[fg=colour238,bg=colour235] `);
   await tmux.set("0-overview", "status-right", `#[fg=colour238,bg=colour235]#[fg=colour114,bg=colour238] \u25cf live #[fg=colour81,bg=colour238] %H:%M #[fg=colour16,bg=colour81,bold] %d-%b `);
   await tmux.set("0-overview", "status-justify", "centre");
   await tmux.set("0-overview", "window-status-format", "#[fg=colour248,bg=colour235] #I:#W ");
@@ -148,9 +148,9 @@ export async function cmdOverview(filterArgs: string[]) {
   // Go back to first window
   await tmux.selectWindow("0-overview:page-1");
 
-  console.log(`\x1b[32m✅\x1b[0m overview: ${targets.length} oracles across ${pages.length} page${pages.length > 1 ? 's' : ''}`);
+  console.log(`\x1b[32m✅\x1b[0m overview: ${targets.length} kappas across ${pages.length} page${pages.length > 1 ? 's' : ''}`);
   for (let p = 0; p < pages.length; p++) {
-    console.log(`  page-${p + 1}: ${pages[p].map(t => t.oracle).join(', ')}`);
+    console.log(`  page-${p + 1}: ${pages[p].map(t => t.kappa).join(', ')}`);
   }
   console.log(`\n  attach: tmux attach -t 0-overview`);
   if (pages.length > 1) console.log(`  navigate: Ctrl-b n/p (next/prev page)`);

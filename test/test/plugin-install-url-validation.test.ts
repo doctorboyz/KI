@@ -38,7 +38,7 @@ describe("H4 — URL_SCHEME_RE allowlist (unit)", () => {
   it("passes valid https URLs", () => {
     const valid = [
       "https://github.com/org/plugin.git",
-      "https://github.com/Soul-Brews-Studio/maw-ui",
+      "https://github.com/doctorboyz/maw-ui",
       "http://localhost:8080/plugin",
       "https://example.com/my-plugin.git",
     ];

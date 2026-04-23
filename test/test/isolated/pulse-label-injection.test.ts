@@ -6,7 +6,7 @@
  *   - assertLabels() throws for shell metacharacters
  *   - ghSpawn() is called with correct arg-array (not a shell string) for all 3 sink sites:
  *       Sink 1: POST /pulse labels[]
- *       Sink 2: POST /pulse oracle (oracle:${oracle} label)
+ *       Sink 2: POST /pulse kappa (kappa:${kappa} label)
  *       Sink 3: PATCH /pulse/:id addLabels / removeLabels
  *   - ghSpawn() is never called when assertLabels() throws
  *
@@ -37,7 +37,7 @@ Bun.spawn = (cmd: string[], _opts?: unknown) => {
     };
   }
   // Success stub — stdout = fake GH URL, exit 0
-  const fakeUrl = "https://github.com/Soul-Brews-Studio/maw-js/issues/999\n";
+  const fakeUrl = "https://github.com/doctorboyz/maw-js/issues/999\n";
   return {
     stdout: new ReadableStream({ start(c) { c.enqueue(new TextEncoder().encode(fakeUrl)); c.close(); } }),
     stderr: new ReadableStream({ start(c) { c.close(); } }),
@@ -139,33 +139,33 @@ describe("POST /pulse — Sink 1: labels[] via ghSpawn arg-array", () => {
   });
 });
 
-describe("POST /pulse — Sink 2: oracle label via ghSpawn arg-array", () => {
-  test("oracle value becomes oracle:<name> as discrete -l arg", async () => {
+describe("POST /pulse — Sink 2: kappa label via ghSpawn arg-array", () => {
+  test("kappa value becomes kappa:<name> as discrete -l arg", async () => {
     resetSpawn();
     const res = await app.handle(
       new Request("http://localhost/api/pulse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "Oracle task", oracle: "mawjs" }),
+        body: JSON.stringify({ title: "Kappa task", kappa: "mawjs" }),
       })
     );
     expect(res.status).toBe(200);
     const argv = spawnCalls[0].args;
-    const oracleLabel = argv.find((a) => a === "oracle:mawjs");
-    expect(oracleLabel).toBe("oracle:mawjs");
+    const kappaLabel = argv.find((a) => a === "kappa:mawjs");
+    expect(kappaLabel).toBe("kappa:mawjs");
     // Must be preceded by -l
-    expect(argv[argv.indexOf("oracle:mawjs") - 1]).toBe("-l");
+    expect(argv[argv.indexOf("kappa:mawjs") - 1]).toBe("-l");
   });
 
-  test("oracle value with shell metachar is blocked by assertLabels", async () => {
+  test("kappa value with shell metachar is blocked by assertLabels", async () => {
     resetSpawn();
-    // oracle is appended as oracle:${oracle} — the colon prefix is clean but the
+    // kappa is appended as kappa:${kappa} — the colon prefix is clean but the
     // value after colon contains $() which fails LABEL_RE
     const res = await app.handle(
       new Request("http://localhost/api/pulse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "x", oracle: "$(evil)" }),
+        body: JSON.stringify({ title: "x", kappa: "$(evil)" }),
       })
     );
     expect(res.status).toBe(500);

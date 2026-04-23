@@ -3,7 +3,7 @@ import { join } from "path";
 import { resolvePsi } from "./team-helpers";
 import { cmdTeamSpawn } from "./team-lifecycle";
 
-// ─── aoi team resume <name> ───
+// ─── ki team resume <name> ───
 
 export function cmdTeamResume(name: string, opts: { model?: string } = {}) {
   const PSI = resolvePsi();
@@ -31,7 +31,7 @@ export function cmdTeamResume(name: string, opts: { model?: string } = {}) {
   console.log(`\x1b[32m✓\x1b[0m team '${name}' resumed — ${members.length} agent(s) reincarnated`);
 }
 
-// ─── aoi team lives <agent> ───
+// ─── ki team lives <agent> ───
 
 export function cmdTeamLives(agent: string) {
   const PSI = resolvePsi();

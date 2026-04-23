@@ -81,14 +81,14 @@ export async function ensurePeriodComments(repo: string, threadNum: number): Pro
   return result;
 }
 
-export async function addTaskToPeriodComment(repo: string, threadNum: number, period: string, issueNum: number, title: string, oracle?: string) {
+export async function addTaskToPeriodComment(repo: string, threadNum: number, period: string, issueNum: number, title: string, kappa?: string) {
   const periodComments = await ensurePeriodComments(repo, threadNum);
   const comment = periodComments[period];
   if (!comment) return;
 
   const now = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-  const oracleTag = oracle ? ` → ${oracle}` : "";
-  const taskLine = `- [ ] #${issueNum} ${title} (${now}${oracleTag})`;
+  const kappaTag = kappa ? ` → ${kappa}` : "";
+  const taskLine = `- [ ] #${issueNum} ${title} (${now}${kappaTag})`;
 
   // Replace "no tasks yet" or append
   let newBody: string;

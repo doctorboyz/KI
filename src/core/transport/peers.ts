@@ -46,7 +46,7 @@ const CLOCK_WARN_MS = 3 * 60 * 1000;
  * `reachable: true` but the peer cannot message us.
  *
  * For symmetric pair verification, see `getFederationStatusSymmetric()`
- * (PR #398) and the `aoi federation --verify` CLI flag.
+ * (PR #398) and the `ki federation --verify` CLI flag.
  */
 async function checkPeerReachable(url: string): Promise<{
   reachable: boolean; latency: number; node?: string; agents?: string[]; clockDeltaMs?: number;
@@ -94,7 +94,7 @@ async function checkPeerReachable(url: string): Promise<{
 }
 
 /**
- * Get all configured peers from aoi.config.json — merges flat peers[]
+ * Get all configured peers from ki.config.json — merges flat peers[]
  * with namedPeers[].url, deduped by URL (first occurrence wins).
  * Both sources feed the same federation peer list.
  */
@@ -237,7 +237,7 @@ export async function getFederationStatus(): Promise<{
  *   - down    : forward reach itself fails
  *   - unknown : forward OK but we couldn't fetch peer's /api/federation/status
  *
- * See ψ/lab/federation-audit/pair-health-failure.md (aoijs-no2-oracle) for
+ * See ψ/lab/federation-audit/pair-health-failure.md (kijs-no2-kappa) for
  * the full invariant + failure-scenario catalogue.
  */
 export interface PairStatus {

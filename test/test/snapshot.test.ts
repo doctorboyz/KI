@@ -27,8 +27,8 @@ mock.module("../src/config", () => mockConfigModule(() => ({ node: "test-node" }
 
 // Mock listSessions to return predictable data
 let mockSessions: MockSession[] = [
-  { name: "03-neo", windows: [{ name: "neo-oracle", index: 1 }, { name: "neo-maw-js", index: 2 }] },
-  { name: "04-homekeeper", windows: [{ name: "homekeeper-oracle", index: 1 }] },
+  { name: "03-neo", windows: [{ name: "neo-kappa", index: 1 }, { name: "neo-maw-js", index: 2 }] },
+  { name: "04-homekeeper", windows: [{ name: "homekeeper-kappa", index: 1 }] },
 ];
 
 mock.module("../src/core/transport/ssh", () => ({
@@ -175,7 +175,7 @@ describe("snapshot", () => {
   test("snapshot captures window names", async () => {
     mockSessions = [
       { name: "01-pulse", windows: [
-        { name: "pulse-oracle", index: 1 },
+        { name: "pulse-kappa", index: 1 },
         { name: "pulse-scheduler", index: 2 },
         { name: "pulse-cli", index: 3 },
       ]},
@@ -186,7 +186,7 @@ describe("snapshot", () => {
 
     expect(data.sessions).toHaveLength(1);
     expect(data.sessions[0].windows).toHaveLength(3);
-    expect(data.sessions[0].windows.map((w: SnapshotWindow) => w.name)).toEqual(["pulse-oracle", "pulse-scheduler", "pulse-cli"]);
+    expect(data.sessions[0].windows.map((w: SnapshotWindow) => w.name)).toEqual(["pulse-kappa", "pulse-scheduler", "pulse-cli"]);
   });
 
   test("snapshot trigger types are preserved", async () => {

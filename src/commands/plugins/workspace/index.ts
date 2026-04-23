@@ -51,28 +51,28 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (sub === "create") {
       const { name, hub } = _parseCreate(args);
       if (!name) {
-        logs.push("usage: aoi workspace create <name> [--hub <url>]");
+        logs.push("usage: ki workspace create <name> [--hub <url>]");
         return { ok: false, error: "name required", output: logs.join("\n") };
       }
       await cmdWorkspaceCreate(name, hub);
     } else if (sub === "join") {
       const { code, hub } = _parseJoin(args);
       if (!code) {
-        logs.push("usage: aoi workspace join <code> [--hub <url>]");
+        logs.push("usage: ki workspace join <code> [--hub <url>]");
         return { ok: false, error: "code required", output: logs.join("\n") };
       }
       await cmdWorkspaceJoin(code, hub);
     } else if (sub === "share") {
       const { wsId, agents } = _parseShareAgents(args);
       if (agents.length === 0) {
-        logs.push("usage: aoi workspace share <agent...> [--workspace <id>]");
+        logs.push("usage: ki workspace share <agent...> [--workspace <id>]");
         return { ok: false, error: "agent required", output: logs.join("\n") };
       }
       await cmdWorkspaceShare(agents, wsId);
     } else if (sub === "unshare") {
       const { wsId, agents } = _parseShareAgents(args);
       if (agents.length === 0) {
-        logs.push("usage: aoi workspace unshare <agent...> [--workspace <id>]");
+        logs.push("usage: ki workspace unshare <agent...> [--workspace <id>]");
         return { ok: false, error: "agent required", output: logs.join("\n") };
       }
       await cmdWorkspaceUnshare(agents, wsId);
@@ -89,17 +89,17 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     } else if (!sub) {
       await cmdWorkspaceLs();
     } else {
-      logs.push("\x1b[36maoi workspace\x1b[0m \u2014 Multi-node workspace management\n");
-      logs.push("  aoi workspace create <name>          Create workspace on hub");
-      logs.push("  aoi workspace join <code>            Join with invite code");
-      logs.push("  aoi workspace share <agent...>       Share agents to workspace");
-      logs.push("  aoi workspace unshare <agent...>     Remove agents from workspace");
-      logs.push("  aoi workspace ls                     List joined workspaces");
-      logs.push("  aoi workspace agents [workspace-id]  List all agents in workspace");
-      logs.push("  aoi workspace invite [workspace-id]  Show join code");
-      logs.push("  aoi workspace leave [workspace-id]   Leave workspace");
-      logs.push("  aoi workspace status                 Connection status to hub(s)\n");
-      logs.push("\x1b[90mAlias: aoi ws ...\x1b[0m");
+      logs.push("\x1b[36mki workspace\x1b[0m \u2014 Multi-node workspace management\n");
+      logs.push("  ki workspace create <name>          Create workspace on hub");
+      logs.push("  ki workspace join <code>            Join with invite code");
+      logs.push("  ki workspace share <agent...>       Share agents to workspace");
+      logs.push("  ki workspace unshare <agent...>     Remove agents from workspace");
+      logs.push("  ki workspace ls                     List joined workspaces");
+      logs.push("  ki workspace agents [workspace-id]  List all agents in workspace");
+      logs.push("  ki workspace invite [workspace-id]  Show join code");
+      logs.push("  ki workspace leave [workspace-id]   Leave workspace");
+      logs.push("  ki workspace status                 Connection status to hub(s)\n");
+      logs.push("\x1b[90mAlias: ki ws ...\x1b[0m");
     }
 
     return { ok: true, output: logs.join("\n") || undefined };

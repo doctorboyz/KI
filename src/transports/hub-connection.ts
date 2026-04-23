@@ -73,7 +73,7 @@ export function handleMessage(
           for (const agent of msg.agents) {
             if (agent.name) conn.remoteAgents.add(agent.name);
             const presence: TransportPresence = {
-              oracle: agent.name || "unknown",
+              kappa: agent.name || "unknown",
               host: agent.host || agent.nodeId || "remote",
               status: agent.status || "ready",
               timestamp: msg.timestamp || Date.now(),

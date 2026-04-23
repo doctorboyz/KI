@@ -7,7 +7,7 @@
  * so future adapters (fs-scan, jj, etc.) can slot in at ../index.
  *
  * Normalization rationale: `ghq list --full-path` returns backslash paths
- * on Windows (`C:\Users\...`) but every aoi call site uses forward-slash
+ * on Windows (`C:\Users\...`) but every ki call site uses forward-slash
  * patterns. PR #379 added `| tr '\\' '/'` at 13 call sites; this is the
  * choke point that keeps that fix from being re-forgotten.
  */
@@ -23,7 +23,7 @@ function normalize(out: string): string[] {
 /**
  * Strip trailing `$` if present. Backward compat for callers migrated from
  * the old `grep '/foo$'` shell pattern — `$` is meaningless in literal
- * endsWith but harmless to strip. Without this guard, `findBySuffix("/oracle$")`
+ * endsWith but harmless to strip. Without this guard, `findBySuffix("/kappa$")`
  * would always return null. Caught by team-agents debate 2026-04-16.
  */
 function literalize(suffix: string): string {

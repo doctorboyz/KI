@@ -33,10 +33,10 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
 
       target = flags._[0];
       if (!target || target === "--help" || target === "-h") {
-        return { ok: false, error: "usage: aoi tag <target> [--pane N] [--title <text>] [--meta key=val]" };
+        return { ok: false, error: "usage: ki tag <target> [--pane N] [--title <text>] [--meta key=val]" };
       }
       if (target.startsWith("-")) {
-        return { ok: false, error: `"${target}" looks like a flag, not a target.\n  usage: aoi tag <target> ...` };
+        return { ok: false, error: `"${target}" looks like a flag, not a target.\n  usage: ki tag <target> ...` };
       }
 
       opts = {

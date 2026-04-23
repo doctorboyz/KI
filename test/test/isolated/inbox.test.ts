@@ -6,7 +6,7 @@ import { tmpdir } from "os";
 // Stub config so impl.ts can resolve inboxDir without a real maw.config.json.
 import { mockConfigModule } from "../helpers/mock-config";
 mock.module("../../src/config", () => mockConfigModule(() => ({
-  node: "test-oracle",
+  node: "test-kappa",
   psiPath: undefined, // force cwd fallback — we override resolveInboxDir directly
 })));
 

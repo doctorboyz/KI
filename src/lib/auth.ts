@@ -9,7 +9,7 @@
 
 import { loadConfig } from "../core/config";
 
-const JWT_SECRET = process.env.AOI_JWT_SECRET || "aoi-" + ((loadConfig() as any).node || "local");
+const JWT_SECRET = process.env.KI_JWT_SECRET || "ki-" + ((loadConfig() as any).node || "local");
 const TOKEN_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 
 interface TokenPayload {

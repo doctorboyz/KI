@@ -8,35 +8,35 @@ import {
 import { join, resolve } from "path";
 import { homedir } from "os";
 
-// aoi repo root — used only to locate scaffold templates on this machine.
-const AOI_DIR = resolve(import.meta.dir, "../..");
-export const TEMPLATE_RUST = join(AOI_DIR, "src/wasm/examples/hello-rust");
-export const TEMPLATE_AS = join(AOI_DIR, "src/wasm/examples/hello-as");
+// ki repo root — used only to locate scaffold templates on this machine.
+const KI_DIR = resolve(import.meta.dir, "../..");
+export const TEMPLATE_RUST = join(KI_DIR, "src/wasm/examples/hello-rust");
+export const TEMPLATE_AS = join(KI_DIR, "src/wasm/examples/hello-as");
 
 /**
  * Portable Rust SDK path for scaffolded Cargo.toml.
  *
- * The absolute path we used to bake in (`<AOI_DIR>/src/wasm/aoi-plugin-sdk`)
+ * The absolute path we used to bake in (`<KI_DIR>/src/wasm/ki-plugin-sdk`)
  * was the scaffolder's own filesystem — plugins stopped building the moment
  * they left that machine.
  *
  * Resolution order:
- *   1. `AOI_SDK_RUST_PATH` env var (explicit override, dev or CI)
+ *   1. `KI_SDK_RUST_PATH` env var (explicit override, dev or CI)
  *   2. The standard global bun install location (portable across users
- *      who `bun add -g github:Soul-Brews-Studio/aoi`)
+ *      who `bun add -g github:doctorboyz/ki`)
  *   3. The local dev-tree path (last resort; scaffolds a plugin that
  *      only builds on this machine — we warn on stderr in that case).
  */
 export function defaultRustSdkPath(): string {
-  if (process.env.AOI_SDK_RUST_PATH) return process.env.AOI_SDK_RUST_PATH;
+  if (process.env.KI_SDK_RUST_PATH) return process.env.KI_SDK_RUST_PATH;
   const bunGlobal = join(
     homedir(),
     ".bun", "install", "global", "node_modules",
-    "aoi", "src", "wasm", "aoi-plugin-sdk",
+    "ki", "src", "wasm", "ki-plugin-sdk",
   );
   if (existsSync(bunGlobal)) return bunGlobal;
   // Fall back to dev-tree path. Not portable — warn the caller.
-  return join(AOI_DIR, "src/wasm/aoi-plugin-sdk");
+  return join(KI_DIR, "src/wasm/ki-plugin-sdk");
 }
 
 // ─── Validation ─────────────────────────────────────────────────────────────

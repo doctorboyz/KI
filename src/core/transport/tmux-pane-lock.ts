@@ -5,7 +5,7 @@ import { Tmux, tmux } from "./tmux-class";
 // calls interleave — the expected index-after-split is racy when two agents
 // spawn concurrently (see PaneBackendExecutor in Claude Code source). This
 // in-process Promise queue serializes pane creation across callers within
-// a single aoi invocation. Cross-process races would need a file lock; all
+// a single ki invocation. Cross-process races would need a file lock; all
 // current callers (split, bud, team-agents) run inside one process.
 
 let paneQueue: Promise<unknown> = Promise.resolve();

@@ -4,7 +4,7 @@ import { useCommandStore } from "../../stores/command-store";
 import { useAgentStore } from "../../stores/agent-store";
 import { registry } from "../../commands/registry";
 import { Autocomplete } from "./autocomplete";
-import { getAoiUrl } from "../../utils/constants";
+import { getKiUrl } from "../../utils/constants";
 
 export function CommandBar() {
   const mode = useCommandStore((s) => s.mode);

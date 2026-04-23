@@ -96,7 +96,7 @@ describe("cmdTeamCreate", () => {
     expect(manifest.description).toBe("reincarnation test");
   });
 
-  test("rejects -view names via assertValidOracleName", () => {
+  test("rejects -view names via assertValidKappaName", () => {
     expect(() => cmdTeamCreate("alpha-view")).toThrow(/-view/);
   });
 

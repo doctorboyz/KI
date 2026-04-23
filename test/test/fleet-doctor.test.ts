@@ -20,7 +20,7 @@ import type { MawConfig, PeerConfig } from "../src/config";
 
 describe("checkCollisions — class of #239 substring regression", () => {
   test("flags peer name hiding inside a longer session name", () => {
-    const sessions = ["oracles", "105-whitekeeper", "08-mawjs"];
+    const sessions = ["kappas", "105-whitekeeper", "08-mawjs"];
     const peers = ["white", "mba"];
     const out = checkCollisions(sessions, peers);
     expect(out.length).toBe(1);
@@ -57,12 +57,12 @@ describe("checkCollisions — class of #239 substring regression", () => {
 });
 
 describe("checkMissingAgents — mawui's catch", () => {
-  test("flags oracle present on peer but missing from local agents map", () => {
+  test("flags kappa present on peer but missing from local agents map", () => {
     const local = { mawjs: "local", homekeeper: "mba" };
     const peer = { white: ["mawjs", "volt-colab-ml", "mother"] };
     const out = checkMissingAgents(local, peer);
     // mawjs already routed (to local), so only volt-colab-ml + mother flagged
-    expect(out.map((f) => f.detail!.oracle).sort()).toEqual(["mother", "volt-colab-ml"]);
+    expect(out.map((f) => f.detail!.kappa).sort()).toEqual(["mother", "volt-colab-ml"]);
     expect(out.every((f) => f.check === "missing-agent")).toBe(true);
     expect(out.every((f) => f.fixable)).toBe(true);
   });
@@ -73,7 +73,7 @@ describe("checkMissingAgents — mawui's catch", () => {
 
   test("finding carries peerNode for autoFix to consume", () => {
     const out = checkMissingAgents({}, { white: ["volt-colab-ml"] });
-    expect(out[0].detail).toEqual({ oracle: "volt-colab-ml", peerNode: "white" });
+    expect(out[0].detail).toEqual({ kappa: "volt-colab-ml", peerNode: "white" });
   });
 });
 
@@ -82,25 +82,25 @@ describe("checkOrphanRoutes — config.agents pointing nowhere", () => {
     const out = checkOrphanRoutes(
       { homekeeper: "mars" },
       ["white", "mba"],
-      "oracle-world",
+      "kappa-world",
     );
     expect(out.length).toBe(1);
     expect(out[0].check).toBe("orphan-route");
     expect(out[0].level).toBe("error");
-    expect(out[0].detail).toEqual({ oracle: "homekeeper", node: "mars" });
+    expect(out[0].detail).toEqual({ kappa: "homekeeper", node: "mars" });
   });
 
   test("local node is always known", () => {
     const out = checkOrphanRoutes(
-      { mawjs: "oracle-world" },
+      { mawjs: "kappa-world" },
       [],
-      "oracle-world",
+      "kappa-world",
     );
     expect(out).toEqual([]);
   });
 
   test("'local' sentinel is always known", () => {
-    const out = checkOrphanRoutes({ mawjs: "local" }, [], "oracle-world");
+    const out = checkOrphanRoutes({ mawjs: "local" }, [], "kappa-world");
     expect(out).toEqual([]);
   });
 
@@ -108,7 +108,7 @@ describe("checkOrphanRoutes — config.agents pointing nowhere", () => {
     const out = checkOrphanRoutes(
       { homekeeper: "mba", pulse: "white" },
       ["mba", "white"],
-      "oracle-world",
+      "kappa-world",
     );
     expect(out).toEqual([]);
   });
@@ -147,8 +147,8 @@ describe("checkDuplicatePeers", () => {
 describe("checkSelfPeer — federation loop prevention", () => {
   test("flags peer whose name matches local node", () => {
     const out = checkSelfPeer(
-      [{ name: "oracle-world", url: "http://elsewhere:3456" }],
-      "oracle-world",
+      [{ name: "kappa-world", url: "http://elsewhere:3456" }],
+      "kappa-world",
       3456,
     );
     expect(out.length).toBe(1);
@@ -158,7 +158,7 @@ describe("checkSelfPeer — federation loop prevention", () => {
   test("flags peer URL pointing at localhost:<localPort>", () => {
     const out = checkSelfPeer(
       [{ name: "self", url: "http://localhost:3456" }],
-      "oracle-world",
+      "kappa-world",
       3456,
     );
     expect(out.length).toBe(1);
@@ -168,7 +168,7 @@ describe("checkSelfPeer — federation loop prevention", () => {
   test("localhost at a different port is fine (dev sidecar)", () => {
     const out = checkSelfPeer(
       [{ name: "sidecar", url: "http://localhost:3457" }],
-      "oracle-world",
+      "kappa-world",
       3456,
     );
     expect(out).toEqual([]);
@@ -177,7 +177,7 @@ describe("checkSelfPeer — federation loop prevention", () => {
   test("remote URL is fine", () => {
     const out = checkSelfPeer(
       [{ name: "white", url: "http://10.20.0.7:3456" }],
-      "oracle-world",
+      "kappa-world",
       3456,
     );
     expect(out).toEqual([]);
@@ -186,7 +186,7 @@ describe("checkSelfPeer — federation loop prevention", () => {
   test("invalid URL swallowed gracefully (caught by namedPeers validator upstream)", () => {
     const out = checkSelfPeer(
       [{ name: "broken", url: "not-a-url" }],
-      "oracle-world",
+      "kappa-world",
       3456,
     );
     expect(out).toEqual([]);
@@ -196,7 +196,7 @@ describe("checkSelfPeer — federation loop prevention", () => {
 describe("checkMissingRepos — #237 wake cold-start signal", () => {
   test("flags fleet entry whose repo is not in ghq", () => {
     const entries = [
-      { session: { name: "08-mawjs", windows: [{ repo: "Soul-Brews-Studio/ghost-repo" }] } },
+      { session: { name: "08-mawjs", windows: [{ repo: "doctorboyz/ghost-repo" }] } },
     ];
     const out = checkMissingRepos(entries, "/definitely/not/a/real/ghq/root");
     expect(out.length).toBe(1);
@@ -214,7 +214,7 @@ describe("checkMissingRepos — #237 wake cold-start signal", () => {
 describe("autoFix — only safe transforms", () => {
   test("dedupes peers by name, keeping first occurrence", () => {
     const config = {
-      node: "oracle-world",
+      node: "kappa-world",
       port: 3456,
       namedPeers: [
         { name: "white", url: "http://a:3456" },
@@ -237,18 +237,18 @@ describe("autoFix — only safe transforms", () => {
 
   test("removes self-peer by name", () => {
     const config = {
-      node: "oracle-world",
+      node: "kappa-world",
       port: 3456,
-      namedPeers: [{ name: "oracle-world", url: "http://10.20.0.4:3456" }],
+      namedPeers: [{ name: "kappa-world", url: "http://10.20.0.4:3456" }],
       agents: {},
     } as unknown as MawConfig;
     const applied = safeAutoFix([], config);
-    expect(applied.some((m) => m.includes("self-peer 'oracle-world'"))).toBe(true);
+    expect(applied.some((m) => m.includes("self-peer 'kappa-world'"))).toBe(true);
   });
 
   test("removes self-peer by localhost URL at same port", () => {
     const config = {
-      node: "oracle-world",
+      node: "kappa-world",
       port: 3456,
       namedPeers: [{ name: "loopback", url: "http://127.0.0.1:3456" }],
       agents: {},
@@ -259,7 +259,7 @@ describe("autoFix — only safe transforms", () => {
 
   test("adds missing agents from fixable findings", () => {
     const config = {
-      node: "oracle-world",
+      node: "kappa-world",
       port: 3456,
       namedPeers: [{ name: "white", url: "http://10.20.0.7:3456" }],
       agents: {},
@@ -270,7 +270,7 @@ describe("autoFix — only safe transforms", () => {
         check: "missing-agent",
         message: "",
         fixable: true,
-        detail: { oracle: "volt-colab-ml", peerNode: "white" },
+        detail: { kappa: "volt-colab-ml", peerNode: "white" },
       },
     ];
     const applied = safeAutoFix(findings, config);
@@ -279,7 +279,7 @@ describe("autoFix — only safe transforms", () => {
 
   test("no-op when config is clean", () => {
     const config = {
-      node: "oracle-world",
+      node: "kappa-world",
       port: 3456,
       namedPeers: [{ name: "white", url: "http://10.20.0.7:3456" }],
       agents: { mawjs: "local" },

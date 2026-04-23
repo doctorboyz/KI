@@ -370,7 +370,7 @@ describe("cmdFleetDoctor — healthy config path", () => {
       response: { ok: true, status: 200, data: { node: "mba", agents: ["mawjs"] } },
     }];
     listSessionsReturn = [
-      { name: "05-neo", windows: [{ index: 0, name: "neo-oracle", active: true }] },
+      { name: "05-neo", windows: [{ index: 0, name: "neo-kappa", active: true }] },
     ];
 
     await run(() => cmdFleetDoctor());

@@ -8,7 +8,7 @@ import { resolveFleetSession } from "./wake";
 import { normalizeTarget } from "../../../core/matcher/normalize-target";
 import type { Session } from "../../../sdk";
 
-/** Resolve which sessions to search for an oracle query (#86). */
+/** Resolve which sessions to search for an kappa query (#86). */
 /** @internal */
 export function resolveSearchSessions(query: string, sessions: Session[]): Session[] {
   const config = loadConfig();
@@ -18,7 +18,7 @@ export function resolveSearchSessions(query: string, sessions: Session[]): Sessi
     const filtered = sessions.filter(s => s.name === mapped);
     if (filtered.length > 0) return filtered;
   }
-  // 2. Check fleet configs for oracle → session mapping
+  // 2. Check fleet configs for kappa → session mapping
   const fleetSession = resolveFleetSession(query);
   if (fleetSession) {
     const filtered = sessions.filter(s => s.name === fleetSession);
@@ -35,14 +35,14 @@ export async function cmdPeek(query?: string) {
   const config = loadConfig();
 
   // #362b — inform users when they omit the node prefix. Canonical form is
-  // `<node>:<oracle>` (matches contacts.json). Bare name works for local
+  // `<node>:<kappa>` (matches contacts.json). Bare name works for local
   // peek but scripts should use the prefixed form for fleet portability.
-  // Silent when AOI_QUIET=1.
-  if (query && !query.includes(":") && !query.includes("/") && !process.env.AOI_QUIET && config.node) {
-    console.error(`\x1b[90mℹ tip: use canonical form 'aoi peek ${config.node}:${query}' for cross-node scripts (bare name resolves locally)\x1b[0m`);
+  // Silent when KI_QUIET=1.
+  if (query && !query.includes(":") && !query.includes("/") && !process.env.KI_QUIET && config.node) {
+    console.error(`\x1b[90mℹ tip: use canonical form 'ki peek ${config.node}:${query}' for cross-node scripts (bare name resolves locally)\x1b[0m`);
   }
 
-  // Node prefix: "white:neo-aoi" → peek remote agent via federation
+  // Node prefix: "white:neo-ki" → peek remote agent via federation
   if (query && query.includes(":") && !query.includes("/")) {
     const [nodeName, agentName] = query.split(":", 2);
     const localNode = config.node || "local";

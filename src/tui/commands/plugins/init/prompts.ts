@@ -119,7 +119,7 @@ export async function runPromptLoop(
 
   const token = await ask("Claude token (blank = use $CLAUDE_CODE_OAUTH_TOKEN or ~/.claude/credentials)", "");
   if (!token && !process.env.CLAUDE_CODE_OAUTH_TOKEN) {
-    writer(`  \x1b[33m!\x1b[0m no token provided and $CLAUDE_CODE_OAUTH_TOKEN not set — set it before running 'aoi wake'`);
+    writer(`  \x1b[33m!\x1b[0m no token provided and $CLAUDE_CODE_OAUTH_TOKEN not set — set it before running 'ki wake'`);
   }
 
   const federateAnswer = (await ask("Federate with other machines? (y/N)", "N")).toLowerCase();

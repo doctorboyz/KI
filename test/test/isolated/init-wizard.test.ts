@@ -218,7 +218,7 @@ describe("cmdInit interactive (scripted ask)", () => {
 
   test("T3 — existing config + abort default leaves file untouched", async () => {
     // ensure a config exists with a known marker
-    writeFileSync(CONFIG_FILE, JSON.stringify({ host: "preserved-marker", port: 3456, ghqRoot: "/keep", oracleUrl: "http://localhost:47779", env: {}, commands: { default: "claude" }, sessions: {} }, null, 2));
+    writeFileSync(CONFIG_FILE, JSON.stringify({ host: "preserved-marker", port: 3456, ghqRoot: "/keep", kappaUrl: "http://localhost:47779", env: {}, commands: { default: "claude" }, sessions: {} }, null, 2));
     const out: string[] = [];
     const ask = async () => ""; // blank → abort default
     const result = await cmdInit({ args: [], ask, writer: (m) => out.push(m) });
@@ -229,7 +229,7 @@ describe("cmdInit interactive (scripted ask)", () => {
   });
 
   test("T4 — existing config + 'o' overwrites in place", async () => {
-    writeFileSync(CONFIG_FILE, JSON.stringify({ host: "old", port: 3456, ghqRoot: "/keep", oracleUrl: "x", env: {}, commands: { default: "claude" }, sessions: {} }, null, 2));
+    writeFileSync(CONFIG_FILE, JSON.stringify({ host: "old", port: 3456, ghqRoot: "/keep", kappaUrl: "x", env: {}, commands: { default: "claude" }, sessions: {} }, null, 2));
     let asked = 0;
     const ask = async (q: string) => {
       asked++;
@@ -247,7 +247,7 @@ describe("cmdInit interactive (scripted ask)", () => {
   });
 
   test("backup option writes maw.config.json.bak.<ts> before overwrite", async () => {
-    writeFileSync(CONFIG_FILE, JSON.stringify({ host: "backup-marker", port: 3456, ghqRoot: "/k", oracleUrl: "x", env: {}, commands: { default: "claude" }, sessions: {} }, null, 2));
+    writeFileSync(CONFIG_FILE, JSON.stringify({ host: "backup-marker", port: 3456, ghqRoot: "/k", kappaUrl: "x", env: {}, commands: { default: "claude" }, sessions: {} }, null, 2));
     let asked = 0;
     const ask = async (q: string) => {
       asked++;
@@ -272,7 +272,7 @@ describe("cmdInit interactive (scripted ask)", () => {
     const ask = async (q: string) => {
       if (q.includes("Node name")) {
         nodeAttempts++;
-        return nodeAttempts === 1 ? "my oracle" : "myoracle";
+        return nodeAttempts === 1 ? "my kappa" : "mykappa";
       }
       if (q.includes("Code root")) return "/tmp/code";
       if (q.includes("Claude token")) return "";
@@ -283,7 +283,7 @@ describe("cmdInit interactive (scripted ask)", () => {
     const result = await cmdInit({ args: [], ask, writer: (m) => out.push(m) });
     expect(result.ok).toBe(true);
     const cfg = JSON.parse(readFileSync(CONFIG_FILE, "utf-8"));
-    expect(cfg.host).toBe("myoracle");
+    expect(cfg.host).toBe("mykappa");
     expect(out.some((l) => l.includes("Node name must be"))).toBe(true);
   });
 });

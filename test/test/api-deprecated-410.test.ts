@@ -2,7 +2,7 @@
  * Tests for src/api/deprecated.ts — 410 Gone rotation for retired endpoints.
  *
  * Companion to VELA's silent-errors-deprecated-endpoints pattern
- * (~/david-oracle/ψ/memory/vela/patterns/2026-04-18_silent-errors-deprecated-endpoints.md).
+ * (~/david-kappa/ψ/memory/vela/patterns/2026-04-18_silent-errors-deprecated-endpoints.md).
  *
  * Verifies Lens 1 (server-side deprecation signal): status 410, migration
  * Link header, Deprecation + Sunset headers, body with replacement path.

@@ -3,7 +3,7 @@
  */
 
 import { loadConfig } from "../../../core/config";
-import type { AoiConfig } from "../../../core/config";
+import type { KiConfig } from "../../../core/config";
 import { fetchPeerIdentities } from "./federation-fetch";
 import { computeSyncDiff } from "./federation-diff";
 import { applySyncDiff } from "./federation-apply";
@@ -30,14 +30,14 @@ export interface SyncOptions {
  * Lazy save-config shim — same pattern as fleet-doctor, avoids breaking
  * tests that mock.module() the config module globally.
  */
-function defaultSave(update: Partial<AoiConfig>): void {
+function defaultSave(update: Partial<KiConfig>): void {
   const mod = require("../../../core/config") as typeof import("../../../core/config");
   mod.saveConfig(update);
 }
 
 export async function cmdFederationSync(
   opts: SyncOptions = {},
-  save: (update: Partial<AoiConfig>) => void = defaultSave,
+  save: (update: Partial<KiConfig>) => void = defaultSave,
 ): Promise<void> {
   const config = loadConfig();
   const localNode = config.node || "local";
@@ -80,17 +80,17 @@ export async function cmdFederationSync(
     const adds = diff.add.filter((a) => a.fromPeer === id.peerName);
     const confs = diff.conflict.filter((c) => c.fromPeer === id.peerName);
     const stale = diff.stale.filter((s) => s.peerNode === id.node);
-    console.log(`  ${C.green}●${C.reset} ${label}  ${C.gray}node=${id.node} · ${id.agents.length} oracles${C.reset}`);
+    console.log(`  ${C.green}●${C.reset} ${label}  ${C.gray}node=${id.node} · ${id.agents.length} kappas${C.reset}`);
     for (const a of adds) {
-      console.log(`      ${C.green}+${C.reset} ${a.oracle}  ${C.gray}→ ${a.peerNode}${C.reset}`);
+      console.log(`      ${C.green}+${C.reset} ${a.kappa}  ${C.gray}→ ${a.peerNode}${C.reset}`);
     }
     for (const c of confs) {
       console.log(
-        `      ${C.yellow}~${C.reset} ${c.oracle}  ${C.gray}currently ${c.current}, peer claims ${c.proposed}${C.reset}`,
+        `      ${C.yellow}~${C.reset} ${c.kappa}  ${C.gray}currently ${c.current}, peer claims ${c.proposed}${C.reset}`,
       );
     }
     for (const s of stale) {
-      console.log(`      ${C.red}-${C.reset} ${s.oracle}  ${C.gray}no longer hosted on ${s.peerNode}${C.reset}`);
+      console.log(`      ${C.red}-${C.reset} ${s.kappa}  ${C.gray}no longer hosted on ${s.peerNode}${C.reset}`);
     }
   }
   console.log();

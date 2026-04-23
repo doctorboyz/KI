@@ -12,7 +12,7 @@
  * from pass to fail. This file sidesteps the problem entirely by taking
  * the seam at the function parameter level, not the module level.
  *
- * See ψ/lab/federation-audit/pair-health-failure.md (mawjs-no2-oracle)
+ * See ψ/lab/federation-audit/pair-health-failure.md (mawjs-no2-kappa)
  * for the full invariant + failure-scenario catalogue.
  */
 import { describe, test, expect } from "bun:test";

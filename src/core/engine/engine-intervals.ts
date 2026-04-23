@@ -3,7 +3,7 @@ import { broadcastTeams } from "./teams";
 import { getAggregatedSessions, getPeers } from "../transport/peers";
 import { loadConfig, cfgInterval, cfgLimit } from "../config";
 import type { FeedEvent } from "../../lib/feed";
-import type { AoiWS } from "../types";
+import type { KiWS } from "../types";
 import type { Session } from "../runtime/find-window";
 import type { TransportRouter } from "../transport/transport";
 import type { StatusDetector } from "./status";
@@ -12,9 +12,9 @@ import { tmux } from "../transport/tmux";
 type SessionInfo = { name: string; windows: { index: number; name: string; active: boolean }[] };
 
 export interface EngineIntervalState {
-  clients: Set<AoiWS>;
-  lastContent: Map<AoiWS, string>;
-  lastPreviews: Map<AoiWS, Map<string, string>>;
+  clients: Set<KiWS>;
+  lastContent: Map<KiWS, string>;
+  lastPreviews: Map<KiWS, Map<string, string>>;
   sessionCache: { sessions: SessionInfo[]; json: string };
   peerSessionsCache: (Session & { source?: string })[];
   status: StatusDetector;
@@ -67,7 +67,7 @@ export function startIntervals(
           const st = state.status.getStatus(target);
           if (st) {
             state.transportRouter.publishPresence({
-              oracle: w.name.replace(/-oracle$/, ""),
+              kappa: w.name.replace(/-kappa$/, ""),
               host,
               status: st as "busy" | "ready" | "idle" | "crashed" | "offline",
               timestamp: Date.now(),
@@ -107,7 +107,7 @@ export function stopIntervals(state: EngineIntervalState): void {
 
 /** Send local + peer sessions to a newly connected WS client. */
 export async function sendInitialSessions(
-  ws: AoiWS,
+  ws: KiWS,
   state: EngineIntervalState,
 ): Promise<void> {
   const local = state.sessionCache.sessions.length > 0

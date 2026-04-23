@@ -3,7 +3,7 @@ import { curlFetch } from "../../sdk";
 import { configPath, resolveHubUrl, resolveWorkspaceId, reportNoWorkspaceId, loadWorkspace, saveWorkspace } from "./workspace-store";
 import type { WorkspaceConfig } from "./workspace-store";
 
-/** aoi workspace create <name> [--hub <url>] */
+/** ki workspace create <name> [--hub <url>] */
 export async function cmdWorkspaceCreate(name: string, hubUrl?: string) {
   const hub = resolveHubUrl(hubUrl);
   if (!hub) {
@@ -45,7 +45,7 @@ export async function cmdWorkspaceCreate(name: string, hubUrl?: string) {
   console.log(`\n\x1b[90mConfig saved to ${configPath(ws.id)}\x1b[0m`);
 }
 
-/** aoi workspace join <code> [--hub <url>] */
+/** ki workspace join <code> [--hub <url>] */
 export async function cmdWorkspaceJoin(code: string, hubUrl?: string) {
   const hub = resolveHubUrl(hubUrl);
   if (!hub) {
@@ -89,7 +89,7 @@ export async function cmdWorkspaceJoin(code: string, hubUrl?: string) {
   console.log(`\n\x1b[90mConfig saved to ${configPath(ws.id)}\x1b[0m`);
 }
 
-/** aoi workspace leave [workspace-id] */
+/** ki workspace leave [workspace-id] */
 export async function cmdWorkspaceLeave(workspaceId?: string) {
   const id = resolveWorkspaceId(workspaceId);
   if (!id) {

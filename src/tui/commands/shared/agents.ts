@@ -5,12 +5,12 @@ export interface AgentRow {
   node: string;
   session: string;
   window: string;
-  oracle: string;
+  kappa: string;
   state: "active" | "idle";
   pid: number | null;
 }
 
-const ORACLE_SUFFIX = "-oracle";
+const KAPPA_SUFFIX = "-kappa";
 const SHELL_CMDS = new Set(["zsh", "bash", "sh", "fish", "dash"]);
 
 /**
@@ -18,7 +18,7 @@ const SHELL_CMDS = new Set(["zsh", "bash", "sh", "fish", "dash"]);
  *
  * @param panes       - raw pane list from tmux.listPanes()
  * @param windowNames - Map<"session:winIdx", windowName> from tmux.listAll()
- * @param nodeName    - local node name (e.g. "oracle-world")
+ * @param nodeName    - local node name (e.g. "kappa-world")
  * @param opts        - filter options
  */
 export function buildAgentRows(
@@ -36,18 +36,18 @@ export function buildAgentRows(
     const [, session, winIdxStr] = m;
 
     const windowName = windowNames.get(`${session}:${winIdxStr}`) ?? "";
-    const isOracle = windowName.endsWith(ORACLE_SUFFIX);
+    const isKappa = windowName.endsWith(KAPPA_SUFFIX);
 
-    if (!opts.all && !isOracle) continue;
+    if (!opts.all && !isKappa) continue;
 
-    const oracle = isOracle ? windowName.slice(0, -ORACLE_SUFFIX.length) : "";
+    const kappa = isKappa ? windowName.slice(0, -KAPPA_SUFFIX.length) : "";
     const state: "active" | "idle" = SHELL_CMDS.has(pane.command.toLowerCase()) ? "idle" : "active";
 
     rows.push({
       node: nodeName,
       session,
       window: windowName,
-      oracle,
+      kappa,
       state,
       pid: pane.pid ?? null,
     });
@@ -61,13 +61,13 @@ function pad(s: string | number, n: number): string {
 }
 
 function printTable(rows: AgentRow[]): void {
-  const COL = { node: 14, session: 22, window: 22, oracle: 16, state: 8 };
+  const COL = { node: 14, session: 22, window: 22, kappa: 16, state: 8 };
 
   const header =
     pad("NODE", COL.node) +
     pad("SESSION", COL.session) +
     pad("WINDOW", COL.window) +
-    pad("ORACLE", COL.oracle) +
+    pad("KAPPA", COL.kappa) +
     pad("STATE", COL.state) +
     "PID";
 
@@ -84,7 +84,7 @@ function printTable(rows: AgentRow[]): void {
       pad(r.node, COL.node) +
         pad(r.session, COL.session) +
         pad(r.window, COL.window) +
-        pad(r.oracle, COL.oracle) +
+        pad(r.kappa, COL.kappa) +
         stateStr +
         (r.pid ?? "?"),
     );
@@ -98,7 +98,7 @@ export async function cmdAgents(opts: {
 }): Promise<void> {
   if (opts.node) {
     console.log(`--node <name> federation not yet implemented`);
-    console.log(`Track progress: https://github.com/Soul-Brews-Studio/aoi/issues`);
+    console.log(`Track progress: https://github.com/doctorboyz/ki/issues`);
     return;
   }
 
@@ -123,7 +123,7 @@ export async function cmdAgents(opts: {
   }
 
   if (rows.length === 0) {
-    console.log("no oracle agents found");
+    console.log("no kappa agents found");
     return;
   }
 

@@ -20,9 +20,9 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
   };
   try {
     const args = ctx.source === "cli" ? (ctx.args as string[]) : [];
-    if (!args[0]) throw new Error("usage: aoi find <keyword> [--oracle <name>]");
-    const oracleIdx = args.indexOf("--oracle");
-    await cmdFind(args[0], { oracle: oracleIdx !== -1 ? args[oracleIdx + 1] : undefined });
+    if (!args[0]) throw new Error("usage: ki find <keyword> [--kappa <name>]");
+    const kappaIdx = args.indexOf("--kappa");
+    await cmdFind(args[0], { kappa: kappaIdx !== -1 ? args[kappaIdx + 1] : undefined });
     return { ok: true, output: logs.join("\n") || undefined };
   } catch (e: any) {
     return { ok: false, error: logs.join("\n") || e.message, output: logs.join("\n") || undefined };

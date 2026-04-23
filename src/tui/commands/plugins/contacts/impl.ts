@@ -5,7 +5,7 @@ import { loadConfig } from "../../../../core/config";
 import { parseFlags } from "../../../../cli-src/parse-args";
 
 interface Contact {
-  aoi?: string;
+  ki?: string;
   thread?: string;
   inbox?: string | null;
   repo?: string | null;
@@ -45,12 +45,12 @@ export async function cmdContactsLs() {
   if (!active.length) { console.log("\x1b[90mno contacts\x1b[0m"); return; }
   console.log(`\n\x1b[36mCONTACTS\x1b[0m (${active.length}):\n`);
   for (const [name, c] of active) {
-    const aoi = c.aoi ? `aoi: \x1b[33m${c.aoi}\x1b[0m` : "";
+    const ki = c.ki ? `ki: \x1b[33m${c.ki}\x1b[0m` : "";
     const thread = c.thread ? `thread: \x1b[90m${c.thread}\x1b[0m` : "";
     const inbox = c.inbox ? `inbox: \x1b[90m${c.inbox}\x1b[0m` : "";
     const repo = c.repo ? `repo: \x1b[90m${c.repo}\x1b[0m` : "";
     const notes = c.notes ? `\x1b[90m"${c.notes}"\x1b[0m` : "";
-    const parts = [aoi, thread, inbox, repo, notes].filter(Boolean).join("    ");
+    const parts = [ki, thread, inbox, repo, notes].filter(Boolean).join("    ");
     console.log(`  \x1b[32m${name.padEnd(12)}\x1b[0m  ${parts}`);
   }
   console.log();
@@ -60,13 +60,13 @@ export async function cmdContactsAdd(name: string, args: string[]) {
   const data = loadContacts();
   const c: Contact = data.contacts[name] || {};
   const flags = parseFlags(args, {
-    "--aoi": String,
+    "--ki": String,
     "--thread": String,
     "--inbox": String,
     "--repo": String,
     "--notes": String,
   }, 0);
-  if (flags["--aoi"]) c.aoi = flags["--aoi"];
+  if (flags["--ki"]) c.ki = flags["--ki"];
   if (flags["--thread"]) c.thread = flags["--thread"];
   if (flags["--inbox"]) c.inbox = flags["--inbox"];
   if (flags["--repo"]) c.repo = flags["--repo"];

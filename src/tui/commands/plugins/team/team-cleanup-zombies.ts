@@ -5,7 +5,7 @@ import type { TmuxPane } from "../../../../sdk";
 import { loadFleetEntries } from "../../shared/fleet-load";
 import { TEAMS_DIR, loadTeam } from "./team-helpers";
 
-// ─── aoi cleanup --zombie-agents ───
+// ─── ki cleanup --zombie-agents ───
 
 export async function cmdCleanupZombies(opts: { yes?: boolean } = {}) {
   console.log("\x1b[36mScanning tmux panes...\x1b[0m");
@@ -43,7 +43,7 @@ interface ZombiePane {
 /**
  * Find zombie panes: tmux panes running `claude` that are NOT part of any
  * live team config AND NOT part of the fleet. Fleet-exclusion is critical
- * — without it, every live fleet oracle would be flagged as a zombie.
+ * — without it, every live fleet kappa would be flagged as a zombie.
  */
 export function findZombiePanes(allPanes: TmuxPane[]): ZombiePane[] {
   // Get all known team pane IDs from existing team configs
@@ -65,9 +65,9 @@ export function findZombiePanes(allPanes: TmuxPane[]): ZombiePane[] {
     }
   }
 
-  // Compute the set of fleet session names (e.g. "01-pulse", "08-aoijs").
+  // Compute the set of fleet session names (e.g. "01-pulse", "08-kijs").
   // Any pane whose target starts with "<fleet-session>:" is a live fleet
-  // oracle and must NEVER be flagged as a zombie.
+  // kappa and must NEVER be flagged as a zombie.
   const fleetSessions = new Set<string>();
   try {
     for (const entry of loadFleetEntries()) {
@@ -75,12 +75,12 @@ export function findZombiePanes(allPanes: TmuxPane[]): ZombiePane[] {
     }
   } catch { /* no fleet dir */ }
 
-  // Also allow meta-view sessions (aoi-view + any *-view) which mirror fleet
-  // panes. Each oracle creates its meta-view as `<stem>-view` (e.g.
-  // aoijs-view, aoiui-view). #393 Bug F — zombie-auditor iter3 caught this:
-  // hardcoding only "aoi-view" left every oracle's live pane one keystroke
-  // away from being killed by `aoi cleanup --zombie-agents --yes`.
-  const isViewSession = (s: string) => s === "aoi-view" || /-view$/.test(s);
+  // Also allow meta-view sessions (ki-view + any *-view) which mirror fleet
+  // panes. Each kappa creates its meta-view as `<stem>-view` (e.g.
+  // kijs-view, kiui-view). #393 Bug F — zombie-auditor iter3 caught this:
+  // hardcoding only "ki-view" left every kappa's live pane one keystroke
+  // away from being killed by `ki cleanup --zombie-agents --yes`.
+  const isViewSession = (s: string) => s === "ki-view" || /-view$/.test(s);
 
   // Defense-in-depth: also compute the set of pane ids that have ANY fleet
   // (or view) listing. If the same pane id appears across multiple sessions

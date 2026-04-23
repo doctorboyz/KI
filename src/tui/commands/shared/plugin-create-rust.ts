@@ -22,8 +22,8 @@ export function scaffoldRust(name: string, dest: string, templateDir = TEMPLATE_
   cargo = cargo.replace(/^name = ".*?"$/m, `name = "${name}"`);
   // Replace relative SDK path with absolute
   cargo = cargo.replace(
-    /aoi-plugin-sdk = \{ path = "[^"]*" \}/,
-    `aoi-plugin-sdk = { path = "${sdkPath}" }`,
+    /ki-plugin-sdk = \{ path = "[^"]*" \}/,
+    `ki-plugin-sdk = { path = "${sdkPath}" }`,
   );
   writeFileSync(cargoPath, cargo);
 
@@ -33,7 +33,7 @@ export function scaffoldRust(name: string, dest: string, templateDir = TEMPLATE_
     join(dest, "README.md"),
     `# ${name}
 
-A aoi WASM command plugin (Rust).
+A ki WASM command plugin (Rust).
 
 ## Build
 
@@ -47,13 +47,13 @@ Output: \`target/wasm32-unknown-unknown/release/${crateName}.wasm\`
 ## Install
 
 \`\`\`bash
-aoi plugin install "${dest}"
+ki plugin install "${dest}"
 \`\`\`
 
 ## SDK docs
 
 See the SDK at \`${sdkPath}\` for available host functions:
-\`aoi::print\`, \`aoi::identity\`, \`aoi::federation\`, \`aoi::send\`, \`aoi::fetch\`.
+\`ki::print\`, \`ki::identity\`, \`ki::federation\`, \`ki::send\`, \`ki::fetch\`.
 `,
   );
 

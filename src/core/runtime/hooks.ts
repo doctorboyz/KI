@@ -3,7 +3,7 @@ import { homedir } from "os";
 import { join } from "path";
 import { spawn } from "child_process";
 
-const CONFIG_PATH = join(homedir(), ".oracle", "aoi.hooks.json");
+const CONFIG_PATH = join(homedir(), ".kappa", "ki.hooks.json");
 
 interface HooksConfig {
   hooks?: Record<string, string>;
@@ -31,7 +31,7 @@ function expandPath(p: string): string {
 function inferCaller(): string {
   if (process.env.CLAUDE_AGENT_NAME) return process.env.CLAUDE_AGENT_NAME;
   const cwd = process.cwd();
-  const match = cwd.match(/([^/]+)-oracle/);
+  const match = cwd.match(/([^/]+)-kappa/);
   if (match) return match[1];
   return "unknown";
 }
@@ -46,12 +46,12 @@ export async function runHook(
 
   const env = {
     ...process.env,
-    AOI_EVENT: event,
-    AOI_TIMESTAMP: new Date().toISOString(),
-    AOI_FROM: data.from || inferCaller(),
-    AOI_TO: data.to,
-    AOI_MESSAGE: data.message,
-    AOI_CHANNEL: data.channel || "hey",
+    KI_EVENT: event,
+    KI_TIMESTAMP: new Date().toISOString(),
+    KI_FROM: data.from || inferCaller(),
+    KI_TO: data.to,
+    KI_MESSAGE: data.message,
+    KI_CHANNEL: data.channel || "hey",
   };
 
   try {

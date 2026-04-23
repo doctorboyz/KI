@@ -4,7 +4,7 @@ import { execSync } from "child_process";
 import { CONFIG_FILE } from "../paths";
 import { refreshContext } from "../../lib/context";
 import { verbose, info } from "../../cli-src/verbosity";
-import type { AoiConfig } from "./types";
+import type { KiConfig } from "./types";
 import { D } from "./types";
 import { validateConfig } from "./validate-ext";
 
@@ -18,19 +18,19 @@ function detectGhqRoot(): string {
   } catch { return join(require("os").homedir(), "Code/github.com"); }
 }
 
-const DEFAULTS: AoiConfig = {
+const DEFAULTS: KiConfig = {
   host: "local",
   port: 3456,
   ghqRoot: detectGhqRoot(),
-  oracleUrl: "http://localhost:47778",
+  kappaUrl: "http://localhost:47778",
   env: {},
   commands: { default: "claude" },
   sessions: {},
 };
 
-let cached: AoiConfig | null = null;
+let cached: KiConfig | null = null;
 
-export function loadConfig(): AoiConfig {
+export function loadConfig(): KiConfig {
   if (cached) return cached;
   try {
     const raw = JSON.parse(readFileSync(CONFIG_FILE, "utf-8"));
@@ -54,8 +54,8 @@ export function resetConfig() {
   cached = null;
 }
 
-/** Write config to aoi.config.json and reset cache */
-export function saveConfig(update: Partial<AoiConfig>) {
+/** Write config to ki.config.json and reset cache */
+export function saveConfig(update: Partial<KiConfig>) {
   const current = loadConfig();
   const merged = { ...current, ...update };
   writeFileSync(CONFIG_FILE, JSON.stringify(merged, null, 2) + "\n", "utf-8");
@@ -65,7 +65,7 @@ export function saveConfig(update: Partial<AoiConfig>) {
 }
 
 /** Return config with env values masked for display */
-export function configForDisplay(): AoiConfig & { envMasked: Record<string, string> } {
+export function configForDisplay(): KiConfig & { envMasked: Record<string, string> } {
   const config = loadConfig();
   const envMasked: Record<string, string> = {};
   for (const [k, v] of Object.entries(config.env)) {
@@ -99,6 +99,6 @@ export function cfgLimit(key: keyof typeof D.limits): number {
 }
 
 /** Get a top-level config value with default fallback */
-export function cfg<K extends keyof AoiConfig>(key: K): AoiConfig[K] {
-  return loadConfig()[key] ?? (DEFAULTS as AoiConfig)[key];
+export function cfg<K extends keyof KiConfig>(key: K): KiConfig[K] {
+  return loadConfig()[key] ?? (DEFAULTS as KiConfig)[key];
 }

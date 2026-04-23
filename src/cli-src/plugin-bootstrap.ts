@@ -8,7 +8,7 @@ const URL_SCHEME_RE = /^https?:\/\//;
  * Auto-bootstrap plugins into pluginDir if empty.
  * Symlinks bundled plugins and installs from pluginSources config URLs.
  *
- * @param pluginDir  resolved ~/.aoi/plugins/ path
+ * @param pluginDir  resolved ~/.ki/plugins/ path
  * @param srcDir     resolved src/ directory (pass import.meta.dir from cli.ts)
  */
 export async function runBootstrap(pluginDir: string, srcDir: string): Promise<void> {
@@ -32,7 +32,7 @@ export async function runBootstrap(pluginDir: string, srcDir: string): Promise<v
       for (const url of sources) {
         try {
           if (!URL_SCHEME_RE.test(url)) {
-            console.warn(`[aoi] skipping pluginSource with invalid scheme: ${url}`);
+            console.warn(`[ki] skipping pluginSource with invalid scheme: ${url}`);
             continue;
           }
           const ghqProc = Bun.spawn(["ghq", "get", "-u", url], { stdout: "pipe", stderr: "pipe" });
@@ -61,6 +61,6 @@ export async function runBootstrap(pluginDir: string, srcDir: string): Promise<v
       }
     } catch {}
 
-    console.log(`[aoi] bootstrapped ${readdirSync(pluginDir).length} plugins → ${pluginDir}`);
+    console.log(`[ki] bootstrapped ${readdirSync(pluginDir).length} plugins → ${pluginDir}`);
   }
 }

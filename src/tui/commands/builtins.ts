@@ -1,14 +1,14 @@
 import type { SlashCommand, CommandContext, CommandResult } from "../types/commands";
-import { AoiApiClient } from "../api/client";
+import { KiApiClient } from "../api/client";
 
-function api(ctx: CommandContext): AoiApiClient {
-  return new AoiApiClient(ctx.apiBase);
+function api(ctx: CommandContext): KiApiClient {
+  return new KiApiClient(ctx.apiBase);
 }
 
 export const builtins: SlashCommand[] = [
   {
     name: "wake",
-    description: "Wake an oracle agent",
+    description: "Wake an kappa agent",
     usage: "/wake <target>",
     category: "agent",
     handler: async (args, ctx) => {
@@ -24,7 +24,7 @@ export const builtins: SlashCommand[] = [
   },
   {
     name: "sleep",
-    description: "Sleep an oracle agent",
+    description: "Sleep an kappa agent",
     usage: "/sleep <target>",
     category: "agent",
     handler: async (args, ctx) => {
@@ -40,7 +40,7 @@ export const builtins: SlashCommand[] = [
   },
   {
     name: "bud",
-    description: "Create a new Oracle bud",
+    description: "Create a new Kappa bud",
     usage: "/bud <name>",
     category: "agent",
     handler: async (args, ctx) => {
@@ -73,12 +73,12 @@ export const builtins: SlashCommand[] = [
   {
     name: "talk-to",
     description: "Send message to an agent",
-    usage: "/talk-to <oracle> <message>",
+    usage: "/talk-to <kappa> <message>",
     category: "comms",
     handler: async (args, ctx) => {
       const target = args[0];
       const text = args.slice(1).join(" ");
-      if (!target || !text) return { ok: false, error: "Usage: /talk-to <oracle> <message>" };
+      if (!target || !text) return { ok: false, error: "Usage: /talk-to <kappa> <message>" };
       try {
         await api(ctx).send({ target, text });
         return { ok: true, message: `Sent to ${target}` };
@@ -138,7 +138,7 @@ export const builtins: SlashCommand[] = [
   },
   {
     name: "team-agents",
-    description: "Spawn team agents on selected oracle",
+    description: "Spawn team agents on selected kappa",
     usage: "/team-agents",
     category: "fleet",
     handler: async (_args, ctx) => {

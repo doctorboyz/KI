@@ -6,13 +6,13 @@ import { appendFile, mkdir } from "fs/promises";
 import { homedir, hostname } from "os";
 import { join } from "path";
 
-const ORACLE_URL = () => process.env.ORACLE_URL || loadConfig().oracleUrl;
+const KAPPA_URL = () => process.env.KAPPA_URL || loadConfig().kappaUrl;
 
 interface ThreadResponse {
   thread_id: number;
   message_id: number;
   status: string;
-  oracle_response?: {
+  kappa_response?: {
     content: string;
     principles_found: number;
     patterns_found: number;
@@ -40,7 +40,7 @@ interface ThreadInfo {
  */
 async function findChannelThread(target: string): Promise<number | null> {
   try {
-    const res = await fetch(`${ORACLE_URL()}/api/threads?limit=50`);
+    const res = await fetch(`${KAPPA_URL()}/api/threads?limit=50`);
     if (!res.ok) return null;
     const data = await res.json() as { threads: { id: number; title: string; status: string }[] };
     const channel = data.threads.find(t => t.title === `channel:${target}` && t.status !== "closed");
@@ -51,7 +51,7 @@ async function findChannelThread(target: string): Promise<number | null> {
 }
 
 /**
- * Post message to oracle_thread (MCP persistence layer).
+ * Post message to kappa_thread (MCP persistence layer).
  */
 async function postToThread(target: string, message: string): Promise<ThreadResponse | null> {
   const threadId = await findChannelThread(target);
@@ -66,18 +66,18 @@ async function postToThread(target: string, message: string): Promise<ThreadResp
   }
 
   try {
-    const res = await fetch(`${ORACLE_URL()}/api/thread`, {
+    const res = await fetch(`${KAPPA_URL()}/api/thread`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
     if (!res.ok) {
-      console.error(`\x1b[31merror\x1b[0m: Oracle API returned ${res.status}`);
+      console.error(`\x1b[31merror\x1b[0m: Kappa API returned ${res.status}`);
       return null;
     }
     return await res.json() as ThreadResponse;
   } catch (e: any) {
-    console.error(`\x1b[31merror\x1b[0m: Oracle unreachable — ${e.message}`);
+    console.error(`\x1b[31merror\x1b[0m: Kappa unreachable — ${e.message}`);
     return null;
   }
 }
@@ -87,7 +87,7 @@ async function postToThread(target: string, message: string): Promise<ThreadResp
  */
 async function getThreadInfo(threadId: number): Promise<{ messageCount: number } | null> {
   try {
-    const res = await fetch(`${ORACLE_URL()}/api/thread/${threadId}`);
+    const res = await fetch(`${KAPPA_URL()}/api/thread/${threadId}`);
     if (!res.ok) return null;
     const data = await res.json() as ThreadInfo;
     return { messageCount: data.messages.length };
@@ -97,20 +97,20 @@ async function getThreadInfo(threadId: number): Promise<{ messageCount: number }
 }
 
 /**
- * aoi talk-to <target> "message"
+ * ki talk-to <target> "message"
  *
- * 1. Post to oracle_thread (MCP) → persistent
- * 2. Send aoi hey to target → notification with context
+ * 1. Post to kappa_thread (MCP) → persistent
+ * 2. Send ki hey to target → notification with context
  *
  * MCP first, hey after. Order matters.
  */
 export async function cmdTalkTo(target: string, message: string, force = false) {
-  // Step 1: Post to oracle_thread
+  // Step 1: Post to kappa_thread
   console.log(`\x1b[36m💬\x1b[0m posting to thread channel:${target}...`);
   const threadResult = await postToThread(target, message);
 
   if (!threadResult) {
-    console.error(`\x1b[33mwarn\x1b[0m: thread post failed — falling back to aoi hey only`);
+    console.error(`\x1b[33mwarn\x1b[0m: thread post failed — falling back to ki hey only`);
   }
 
   // Step 2: Build notification with context
@@ -166,9 +166,9 @@ export async function cmdTalkTo(target: string, message: string, force = false) 
   await sendKeys(tmuxTarget, notification);
   await runHook("after_send", { to: target, message: notification });
 
-  // Log to aoi-log.jsonl
-  const logDir = join(homedir(), ".oracle");
-  const logFile = join(logDir, "aoi-log.jsonl");
+  // Log to ki-log.jsonl
+  const logDir = join(homedir(), ".kappa");
+  const logFile = join(logDir, "ki-log.jsonl");
   const host = hostname();
   const sid = process.env.CLAUDE_SESSION_ID || null;
   const ch = threadResult ? `thread:${threadResult.thread_id}` : undefined;

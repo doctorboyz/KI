@@ -9,7 +9,7 @@ import type { DoneOpts } from "./impl";
 
 type SessionInfo = { name: string; windows: { index: number; name: string; active: boolean }[] };
 
-/** Signal parent oracle inbox that a worktree window is done (#81). */
+/** Signal parent kappa inbox that a worktree window is done (#81). */
 export async function signalParentInbox(
   windowName: string,
   sessionName: string,
@@ -19,7 +19,7 @@ export async function signalParentInbox(
   const parentWindow = sessions.find(s => s.name === sessionName)?.windows[0]?.name;
   if (!parentWindow) return;
   const parentTarget = parentWindow.replace(/[^a-zA-Z0-9_-]/g, "");
-  const inboxDir = join(homedir(), ".oracle", "inbox");
+  const inboxDir = join(homedir(), ".kappa", "inbox");
   const signal =
     JSON.stringify({ ts: new Date().toISOString(), from, type: "done", msg: `worktree ${windowName} completed`, thread: null }) + "\n";
   try {

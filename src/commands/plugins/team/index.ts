@@ -16,7 +16,7 @@ export const command = {
 /**
  * Best-effort team detection for task verbs (#393 Bug E).
  *
- * 1. If $AOI_TEAM env var is set, use it (explicit override — highest priority).
+ * 1. If $KI_TEAM env var is set, use it (explicit override — highest priority).
  * 2. If exactly ONE team exists in ~/.claude/teams/ with a config.json,
  *    that's unambiguous — use it.
  * 3. Otherwise fall back to "default" (preserves legacy behavior).
@@ -24,7 +24,7 @@ export const command = {
  * Users who want a specific team should pass --team <name> explicitly.
  */
 function resolveTeamFromContext(): string {
-  const envTeam = process.env.AOI_TEAM;
+  const envTeam = process.env.KI_TEAM;
   if (envTeam) return envTeam;
   const teamsDir = join(homedir(), ".claude/teams");
   try {
@@ -54,7 +54,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
 
     if (sub === "create" || sub === "new") {
       if (!args[1]) {
-        logs.push("usage: aoi team create <name> [--description <text>]");
+        logs.push("usage: ki team create <name> [--description <text>]");
         return { ok: false, error: "name required", output: logs.join("\n") };
       }
       const descIdx = args.indexOf("--description");
@@ -62,7 +62,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       cmdTeamCreate(args[1], { description });
     } else if (sub === "spawn") {
       if (!args[1] || !args[2]) {
-        logs.push("usage: aoi team spawn <team> <role> [--model <model>] [--prompt <text>] [--exec]");
+        logs.push("usage: ki team spawn <team> <role> [--model <model>] [--prompt <text>] [--exec]");
         return { ok: false, error: "team and role required", output: logs.join("\n") };
       }
       const modelIdx = args.indexOf("--model");
@@ -78,13 +78,13 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       await cmdTeamSpawn(args[1], args[2], { model, prompt, exec });
     } else if (sub === "send" || sub === "msg") {
       if (!args[1] || !args[2] || !args[3]) {
-        logs.push("usage: aoi team send <team> <agent> <message>");
+        logs.push("usage: ki team send <team> <agent> <message>");
         return { ok: false, error: "team, agent, and message required", output: logs.join("\n") };
       }
       cmdTeamSend(args[1], args[2], args.slice(3).join(" "));
     } else if (sub === "resume") {
       if (!args[1]) {
-        logs.push("usage: aoi team resume <name> [--model <model>]");
+        logs.push("usage: ki team resume <name> [--model <model>]");
         return { ok: false, error: "name required", output: logs.join("\n") };
       }
       const modelIdx = args.indexOf("--model");
@@ -92,13 +92,13 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       cmdTeamResume(args[1], { model });
     } else if (sub === "lives" || sub === "history") {
       if (!args[1]) {
-        logs.push("usage: aoi team lives <agent>");
+        logs.push("usage: ki team lives <agent>");
         return { ok: false, error: "agent name required", output: logs.join("\n") };
       }
       cmdTeamLives(args[1]);
     } else if (sub === "shutdown" || sub === "down") {
       if (!args[1]) {
-        logs.push("usage: aoi team shutdown <name> [--force] [--merge]");
+        logs.push("usage: ki team shutdown <name> [--force] [--merge]");
         return { ok: false, error: "name required", output: logs.join("\n") };
       }
       await cmdTeamShutdown(args[1], {
@@ -108,7 +108,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     } else if (sub === "list" || sub === "ls" || !sub) {
       await cmdTeamList();
     } else if (sub === "add" || sub === "task") {
-      // aoi team add "subject" [--team <name>] [--assign agent] [--description text]
+      // ki team add "subject" [--team <name>] [--assign agent] [--description text]
       const { cmdTeamTaskAdd } = await import("./task-ops");
       const flags = parseFlags(args, {
         "--team": String,
@@ -116,7 +116,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         "--description": String,
       }, 1);
       const subject = flags._.join(" ");
-      if (!subject) { logs.push("usage: aoi team add <subject> [--team <name>]"); return { ok: false, error: "subject required" }; }
+      if (!subject) { logs.push("usage: ki team add <subject> [--team <name>]"); return { ok: false, error: "subject required" }; }
       const team = (flags["--team"] as string | undefined) || resolveTeamFromContext();
       cmdTeamTaskAdd(team, subject, {
         assign: flags["--assign"] as string | undefined,
@@ -124,7 +124,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       });
 
     } else if (sub === "tasks") {
-      // aoi team tasks [team-name] [--team <name>]
+      // ki team tasks [team-name] [--team <name>]
       const { cmdTeamTaskList } = await import("./task-ops");
       const flags = parseFlags(args, { "--team": String }, 1);
       // Priority: --team flag > positional arg > context detection
@@ -134,38 +134,38 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       cmdTeamTaskList(team);
 
     } else if (sub === "done") {
-      // aoi team done <id> [--team <name>]
+      // ki team done <id> [--team <name>]
       const { cmdTeamTaskDone } = await import("./task-ops");
       const flags = parseFlags(args, { "--team": String }, 1);
       const id = parseInt(flags._[0] || "");
-      if (!id) { return { ok: false, error: "usage: aoi team done <task-id> [--team <name>]" }; }
+      if (!id) { return { ok: false, error: "usage: ki team done <task-id> [--team <name>]" }; }
       const team = (flags["--team"] as string | undefined) || resolveTeamFromContext();
       cmdTeamTaskDone(team, id);
 
     } else if (sub === "assign") {
-      // aoi team assign <id> <agent> [--team <name>]
+      // ki team assign <id> <agent> [--team <name>]
       const { cmdTeamTaskAssign } = await import("./task-ops");
       const flags = parseFlags(args, { "--team": String }, 1);
       const id = parseInt(flags._[0] || "");
       const agent = flags._[1];
-      if (!id || !agent) { return { ok: false, error: "usage: aoi team assign <task-id> <agent> [--team <name>]" }; }
+      if (!id || !agent) { return { ok: false, error: "usage: ki team assign <task-id> <agent> [--team <name>]" }; }
       const team = (flags["--team"] as string | undefined) || resolveTeamFromContext();
       cmdTeamTaskAssign(team, id, agent);
 
     } else if (sub === "status") {
-      // aoi team status [team-name]
+      // ki team status [team-name]
       const { cmdTeamStatus } = await import("./team-status");
       await cmdTeamStatus(args[1]);
 
     } else if (sub === "delete" || sub === "rm") {
-      // aoi team delete <team-name>
+      // ki team delete <team-name>
       const { cmdTeamDelete } = await import("./team-cleanup");
-      if (!args[1]) { return { ok: false, error: "usage: aoi team delete <team-name>" }; }
+      if (!args[1]) { return { ok: false, error: "usage: ki team delete <team-name>" }; }
       await cmdTeamDelete(args[1]);
 
     } else {
       logs.push(`unknown team subcommand: ${sub}`);
-      logs.push("usage: aoi team <create|spawn|send|shutdown|resume|lives|list|status|add|tasks|done|assign|delete>");
+      logs.push("usage: ki team <create|spawn|send|shutdown|resume|lives|list|status|add|tasks|done|assign|delete>");
       return { ok: false, error: `unknown subcommand: ${sub}`, output: logs.join("\n") };
     }
 

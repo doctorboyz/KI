@@ -25,21 +25,21 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
 
     if (subcmd === "add") {
       const flags = parseFlags(args.slice(1), {
-        "--oracle": String,
+        "--kappa": String,
         "--priority": String,
         "--wt": String,
         "--worktree": "--wt",
       }, 0);
       const title = flags._.find(a => !a.startsWith("--")) ?? "";
       const pulseOpts = {
-        oracle: flags["--oracle"],
+        kappa: flags["--kappa"],
         priority: flags["--priority"],
         wt: flags["--wt"],
       };
       if (!title) {
         return {
           ok: false,
-          error: 'usage: aoi pulse add "task title" --oracle <name> [--wt <repo>]',
+          error: 'usage: ki pulse add "task title" --kappa <name> [--wt <repo>]',
         };
       }
       const { cmdPulseAdd } = await import("../../shared/pulse");
@@ -71,7 +71,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     } else {
       return {
         ok: false,
-        error: "usage: aoi pulse <add|ls|cleanup> [opts]",
+        error: "usage: ki pulse <add|ls|cleanup> [opts]",
       };
     }
 

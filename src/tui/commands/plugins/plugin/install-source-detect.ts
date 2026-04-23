@@ -9,11 +9,11 @@ import { basename } from "path";
 import { lstatSync, rmSync, unlinkSync } from "fs";
 
 /**
- * ~/.aoi/plugins — resolved at call time. Honors `AOI_PLUGINS_DIR` override
+ * ~/.ki/plugins — resolved at call time. Honors `KI_PLUGINS_DIR` override
  * for tests (and for advanced users who want a non-default install root).
  */
 export function installRoot(): string {
-  return process.env.AOI_PLUGINS_DIR || join(homedir(), ".aoi", "plugins");
+  return process.env.KI_PLUGINS_DIR || join(homedir(), ".ki", "plugins");
 }
 
 export type Mode =
@@ -29,7 +29,7 @@ export function detectMode(src: string): Mode {
   return { kind: "dir", src: resolve(src) };
 }
 
-/** Ensure ~/.aoi/plugins exists. */
+/** Ensure ~/.ki/plugins exists. */
 export function ensureInstallRoot(): void {
   const root = installRoot();
   if (!existsSync(root)) mkdirSync(root, { recursive: true });

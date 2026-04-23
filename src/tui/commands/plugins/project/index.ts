@@ -6,9 +6,9 @@ export const command = {
 };
 
 /**
- * aoi project — core plugin scaffold (#523).
+ * ki project — core plugin scaffold (#523).
  *
- * This is a migration scaffold for the Oracle skill `/project`. The full
+ * This is a migration scaffold for the Kappa skill `/project`. The full
  * implementation (ghq clone + symlink flow into ψ/learn and ψ/incubate,
  * search across tracked repos, list across both roots, --offload /
  * --contribute / --flash workflow flags) lives in ~/.claude/skills/
@@ -51,16 +51,16 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     let result: string;
     switch (sub) {
       case "learn":
-        if (!rest[0]) return { ok: false, error: "usage: aoi project learn <url>" };
+        if (!rest[0]) return { ok: false, error: "usage: ki project learn <url>" };
         result = await stubLearn(rest[0]);
         break;
       case "incubate":
-        if (!rest[0]) return { ok: false, error: "usage: aoi project incubate <url>" };
+        if (!rest[0]) return { ok: false, error: "usage: ki project incubate <url>" };
         result = await stubIncubate(rest[0]);
         break;
       case "find":
       case "search":
-        if (!rest[0]) return { ok: false, error: "usage: aoi project find <query>" };
+        if (!rest[0]) return { ok: false, error: "usage: ki project find <query>" };
         result = await stubFind(rest[0]);
         break;
       case "list":
@@ -71,7 +71,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         console.log(help);
         return {
           ok: false,
-          error: `aoi project: unknown subcommand "${sub}" (expected learn|incubate|find|list)`,
+          error: `ki project: unknown subcommand "${sub}" (expected learn|incubate|find|list)`,
           output: logs.join("\n") || help,
         };
       }

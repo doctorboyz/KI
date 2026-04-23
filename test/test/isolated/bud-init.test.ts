@@ -96,13 +96,13 @@ describe("initVault", () => {
 // ─── generateClaudeMd ───────────────────────────────────────────────────────
 
 describe("generateClaudeMd", () => {
-  test("root oracle (parentName null) — header says 'Root oracle', field says 'Origin: root'", () => {
+  test("root kappa (parentName null) — header says 'Root kappa', field says 'Origin: root'", () => {
     const bud = freshBudRepo();
     generateClaudeMd(bud, "white-wormhole", null);
 
     const body = readFileSync(join(bud, "CLAUDE.md"), "utf-8");
-    expect(body).toContain("# white-wormhole-oracle");
-    expect(body).toContain("Root oracle — born ");
+    expect(body).toContain("# white-wormhole-kappa");
+    expect(body).toContain("Root kappa — born ");
     expect(body).toContain("(no parent lineage)");
     expect(body).toContain("**Origin**: root (no parent)");
     expect(body).not.toContain("**Budded from**");
@@ -110,33 +110,33 @@ describe("generateClaudeMd", () => {
     expect(body).not.toContain("undefined");
   });
 
-  test("parent oracle — header has 'Budded from <parent> on <date>', field has parent name", () => {
+  test("parent kappa — header has 'Budded from <parent> on <date>', field has parent name", () => {
     const bud = freshBudRepo();
     generateClaudeMd(bud, "mawjs", "neo");
 
     const body = readFileSync(join(bud, "CLAUDE.md"), "utf-8");
     const today = new Date().toISOString().slice(0, 10);
-    expect(body).toContain("# mawjs-oracle");
+    expect(body).toContain("# mawjs-kappa");
     expect(body).toContain(`> Budded from **neo** on ${today}`);
     expect(body).toContain("**Budded from**: neo");
-    expect(body).not.toContain("Root oracle");
+    expect(body).not.toContain("Root kappa");
     expect(body).not.toContain("Origin: root");
   });
 
-  test("file embeds federation tag template with the oracle name", () => {
+  test("file embeds federation tag template with the kappa name", () => {
     const bud = freshBudRepo();
     generateClaudeMd(bud, "alpha", "neo");
     const body = readFileSync(join(bud, "CLAUDE.md"), "utf-8");
     expect(body).toContain("`[<host>:alpha]`");
     expect(body).toContain("[mba:alpha]");
-    expect(body).toContain("[oracle-world:alpha]");
+    expect(body).toContain("[kappa-world:alpha]");
   });
 
   test("file contains Rule 6 signature contexts (federation / public / git trailer)", () => {
     const bud = freshBudRepo();
     generateClaudeMd(bud, "zeta", "neo");
     const body = readFileSync(join(bud, "CLAUDE.md"), "utf-8");
-    expect(body).toContain("Rule 6: Oracle Never Pretends to Be Human");
+    expect(body).toContain("Rule 6: Kappa Never Pretends to Be Human");
     expect(body).toContain("maw hey");
     expect(body).toContain("ตอบโดย zeta");
     expect(body).toContain("Co-Authored-By: Claude Opus 4.6");
@@ -172,14 +172,14 @@ describe("configureFleet — new config (no existing entry)", () => {
   beforeEach(clearFleet);
 
   test("root bud writes fleet file with sync_peers: [] and NO lineage fields", () => {
-    const fleetFile = configureFleet("root-a", "Soul-Brews-Studio", "root-a-oracle", null);
+    const fleetFile = configureFleet("root-a", "doctorboyz", "root-a-kappa", null);
 
     expect(existsSync(fleetFile)).toBe(true);
     expect(fleetFile).toBe(join(tmpFleet, "01-root-a.json"));
     const cfg = JSON.parse(readFileSync(fleetFile, "utf-8"));
     expect(cfg).toEqual({
       name: "01-root-a",
-      windows: [{ name: "root-a-oracle", repo: "Soul-Brews-Studio/root-a-oracle" }],
+      windows: [{ name: "root-a-kappa", repo: "doctorboyz/root-a-kappa" }],
       sync_peers: [],
     });
     expect(cfg.budded_from).toBeUndefined();
@@ -187,7 +187,7 @@ describe("configureFleet — new config (no existing entry)", () => {
   });
 
   test("parent bud writes lineage + sync_peers: [parent] + ISO budded_at", () => {
-    const fleetFile = configureFleet("parent-a", "Soul-Brews-Studio", "parent-a-oracle", "neo");
+    const fleetFile = configureFleet("parent-a", "doctorboyz", "parent-a-kappa", "neo");
     const cfg = JSON.parse(readFileSync(fleetFile, "utf-8"));
 
     expect(cfg.name).toBe("01-parent-a");
@@ -196,7 +196,7 @@ describe("configureFleet — new config (no existing entry)", () => {
     // ISO-8601 shape (YYYY-MM-DDTHH:MM:SS.sssZ)
     expect(cfg.budded_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
     expect(cfg.windows).toEqual([
-      { name: "parent-a-oracle", repo: "Soul-Brews-Studio/parent-a-oracle" },
+      { name: "parent-a-kappa", repo: "doctorboyz/parent-a-kappa" },
     ]);
   });
 
@@ -206,7 +206,7 @@ describe("configureFleet — new config (no existing entry)", () => {
       join(tmpFleet, "09-existing.json"),
       JSON.stringify({ name: "09-existing", windows: [] }) + "\n",
     );
-    const fleetFile = configureFleet("new-bud", "org", "new-bud-oracle", null);
+    const fleetFile = configureFleet("new-bud", "org", "new-bud-kappa", null);
 
     expect(fleetFile).toBe(join(tmpFleet, "10-new-bud.json"));
     const cfg = JSON.parse(readFileSync(fleetFile, "utf-8"));
@@ -214,14 +214,14 @@ describe("configureFleet — new config (no existing entry)", () => {
   });
 
   test("org override flows into the window repo slug", () => {
-    const fleetFile = configureFleet("org-test", "my-gh-org", "org-test-oracle", null);
+    const fleetFile = configureFleet("org-test", "my-gh-org", "org-test-kappa", null);
     const cfg = JSON.parse(readFileSync(fleetFile, "utf-8"));
-    expect(cfg.windows[0].repo).toBe("my-gh-org/org-test-oracle");
+    expect(cfg.windows[0].repo).toBe("my-gh-org/org-test-kappa");
   });
 
   test("fleet file name is zero-padded to 2 digits (05- not 5-)", () => {
     // First call: fresh → should be 01-*
-    const fleetFile = configureFleet("pad-a", "O", "pad-a-oracle", null);
+    const fleetFile = configureFleet("pad-a", "O", "pad-a-kappa", null);
     expect(fleetFile.endsWith("/01-pad-a.json")).toBe(true);
   });
 });
@@ -234,32 +234,32 @@ describe("configureFleet — existing entry (idempotent lineage backfill)", () =
     const seedFile = join(tmpFleet, "03-legacy.json");
     writeFileSync(seedFile, JSON.stringify({
       name: "03-legacy",
-      windows: [{ name: "legacy-oracle", repo: "old-org/legacy-oracle" }],
+      windows: [{ name: "legacy-kappa", repo: "old-org/legacy-kappa" }],
       sync_peers: [],
     }) + "\n");
 
-    const fleetFile = configureFleet("legacy", "new-org", "legacy-oracle", "neo");
+    const fleetFile = configureFleet("legacy", "new-org", "legacy-kappa", "neo");
     expect(fleetFile).toBe(seedFile); // updates in place
 
     const cfg = JSON.parse(readFileSync(fleetFile, "utf-8"));
     expect(cfg.budded_from).toBe("neo");
     expect(cfg.budded_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     // The bud operation must NOT overwrite the original windows entry (legacy data preserved).
-    expect(cfg.windows).toEqual([{ name: "legacy-oracle", repo: "old-org/legacy-oracle" }]);
+    expect(cfg.windows).toEqual([{ name: "legacy-kappa", repo: "old-org/legacy-kappa" }]);
   });
 
   test("existing entry WITH lineage is left untouched (no rewrite churn)", () => {
     const seedFile = join(tmpFleet, "04-already-set.json");
     const seedBody = JSON.stringify({
       name: "04-already-set",
-      windows: [{ name: "already-set-oracle", repo: "O/already-set-oracle" }],
+      windows: [{ name: "already-set-kappa", repo: "O/already-set-kappa" }],
       sync_peers: ["old-parent"],
       budded_from: "old-parent",
       budded_at: "2020-01-01T00:00:00.000Z",
     }, null, 2) + "\n";
     writeFileSync(seedFile, seedBody);
 
-    const fleetFile = configureFleet("already-set", "O", "already-set-oracle", "neo");
+    const fleetFile = configureFleet("already-set", "O", "already-set-kappa", "neo");
     const after = readFileSync(fleetFile, "utf-8");
 
     // Preserve the legacy budded_from + budded_at values. This is the "no rewrite" branch.
@@ -272,12 +272,12 @@ describe("configureFleet — existing entry (idempotent lineage backfill)", () =
     const seedFile = join(tmpFleet, "05-root-existing.json");
     const seedBody = JSON.stringify({
       name: "05-root-existing",
-      windows: [{ name: "root-existing-oracle", repo: "O/root-existing-oracle" }],
+      windows: [{ name: "root-existing-kappa", repo: "O/root-existing-kappa" }],
       sync_peers: [],
     }, null, 2) + "\n";
     writeFileSync(seedFile, seedBody);
 
-    const fleetFile = configureFleet("root-existing", "O", "root-existing-oracle", null);
+    const fleetFile = configureFleet("root-existing", "O", "root-existing-kappa", null);
     const cfg = JSON.parse(readFileSync(fleetFile, "utf-8"));
 
     expect(cfg.budded_from).toBeUndefined();
@@ -292,7 +292,7 @@ describe("configureFleet — existing entry (idempotent lineage backfill)", () =
       join(tmpFleet, "42-numbered.json"),
       JSON.stringify({ name: "42-numbered", windows: [], sync_peers: [] }, null, 2) + "\n",
     );
-    const fleetFile = configureFleet("numbered", "O", "numbered-oracle", "neo");
+    const fleetFile = configureFleet("numbered", "O", "numbered-kappa", "neo");
     expect(fleetFile).toBe(join(tmpFleet, "42-numbered.json"));
     const cfg = JSON.parse(readFileSync(fleetFile, "utf-8"));
     expect(cfg.budded_from).toBe("neo"); // proves the match branch ran
@@ -320,7 +320,7 @@ describe("writeBirthNote", () => {
     expect(body).toContain("Budded from: neo");
   });
 
-  test("root oracle birth note — 'Root oracle — no parent' + no 'from <x>' in frontmatter", () => {
+  test("root kappa birth note — 'Root kappa — no parent' + no 'from <x>' in frontmatter", () => {
     const bud = freshBudRepo();
     const psi = initVault(bud);
     writeBirthNote(psi, "white-wormhole", null, "first root-bud via --root");
@@ -331,7 +331,7 @@ describe("writeBirthNote", () => {
       "utf-8",
     );
     expect(body).toContain("pattern: Birth note\n"); // no "from <parent>" suffix
-    expect(body).toContain("Root oracle — no parent");
+    expect(body).toContain("Root kappa — no parent");
     expect(body).toContain("# Why white-wormhole was born");
     expect(body).toContain("first root-bud via --root");
     expect(body).not.toContain("Budded from:");

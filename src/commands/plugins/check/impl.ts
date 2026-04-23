@@ -52,7 +52,7 @@ export function checkTool(name: string): { present: boolean; version?: string } 
 export function cmdCheck(sub: string, _args: string[]): void {
   if (sub !== "tools") {
     console.log(`unknown subcommand: ${sub}`);
-    console.log("usage: aoi check [tools]");
+    console.log("usage: ki check [tools]");
     return;
   }
 
@@ -66,7 +66,7 @@ export function cmdCheck(sub: string, _args: string[]): void {
   const optResults  = results.filter(t => t.category === "optional");
   const missing     = results.filter(t => !t.present);
 
-  console.log("\naoi check tools\n");
+  console.log("\nki check tools\n");
 
   console.log("Required:");
   for (const t of reqResults) {

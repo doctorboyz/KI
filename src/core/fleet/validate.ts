@@ -1,9 +1,9 @@
 /**
- * Oracle-name validation — #358.
+ * Kappa-name validation — #358.
  *
  * Enforces naming rules at user-input boundaries that create tmux sessions
  * (bud, tiny bud, wake). The `-view` suffix is reserved for ephemeral grouped
- * sessions created by `aoi view`; naming an oracle `foo-view` leads to
+ * sessions created by `ki view`; naming an kappa `foo-view` leads to
  * `foo-view-view` chains and session-resolution ambiguity.
  *
  * Keep this tight — only the `-view` rule for now. Other naming rules can be
@@ -15,11 +15,11 @@
  */
 import { UserError } from "../util/user-error";
 
-export function assertValidOracleName(name: string): void {
+export function assertValidKappaName(name: string): void {
   if (/-view$/.test(name)) {
     const suggestion = name.replace(/-view$/, "");
     throw new UserError(
-      `Oracle name cannot end in '-view' — reserved for ephemeral view sessions. ` +
+      `Kappa name cannot end in '-view' — reserved for ephemeral view sessions. ` +
       `Try '${suggestion}' instead.`,
     );
   }

@@ -2,17 +2,17 @@
  * Fleet Time Machine — snapshot and restore tmux session state.
  *
  * Snapshots are taken automatically on every transaction:
- *   aoi wake  → snapshot after wake
- *   aoi sleep → snapshot after sleep
- *   aoi done  → snapshot after done
+ *   ki wake  → snapshot after wake
+ *   ki sleep → snapshot after sleep
+ *   ki done  → snapshot after done
  *
  * Stored as timestamped JSON files:
- *   ~/.config/aoi/snapshots/2026-03-30T11-19.json
+ *   ~/.config/ki/snapshots/2026-03-30T11-19.json
  *
  * CLI:
- *   aoi fleet snapshots          — list all snapshots
- *   aoi fleet restore            — show latest snapshot
- *   aoi fleet restore <timestamp> — show specific snapshot
+ *   ki fleet snapshots          — list all snapshots
+ *   ki fleet restore            — show latest snapshot
+ *   ki fleet restore <timestamp> — show specific snapshot
  *
  * Keeps last 48 snapshots (prunes oldest on write).
  */

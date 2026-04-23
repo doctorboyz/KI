@@ -1,5 +1,5 @@
 /**
- * @aoi/sdk — the stable API surface for aoi plugins.
+ * @ki/sdk — the stable API surface for ki plugins.
  *
  * TS plugins import from here. WASM plugins get the same capabilities
  * via host functions in wasm-bridge.ts.
@@ -24,7 +24,7 @@ export {
   getEnvVars, cfgTimeout, cfgLimit, cfgInterval, cfg, D,
   resetConfig,
 } from "../core/config";
-export type { AoiConfig } from "../core/config";
+export type { KiConfig } from "../core/config";
 
 // ─── Transport ───────────────────────────────────────────────────────────────
 
@@ -58,7 +58,7 @@ export { getTriggers, getTriggerHistory } from "../core/runtime/triggers";
 
 // ─── Fleet ───────────────────────────────────────────────────────────────────
 
-export { FLEET_DIR, CONFIG_DIR, AOI_ROOT, CONFIG_FILE } from "../core/paths";
+export { FLEET_DIR, CONFIG_DIR, KI_ROOT, CONFIG_FILE } from "../core/paths";
 export { scanWorktrees, cleanupWorktree } from "../core/fleet/worktrees";
 export { saveTabOrder, restoreTabOrder } from "../core/fleet/tab-order";
 export { takeSnapshot, listSnapshots, loadSnapshot, latestSnapshot } from "../core/fleet/snapshot";
@@ -66,8 +66,8 @@ export { readAudit, logAudit } from "../core/fleet/audit";
 export {
   scanLocal, scanRemote, scanFull, scanAndCache,
   readCache, isCacheStale,
-} from "../core/fleet/oracle-registry";
-export type { OracleEntry, RegistryCache } from "../core/fleet/oracle-registry";
+} from "../core/fleet/kappa-registry";
+export type { KappaEntry, RegistryCache } from "../core/fleet/kappa-registry";
 
 // ─── Artifacts ───────────────────────────────────────────────────────────────
 
@@ -117,11 +117,11 @@ export interface PluginConfig {
 }
 
 /**
- * Define a aoi plugin. Like Vue's defineComponent() — validates
+ * Define a ki plugin. Like Vue's defineComponent() — validates
  * the shape, provides autocomplete, zero runtime overhead.
  *
  * ```ts
- * import { definePlugin } from "@aoi/sdk";
+ * import { definePlugin } from "@ki/sdk";
  *
  * export default definePlugin({
  *   name: "my-plugin",

@@ -8,8 +8,8 @@
  *     • candidate-1
  *     • candidate-2
  *   rerun with one of:
- *     aoi hey candidate-1 "..."
- *     aoi hey candidate-2 "..."
+ *     ki hey candidate-1 "..."
+ *     ki hey candidate-2 "..."
  *
  * Colour scheme matches the rest of the CLI (red for error, cyan for hint).
  */
@@ -22,7 +22,7 @@ const RESET = "\x1b[0m";
 /**
  * Reconstruct a rerun-hint command line from the original argv and a
  * candidate. We locate the ambiguous query in argv (first occurrence)
- * and substitute the candidate. Falls back to `aoi <verb> <candidate>`
+ * and substitute the candidate. Falls back to `ki <verb> <candidate>`
  * if argv doesn't contain the query verbatim (e.g. resolved via alias).
  */
 function buildRerunHint(argv: string[], query: string, candidate: string): string {
@@ -30,11 +30,11 @@ function buildRerunHint(argv: string[], query: string, candidate: string): strin
   const idx = argv.indexOf(query);
   if (idx === -1) {
     const verb = argv[0] ?? "hey";
-    return `aoi ${verb} ${candidate} "..."`;
+    return `ki ${verb} ${candidate} "..."`;
   }
   const parts = argv.slice();
   parts[idx] = candidate;
-  return `aoi ${parts.map(quoteIfNeeded).join(" ")}`;
+  return `ki ${parts.map(quoteIfNeeded).join(" ")}`;
 }
 
 export function renderAmbiguousMatch(err: AmbiguousMatchError, argv: string[]): string {

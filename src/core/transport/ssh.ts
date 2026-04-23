@@ -1,7 +1,7 @@
 import { loadConfig } from "../config";
 import { tmuxCmd, Tmux } from "./tmux";
 
-const DEFAULT_HOST = process.env.AOI_HOST || loadConfig().host || "local";
+const DEFAULT_HOST = process.env.KI_HOST || loadConfig().host || "local";
 const IS_LOCAL = DEFAULT_HOST === "local" || DEFAULT_HOST === "localhost";
 
 export type HostExecTransport = "local" | "ssh";
@@ -23,7 +23,7 @@ export class HostExecError extends Error {
   }
 }
 
-/** Transport — run on oracle host. local → bash -c | remote → ssh */
+/** Transport — run on kappa host. local → bash -c | remote → ssh */
 export async function hostExec(cmd: string, host = DEFAULT_HOST): Promise<string> {
   const local = host === "local" || host === "localhost" || IS_LOCAL;
   const transport: HostExecTransport = local ? "local" : "ssh";

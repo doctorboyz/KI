@@ -1,4 +1,4 @@
-/** @internal Colored terminal output helpers for aoi SDK plugins. */
+/** @internal Colored terminal output helpers for ki SDK plugins. */
 
 const c = {
   reset: "\x1b[0m",

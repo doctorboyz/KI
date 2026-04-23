@@ -2,7 +2,7 @@ import { existsSync, readdirSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
 import { hostExec } from "../../../sdk";
-import { cmdTeamTaskList, type AoiTask } from "./task-ops";
+import { cmdTeamTaskList, type KiTask } from "./task-ops";
 import { loadTeam } from "./impl";
 
 const TEAMS_DIR = join(homedir(), ".claude/teams");
@@ -50,7 +50,7 @@ export async function cmdTeamStatus(teamName?: string): Promise<void> {
     }
 
     const tasks = cmdTeamTaskList(name);
-    const taskByAssignee = new Map<string, AoiTask[]>();
+    const taskByAssignee = new Map<string, KiTask[]>();
     for (const t of tasks) {
       if (t.assignee) {
         const arr = taskByAssignee.get(t.assignee) ?? [];

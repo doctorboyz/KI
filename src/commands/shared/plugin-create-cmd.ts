@@ -20,7 +20,7 @@ export async function cmdPluginCreate(
 
   // Validate flags
   if (!isRust && !isAs) {
-    console.error("usage: aoi plugin create [--rust | --as] <name> [--here]");
+    console.error("usage: ki plugin create [--rust | --as] <name> [--here]");
     console.error("  Specify either --rust or --as");
     process.exit(1);
   }
@@ -31,7 +31,7 @@ export async function cmdPluginCreate(
 
   // Validate name
   if (!name) {
-    console.error("usage: aoi plugin create [--rust | --as] <name> [--here]");
+    console.error("usage: ki plugin create [--rust | --as] <name> [--here]");
     process.exit(1);
   }
   const nameErr = validatePluginName(name);
@@ -44,7 +44,7 @@ export async function cmdPluginCreate(
   const dest = flags["--dest"]
     ?? (flags["--here"]
       ? join(process.cwd(), name)
-      : join(homedir(), ".oracle", "plugins", name));
+      : join(homedir(), ".kappa", "plugins", name));
 
   if (existsSync(dest)) {
     console.error(`\x1b[31m✗\x1b[0m Destination already exists: ${dest}`);
@@ -72,11 +72,11 @@ export async function cmdPluginCreate(
     console.log(`  1. cd "${dest}"`);
     console.log(`  2. Edit src/lib.rs — implement your command logic`);
     console.log(`  3. cargo build --release --target wasm32-unknown-unknown`);
-    console.log(`  4. aoi plugin install "${dest}"`);
+    console.log(`  4. ki plugin install "${dest}"`);
   } else {
     console.log(`  1. cd "${dest}"`);
     console.log(`  2. Edit assembly/index.ts — implement your command logic`);
     console.log(`  3. npm install && npm run build`);
-    console.log(`  4. aoi plugin install "${dest}"`);
+    console.log(`  4. ki plugin install "${dest}"`);
   }
 }

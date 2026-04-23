@@ -1,6 +1,6 @@
 export { fetchGitHubPrompt, fetchIssuePrompt } from "./wake-resolve-github";
 export {
-  resolveOracle,
+  resolveKappa,
   findWorktrees,
   getSessionMap,
   resolveFleetSession,

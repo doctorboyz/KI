@@ -1,16 +1,16 @@
 /**
- * aoi ui install / aoi ui status
+ * ki ui install / ki ui status
  *
- * install: downloads + extracts a pre-built aoi-ui dist from a GitHub Release.
+ * install: downloads + extracts a pre-built ki-ui dist from a GitHub Release.
  *          Uses `gh release download` so existing gh auth is reused.
  *
  * status:  reports whether a dist is installed and how many entries it has.
  *
- * After install, `aoi serve` automatically serves the UI alongside the API on
+ * After install, `ki serve` automatically serves the UI alongside the API on
  * port 3456.
  *
- * NOTE: the aoi-ui repo's release workflow (build.yml tag trigger) publishes
- *       aoi-ui-dist.tar.gz as a release asset. Asset name must match what this
+ * NOTE: the ki-ui repo's release workflow (build.yml tag trigger) publishes
+ *       ki-ui-dist.tar.gz as a release asset. Asset name must match what this
  *       file downloads — see buildGhReleaseArgs below.
  */
 
@@ -19,14 +19,14 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, 
 import { join } from "path";
 import { homedir, tmpdir } from "os";
 
-const REPO = "Soul-Brews-Studio/aoi-ui";
-const DIST_DIR = join(homedir(), ".aoi", "ui", "dist");
-const VERSION_MARKER = ".aoi-ui-version";
+const REPO = "doctorboyz/ki-ui";
+const DIST_DIR = join(homedir(), ".ki", "ui", "dist");
+const VERSION_MARKER = ".ki-ui-version";
 
 /**
- * Resolve the installed aoi-ui version by checking, in order:
- *   1. `.aoi-ui-version` marker file written at install time (authoritative)
- *   2. `data-aoi-ui-version="..."` attribute on index.html (legacy fallback)
+ * Resolve the installed ki-ui version by checking, in order:
+ *   1. `.ki-ui-version` marker file written at install time (authoritative)
+ *   2. `data-ki-ui-version="..."` attribute on index.html (legacy fallback)
  * Returns null if neither source yields a value. Pure: only reads from disk.
  */
 export function resolveInstalledVersion(distDir: string): string | null {
@@ -36,7 +36,7 @@ export function resolveInstalledVersion(distDir: string): string | null {
   } catch { /* no marker — fall through */ }
   try {
     const indexHtml = readFileSync(join(distDir, "index.html"), "utf-8");
-    const m = indexHtml.match(/data-aoi-ui-version="([^"]+)"/);
+    const m = indexHtml.match(/data-ki-ui-version="([^"]+)"/);
     if (m) return m[1];
   } catch { /* no index.html — fall through */ }
   return null;
@@ -55,25 +55,25 @@ export function resolveInstalledVersion(distDir: string): string | null {
 export function buildGhReleaseArgs(repo: string, ref: string | undefined, dir: string): string[] {
   const args = ["release", "download"];
   if (ref) args.push(ref);
-  args.push("-R", repo, "--pattern", "aoi-ui-dist.tar.gz", "--dir", dir);
+  args.push("-R", repo, "--pattern", "ki-ui-dist.tar.gz", "--dir", dir);
   return args;
 }
 
 export async function cmdUiInstall(version?: string): Promise<void> {
   const displayRef = version ?? "latest";
 
-  process.stdout.write(`⚡ downloading aoi-ui ${displayRef} from ${REPO}...\n`);
+  process.stdout.write(`⚡ downloading ki-ui ${displayRef} from ${REPO}...\n`);
 
-  const tmpDir = mkdtempSync(join(tmpdir(), "aoi-ui-"));
+  const tmpDir = mkdtempSync(join(tmpdir(), "ki-ui-"));
   try {
     const dl = spawnSync("gh", buildGhReleaseArgs(REPO, version, tmpDir), { encoding: "utf-8" });
 
     if (dl.status !== 0) {
-      console.error(`  → ensure: gh auth status, and a release with aoi-ui-dist.tar.gz asset exists`);
+      console.error(`  → ensure: gh auth status, and a release with ki-ui-dist.tar.gz asset exists`);
       throw new Error(`gh release download failed:\n${dl.stderr}`);
     }
 
-    const tarPath = join(tmpDir, "aoi-ui-dist.tar.gz");
+    const tarPath = join(tmpDir, "ki-ui-dist.tar.gz");
 
     // Wipe + recreate target so no stale files remain
     rmSync(DIST_DIR, { recursive: true, force: true });
@@ -91,7 +91,7 @@ export async function cmdUiInstall(version?: string): Promise<void> {
       throw new Error(`no files extracted to ${DIST_DIR}`);
     }
 
-    // Write a version marker so `aoi ui status` can report the real version.
+    // Write a version marker so `ki ui status` can report the real version.
     // If ref was undefined ("latest"), resolve the actual tag via gh so the
     // marker matches what was downloaded rather than the word "latest".
     let markerRef = version;
@@ -101,8 +101,8 @@ export async function cmdUiInstall(version?: string): Promise<void> {
     }
     if (markerRef) writeFileSync(join(DIST_DIR, VERSION_MARKER), markerRef + "\n");
 
-    console.log(`✓ aoi-ui ${displayRef} installed → ${DIST_DIR} (${files.length} top-level entries)`);
-    console.log(`  → restart aoi server to serve the new UI: pm2 restart aoi OR aoi serve`);
+    console.log(`✓ ki-ui ${displayRef} installed → ${DIST_DIR} (${files.length} top-level entries)`);
+    console.log(`  → restart ki server to serve the new UI: pm2 restart ki OR ki serve`);
   } finally {
     rmSync(tmpDir, { recursive: true, force: true });
   }
@@ -110,14 +110,14 @@ export async function cmdUiInstall(version?: string): Promise<void> {
 
 export async function cmdUiStatus(): Promise<void> {
   if (!existsSync(DIST_DIR)) {
-    console.log(`✗ aoi-ui not installed`);
-    console.log(`  → run: aoi ui install`);
+    console.log(`✗ ki-ui not installed`);
+    console.log(`  → run: ki ui install`);
     return;
   }
 
   const files = readdirSync(DIST_DIR);
   const version = resolveInstalledVersion(DIST_DIR);
   const versionStr = version ? (version.startsWith("v") ? version : `v${version}`) : "(version unknown)";
-  console.log(`✓ aoi-ui ${versionStr} at ${DIST_DIR}`);
+  console.log(`✓ ki-ui ${versionStr} at ${DIST_DIR}`);
   console.log(`  ${files.length} top-level entries`);
 }

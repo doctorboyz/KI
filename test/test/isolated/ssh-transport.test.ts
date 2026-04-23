@@ -104,7 +104,7 @@ describe("ssh.ts transport — H2 defensive refactor", () => {
     test("Case 3 — session names with shell metacharacters pass through without interpolation", async () => {
       // If a malicious peer injects such a name, it arrives here already as data
       // The key is that Tmux.listSessions receives it as structured data, not shell
-      listSessionsReturn = [{ name: "safe-session", windows: [{ index: 0, name: "oracle", active: true }] }];
+      listSessionsReturn = [{ name: "safe-session", windows: [{ index: 0, name: "kappa", active: true }] }];
       const result = await listSessions();
       expect(result[0].name).toBe("safe-session");
       // No shell string should appear in any run() call with the session name interpolated

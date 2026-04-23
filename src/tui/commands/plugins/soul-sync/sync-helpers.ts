@@ -37,26 +37,26 @@ export function syncDir(srcDir: string, dstDir: string): number {
 }
 
 /**
- * Find peer oracle names for a given oracle from fleet config.
- * Flat lookup — each oracle declares its own sync_peers.
+ * Find peer kappa names for a given kappa from fleet config.
+ * Flat lookup — each kappa declares its own sync_peers.
  */
-export function findPeers(oracleName: string): string[] {
+export function findPeers(kappaName: string): string[] {
   const fleet = loadFleet();
   for (const sess of fleet) {
     const name = sess.name.replace(/^\d+-/, "");
-    if (name === oracleName && sess.sync_peers) return sess.sync_peers;
+    if (name === kappaName && sess.sync_peers) return sess.sync_peers;
   }
   return [];
 }
 
 /**
- * Find project repos this oracle absorbs from.
+ * Find project repos this kappa absorbs from.
  */
-export function findProjectsForOracle(oracleName: string): string[] {
+export function findProjectsForKappa(kappaName: string): string[] {
   const fleet = loadFleet();
   for (const sess of fleet) {
     const name = sess.name.replace(/^\d+-/, "");
-    if (name === oracleName) return sess.project_repos || [];
+    if (name === kappaName) return sess.project_repos || [];
   }
   return [];
 }
@@ -69,9 +69,9 @@ export interface SoulSyncResult {
 }
 
 /**
- * Sync ψ/memory/ from one oracle repo to another (new files only).
+ * Sync ψ/memory/ from one kappa repo to another (new files only).
  */
-export function syncOracleVaults(fromPath: string, toPath: string, fromName: string, toName: string): SoulSyncResult {
+export function syncKappaVaults(fromPath: string, toPath: string, fromName: string, toName: string): SoulSyncResult {
   const fromVault = join(fromPath, "ψ");
   const toVault = join(toPath, "ψ");
 
@@ -100,51 +100,51 @@ export function syncOracleVaults(fromPath: string, toPath: string, fromName: str
 
 export interface ProjectSyncResult {
   project: string;
-  oracle: string;
+  kappa: string;
   synced: Record<string, number>;
   total: number;
 }
 
 /**
- * Sync ψ/memory/ from a project repo into an oracle repo.
- * Knowledge flows inward through the membrane — project → oracle, new files only.
+ * Sync ψ/memory/ from a project repo into an kappa repo.
+ * Knowledge flows inward through the membrane — project → kappa, new files only.
  */
 export function syncProjectVault(
   projectPath: string,
-  oraclePath: string,
+  kappaPath: string,
   projectRepo: string,
-  oracleName: string,
+  kappaName: string,
 ): ProjectSyncResult {
   const projectVault = join(projectPath, "ψ");
-  const oracleVault = join(oraclePath, "ψ");
+  const kappaVault = join(kappaPath, "ψ");
 
   const synced: Record<string, number> = {};
   for (const subdir of SYNC_DIRS) {
     const src = join(projectVault, subdir);
-    const dst = join(oracleVault, subdir);
+    const dst = join(kappaVault, subdir);
     const count = syncDir(src, dst);
     if (count > 0) synced[subdir] = count;
   }
   const total = Object.values(synced).reduce((a, b) => a + b, 0);
 
   if (total > 0) {
-    const logDir = join(oracleVault, ".soul-sync");
+    const logDir = join(kappaVault, ".soul-sync");
     try {
       mkdirSync(logDir, { recursive: true });
       const ts = new Date().toISOString();
-      const logLine = `${ts} | project:${projectRepo} → ${oracleName} | ${total} files | ${Object.entries(synced).map(([k, v]) => `${v} ${k.split("/").pop()}`).join(", ")}\n`;
+      const logLine = `${ts} | project:${projectRepo} → ${kappaName} | ${total} files | ${Object.entries(synced).map(([k, v]) => `${v} ${k.split("/").pop()}`).join(", ")}\n`;
       appendFileSync(join(logDir, "sync.log"), logLine);
     } catch { /* non-critical */ }
   }
 
-  return { project: projectRepo, oracle: oracleName, synced, total };
+  return { project: projectRepo, kappa: kappaName, synced, total };
 }
 
 export function reportProjectResult(r: ProjectSyncResult) {
   if (r.total === 0) {
-    console.log(`  \x1b[90m○\x1b[0m project:${r.project} → ${r.oracle}: nothing new`);
+    console.log(`  \x1b[90m○\x1b[0m project:${r.project} → ${r.kappa}: nothing new`);
   } else {
     const parts = Object.entries(r.synced).map(([dir, n]) => `${n} ${dir.split("/").pop()}`);
-    console.log(`  \x1b[32m✓\x1b[0m project:${r.project} → ${r.oracle}: ${parts.join(", ")}`);
+    console.log(`  \x1b[32m✓\x1b[0m project:${r.project} → ${r.kappa}: ${parts.join(", ")}`);
   }
 }

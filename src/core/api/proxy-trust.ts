@@ -22,7 +22,7 @@ export function isKnownMethod(method: string): boolean {
 
 /**
  * Which peer paths are OK to proxy? These are the v1 REST endpoints that
- * aoi-ui callers actually read. Anything else is rejected to reduce the
+ * ki-ui callers actually read. Anything else is rejected to reduce the
  * attack surface for an anonymous proxy endpoint.
  *
  * Iteration 6+ may relax this to a per-peer config if real-world usage

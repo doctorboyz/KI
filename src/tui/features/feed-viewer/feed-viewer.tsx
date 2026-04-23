@@ -10,9 +10,9 @@ export function FeedViewer() {
   const selectedAgent = useAgentStore((s) => s.agents[useAgentStore.getState().selectedIndex]);
 
   const filtered = filter
-    ? events.filter((e) => e.oracle === filter)
+    ? events.filter((e) => e.kappa === filter)
     : selectedAgent
-      ? events.filter((e) => e.oracle === selectedAgent.name)
+      ? events.filter((e) => e.kappa === selectedAgent.name)
       : events;
 
   const visible = filtered.slice(-40);

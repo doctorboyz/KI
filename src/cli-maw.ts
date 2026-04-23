@@ -2,7 +2,7 @@
 process.env.MAW_CLI = "1";
 
 // #566: apply --as <name> BEFORE any state-touching import (paths.ts evaluates
-// AOI_HOME at module load). Must be the first side effect.
+// KI_HOME at module load). Must be the first side effect.
 import { applyInstancePreset } from "./cli-src/instance-preset";
 applyInstancePreset();
 
@@ -41,11 +41,11 @@ async function main(): Promise<void> {
   } else if (cmd === "update" || cmd === "upgrade") {
     await runUpdate(args);
   } else {
-    // Auto-bootstrap: if ~/.aoi/plugins/ is empty, symlink bundled + install from pluginSources
-    const pluginDir = join(homedir(), ".aoi", "plugins");
+    // Auto-bootstrap: if ~/.ki/plugins/ is empty, symlink bundled + install from pluginSources
+    const pluginDir = join(homedir(), ".ki", "plugins");
     await runBootstrap(pluginDir, import.meta.dir);
 
-    // Load plugins from ~/.aoi/plugins/ — the single source of truth
+    // Load plugins from ~/.ki/plugins/ — the single source of truth
     await scanCommands(pluginDir, "user");
 
     if (!cmd || cmd === "--help" || cmd === "-h") {
@@ -93,8 +93,8 @@ async function main(): Promise<void> {
         }
         // #388.2 — unknown command: fuzzy-suggest against the plugin registry.
         // Only intercepts when cmd is NOT a known route/plugin/alias AND does
-        // NOT strictly match an oracle session name. Preserves `aoi aoijs`
-        // shorthand while catching `aoi hek` / `aoi oracl` / typos.
+        // NOT strictly match an kappa session name. Preserves `ki kijs`
+        // shorthand while catching `ki hek` / `ki oracl` / typos.
         const CORE_ROUTES = [
           "hey", "send", "tell",
           "plugins", "plugin", "artifacts", "artifact",
@@ -119,38 +119,38 @@ async function main(): Promise<void> {
           // known command. New flow:
           //   1. fuzzy-match against knownCommands (distance ≤ 2)
           //   2. if close candidates → "did you mean" + exit, skip tmux
-          //   3. else if arg has oracle-name shape → tmux listSessions
-          //   4. else → generic "run aoi --help"
+          //   3. else if arg has kappa-name shape → tmux listSessions
+          //   4. else → generic "run ki --help"
           const { fuzzyMatch } = await import("./core/util/fuzzy");
           const closeCandidates = fuzzyMatch(args[0], knownCommands, 3, 2);
-          let isOracle = false;
+          let isKappa = false;
           if (closeCandidates.length === 0) {
             // No close typo-match. Only spend the tmux query if the arg
-            // shape is plausibly an oracle session name.
-            const ORACLE_NAME_SHAPE = /^[a-z0-9][a-z0-9:_-]*$/i;
-            if (ORACLE_NAME_SHAPE.test(args[0])) {
+            // shape is plausibly an kappa session name.
+            const KAPPA_NAME_SHAPE = /^[a-z0-9][a-z0-9:_-]*$/i;
+            if (KAPPA_NAME_SHAPE.test(args[0])) {
               const { listSessions } = await import("./sdk");
               const sessions = await listSessions().catch(() => [] as Awaited<ReturnType<typeof listSessions>>);
               const target = args[0].toLowerCase();
-              isOracle = sessions.some(s => {
+              isKappa = sessions.some(s => {
                 const name = s.name.toLowerCase();
                 return name === target || name.replace(/^\d+-/, "") === target;
               });
             }
           }
-          if (!isOracle) {
+          if (!isKappa) {
             console.error(`\x1b[31m✗\x1b[0m unknown command: ${args[0]}`);
             if (closeCandidates.length > 0) {
               console.error(`  did you mean: ${closeCandidates.join(", ")}?`);
             } else {
-              console.error(`  run 'aoi --help' to see available commands`);
+              console.error(`  run 'ki --help' to see available commands`);
             }
             // UserError: output already printed above; top-level catch just
             // exits 1 without bun's default stack trace (alpha.66 polish).
             throw new UserError(`unknown command: ${args[0]}`);
           }
         }
-        // Default: agent name shorthand (aoi <agent> <msg> or aoi <agent>)
+        // Default: agent name shorthand (ki <agent> <msg> or ki <agent>)
         if (args.length >= 2) {
           const f = args.includes("--force");
           const m = args.slice(1).filter(a => a !== "--force");

@@ -77,10 +77,10 @@ describe("ensureBudRepo — local short-circuit", () => {
     mkdirSync(existingPath, { recursive: true });
 
     await ensureBudRepo(
-      "Soul-Brews-Studio/already-cloned-oracle",
+      "doctorboyz/already-cloned-kappa",
       existingPath,
-      "already-cloned-oracle",
-      "Soul-Brews-Studio",
+      "already-cloned-kappa",
+      "doctorboyz",
     );
 
     // Zero commands executed — the existsSync guard kicks us out before any gh/ghq call.
@@ -92,22 +92,22 @@ describe("ensureBudRepo — gh repo view pre-check", () => {
   test("view returns matching repo name → skips create, still clones via ghq", async () => {
     const missingPath = join(tmpBase, "view-hit");
     execResponses = [
-      { match: /^gh repo view /, result: `{"name":"view-hit-oracle"}` },
+      { match: /^gh repo view /, result: `{"name":"view-hit-kappa"}` },
       { match: /^ghq get /, sideEffect: () => mkdirSync(missingPath, { recursive: true }) },
     ];
 
     await ensureBudRepo(
-      "Soul-Brews-Studio/view-hit-oracle",
+      "doctorboyz/view-hit-kappa",
       missingPath,
-      "view-hit-oracle",
-      "Soul-Brews-Studio",
+      "view-hit-kappa",
+      "doctorboyz",
     );
 
     // view was called, create was NOT, ghq get was called.
     expect(execCalls.some((c) => c.startsWith("gh repo view"))).toBe(true);
     expect(execCalls.some((c) => c.startsWith("gh repo create"))).toBe(false);
     expect(execCalls.some((c) => c.startsWith("ghq get"))).toBe(true);
-    expect(execCalls.some((c) => c.includes("github.com/Soul-Brews-Studio/view-hit-oracle"))).toBe(true);
+    expect(execCalls.some((c) => c.includes("github.com/doctorboyz/view-hit-kappa"))).toBe(true);
   });
 
   test("view throws (.catch swallows) → proceeds to create → then ghq get", async () => {
@@ -119,10 +119,10 @@ describe("ensureBudRepo — gh repo view pre-check", () => {
     ];
 
     await ensureBudRepo(
-      "Soul-Brews-Studio/view-miss-oracle",
+      "doctorboyz/view-miss-kappa",
       missingPath,
-      "view-miss-oracle",
-      "Soul-Brews-Studio",
+      "view-miss-kappa",
+      "doctorboyz",
     );
 
     const viewIdx = execCalls.findIndex((c) => c.startsWith("gh repo view"));
@@ -136,7 +136,7 @@ describe("ensureBudRepo — gh repo view pre-check", () => {
     // Create flags match the real impl — regression guard.
     expect(execCalls[createIdx]).toContain("--private");
     expect(execCalls[createIdx]).toContain("--add-readme");
-    expect(execCalls[createIdx]).toContain("Soul-Brews-Studio/view-miss-oracle");
+    expect(execCalls[createIdx]).toContain("doctorboyz/view-miss-kappa");
   });
 
   test("view returns UNRELATED repo name (no match) → proceeds to create", async () => {
@@ -149,10 +149,10 @@ describe("ensureBudRepo — gh repo view pre-check", () => {
     ];
 
     await ensureBudRepo(
-      "Soul-Brews-Studio/view-other-oracle",
+      "doctorboyz/view-other-kappa",
       missingPath,
-      "view-other-oracle",
-      "Soul-Brews-Studio",
+      "view-other-kappa",
+      "doctorboyz",
     );
 
     expect(execCalls.some((c) => c.startsWith("gh repo create"))).toBe(true);
@@ -169,10 +169,10 @@ describe("ensureBudRepo — gh repo create error branches", () => {
     ];
 
     await ensureBudRepo(
-      "Soul-Brews-Studio/create-already-oracle",
+      "doctorboyz/create-already-kappa",
       missingPath,
-      "create-already-oracle",
-      "Soul-Brews-Studio",
+      "create-already-kappa",
+      "doctorboyz",
     );
 
     // Must NOT throw — the "already exists" branch logs and continues.
@@ -189,9 +189,9 @@ describe("ensureBudRepo — gh repo create error branches", () => {
     let caught: Error | null = null;
     try {
       await ensureBudRepo(
-        "my-gh-org/locked-oracle",
+        "my-gh-org/locked-kappa",
         missingPath,
-        "locked-oracle",
+        "locked-kappa",
         "my-gh-org",
       );
     } catch (e) {
@@ -201,7 +201,7 @@ describe("ensureBudRepo — gh repo create error branches", () => {
     expect(caught).not.toBeNull();
     expect(caught!.message).toContain("no permission to create repos");
     expect(caught!.message).toContain("my-gh-org");
-    expect(caught!.message).toContain("my-gh-org/locked-oracle");
+    expect(caught!.message).toContain("my-gh-org/locked-kappa");
     expect(caught!.message).toContain("maw bud");
 
     // Never reaches ghq get when permission is denied.
@@ -218,9 +218,9 @@ describe("ensureBudRepo — gh repo create error branches", () => {
     let caught: Error | null = null;
     try {
       await ensureBudRepo(
-        "some-org/admin-only-oracle",
+        "some-org/admin-only-kappa",
         missingPath,
-        "admin-only-oracle",
+        "admin-only-kappa",
         "some-org",
       );
     } catch (e) {
@@ -242,10 +242,10 @@ describe("ensureBudRepo — gh repo create error branches", () => {
     let caught: Error | null = null;
     try {
       await ensureBudRepo(
-        "Soul-Brews-Studio/weird-oracle",
+        "doctorboyz/weird-kappa",
         missingPath,
-        "weird-oracle",
-        "Soul-Brews-Studio",
+        "weird-kappa",
+        "doctorboyz",
       );
     } catch (e) {
       caught = e as Error;
@@ -270,13 +270,13 @@ describe("ensureBudRepo — ghq clone command shape", () => {
     ];
 
     await ensureBudRepo(
-      "Soul-Brews-Studio/clone-shape-oracle",
+      "doctorboyz/clone-shape-kappa",
       missingPath,
-      "clone-shape-oracle",
-      "Soul-Brews-Studio",
+      "clone-shape-kappa",
+      "doctorboyz",
     );
 
     const cloneCmd = execCalls.find((c) => c.startsWith("ghq get"));
-    expect(cloneCmd).toBe("ghq get github.com/Soul-Brews-Studio/clone-shape-oracle");
+    expect(cloneCmd).toBe("ghq get github.com/doctorboyz/clone-shape-kappa");
   });
 });

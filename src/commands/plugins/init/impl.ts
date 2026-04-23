@@ -104,13 +104,13 @@ export async function cmdInit(opts: CmdInitOpts): Promise<CmdInitResult> {
     write(`${GREEN}✓${RESET} Wrote ${CONFIG_FILE}`);
     if (federationToken && parsed.opts.federate) {
       write(`${CYAN}federation token${RESET}: ${federationToken}`);
-      write(`${GRAY}  share with each peer in their aoi.config.json${RESET}`);
+      write(`${GRAY}  share with each peer in their ki.config.json${RESET}`);
     }
     return { ok: true, configPath: CONFIG_FILE, config };
   }
 
   // ─── interactive mode ──────────────────────────────────────────────
-  write(`${BOLD}aoi init${RESET} — first-run setup`);
+  write(`${BOLD}ki init${RESET} — first-run setup`);
   write("");
 
   if (configExists(CONFIG_FILE)) {
@@ -157,14 +157,14 @@ export async function cmdInit(opts: CmdInitOpts): Promise<CmdInitResult> {
     write("");
     write(`${CYAN}Generated federation token${RESET} (share with all peers):`);
     write(`  ${federationToken}`);
-    write(`${GRAY}  copy this verbatim into each peer's aoi.config.json under "federationToken"${RESET}`);
+    write(`${GRAY}  copy this verbatim into each peer's ki.config.json under "federationToken"${RESET}`);
   }
 
   write("");
   write(`${BOLD}Next steps${RESET}:`);
-  write(`  aoi serve              ${GRAY}# start the local daemon${RESET}`);
-  write(`  aoi wake <repo>        ${GRAY}# spawn your first agent${RESET}`);
-  write(`  aoi bud <name>         ${GRAY}# create a new oracle (writes fleet/<NN>-<name>.json)${RESET}`);
+  write(`  ki serve              ${GRAY}# start the local daemon${RESET}`);
+  write(`  ki wake <repo>        ${GRAY}# spawn your first agent${RESET}`);
+  write(`  ki bud <name>         ${GRAY}# create a new kappa (writes fleet/<NN>-<name>.json)${RESET}`);
 
   return { ok: true, configPath: CONFIG_FILE, config };
 }

@@ -1,10 +1,10 @@
 import { sendKeys, selectWindow, hostExec, getPaneCommand } from "../transport/ssh";
 import { tmux } from "../transport/tmux";
 import { buildCommand } from "../config";
-import type { AoiWS, Handler, AoiEngine } from "../types";
+import type { KiWS, Handler, KiEngine } from "../types";
 
 /** Run an async action with standard ok/error response */
-async function runAction(ws: AoiWS, action: string, target: string, fn: () => Promise<void>) {
+async function runAction(ws: KiWS, action: string, target: string, fn: () => Promise<void>) {
   try {
     await fn();
     ws.send(JSON.stringify({ type: "action-ok", action, target }));
@@ -74,7 +74,7 @@ const restart: Handler = (ws, data) => {
 };
 
 /** Register all built-in WebSocket handlers on the engine */
-export function registerBuiltinHandlers(engine: AoiEngine) {
+export function registerBuiltinHandlers(engine: KiEngine) {
   engine.on("subscribe", subscribe);
   engine.on("subscribe-previews", subscribePreviews);
   engine.on("select", select);

@@ -3,7 +3,7 @@ import { cmdContactsLs, cmdContactsAdd, cmdContactsRm } from "./impl";
 
 export const command = {
   name: ["contacts", "contact"],
-  description: "Manage oracle contacts — add, remove, list",
+  description: "Manage kappa contacts — add, remove, list",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -25,7 +25,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       if (sub === "add" && args[1]) {
         await cmdContactsAdd(args[1], args.slice(2));
       } else if (sub === "rm" || sub === "remove") {
-        if (!args[1]) { logs.push("usage: aoi contacts rm <name>"); return { ok: false, error: "name required" }; }
+        if (!args[1]) { logs.push("usage: ki contacts rm <name>"); return { ok: false, error: "name required" }; }
         await cmdContactsRm(args[1]);
       } else {
         await cmdContactsLs();
@@ -41,7 +41,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         if (!name) return { ok: false, error: "name required" };
         if (action === "add") {
           const transport = body.transport as string | undefined;
-          await cmdContactsAdd(name, transport ? ["--aoi", transport] : []);
+          await cmdContactsAdd(name, transport ? ["--ki", transport] : []);
         } else if (action === "rm") {
           await cmdContactsRm(name);
         } else {

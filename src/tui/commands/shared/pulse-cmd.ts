@@ -5,8 +5,8 @@ import {
   findOrCreateDailyThread, addTaskToPeriodComment,
 } from "./pulse-thread";
 
-export async function cmdPulseAdd(title: string, opts: { oracle?: string; priority?: string; wt?: string }) {
-  const repo = "laris-co/pulse-oracle";
+export async function cmdPulseAdd(title: string, opts: { kappa?: string; priority?: string; wt?: string }) {
+  const repo = "laris-co/pulse-kappa";
   const projectNum = 6; // Master Board
   const period = timePeriod();
 
@@ -16,7 +16,7 @@ export async function cmdPulseAdd(title: string, opts: { oracle?: string; priori
   // 1. Create task issue
   const escaped = title.replace(/'/g, "'\\''");
   const labels: string[] = [];
-  if (opts.oracle) labels.push(`oracle:${opts.oracle}`);
+  if (opts.kappa) labels.push(`kappa:${opts.kappa}`);
   const labelFlags = labels.length ? labels.map(l => `-l '${l}'`).join(" ") : "";
 
   const issueUrl = (await hostExec(
@@ -27,7 +27,7 @@ export async function cmdPulseAdd(title: string, opts: { oracle?: string; priori
   console.log(`\x1b[32m+\x1b[0m issue #${issueNum} (${period}): ${issueUrl}`);
 
   // 2. Add task to period comment in daily thread (edit triggers webhook!)
-  await addTaskToPeriodComment(repo, thread.num, period, issueNum, title, opts.oracle);
+  await addTaskToPeriodComment(repo, thread.num, period, issueNum, title, opts.kappa);
   console.log(`\x1b[32m+\x1b[0m added to ${period} in daily thread #${thread.num}`);
 
   // 3. Add to Master Board
@@ -38,8 +38,8 @@ export async function cmdPulseAdd(title: string, opts: { oracle?: string; priori
     console.log(`\x1b[33mwarn:\x1b[0m could not add to project board: ${e}`);
   }
 
-  // 4. Wake oracle if specified
-  if (opts.oracle) {
+  // 4. Wake kappa if specified
+  if (opts.kappa) {
     const wakeOpts: { task?: string; wt?: string; prompt?: string } = {};
     if (opts.wt) {
       wakeOpts.wt = opts.wt;
@@ -47,13 +47,13 @@ export async function cmdPulseAdd(title: string, opts: { oracle?: string; priori
     const prompt = `/recap --deep — You have been assigned issue #${issueNum}: ${title}. Issue URL: ${issueUrl}. Orient yourself, then wait for human instructions.`;
     wakeOpts.prompt = prompt;
 
-    const target = await cmdWake(opts.oracle, wakeOpts);
+    const target = await cmdWake(opts.kappa, wakeOpts);
     console.log(`\x1b[32m🚀\x1b[0m ${target}: waking up with /recap --deep → then --continue`);
   }
 }
 
 export async function cmdPulseLs(opts: { sync?: boolean }) {
-  const repo = "laris-co/pulse-oracle";
+  const repo = "laris-co/pulse-kappa";
 
   // Fetch all open issues
   const issuesJson = (await hostExec(
@@ -82,9 +82,9 @@ export async function cmdPulseLs(opts: { sync?: boolean }) {
     else toolIssues.push(issue);
   }
 
-  const getOracle = (issue: typeof issues[0]) => {
-    const label = issue.labels.find(l => l.name.startsWith("oracle:"));
-    return label ? label.name.replace("oracle:", "") : "—";
+  const getKappa = (issue: typeof issues[0]) => {
+    const label = issue.labels.find(l => l.name.startsWith("kappa:"));
+    return label ? label.name.replace("kappa:", "") : "—";
   };
 
   // Terminal table
@@ -94,8 +94,8 @@ export async function cmdPulseLs(opts: { sync?: boolean }) {
     console.log(`\x1b[33mProjects (${projects.length})\x1b[0m`);
     console.log(`┌──────┬${"─".repeat(50)}┬──────────────┐`);
     for (const p of projects.sort((a, b) => a.number - b.number)) {
-      const oracle = getOracle(p);
-      console.log(`│ \x1b[32m#${String(p.number).padEnd(3)}\x1b[0m │ ${p.title.slice(0, 48).padEnd(48)} │ ${oracle.padEnd(12)} │`);
+      const kappa = getKappa(p);
+      console.log(`│ \x1b[32m#${String(p.number).padEnd(3)}\x1b[0m │ ${p.title.slice(0, 48).padEnd(48)} │ ${kappa.padEnd(12)} │`);
     }
     console.log(`└──────┴${"─".repeat(50)}┴──────────────┘`);
   }
@@ -104,8 +104,8 @@ export async function cmdPulseLs(opts: { sync?: boolean }) {
     console.log(`\n\x1b[33mTools/Infra (${toolIssues.length})\x1b[0m`);
     console.log(`┌──────┬${"─".repeat(50)}┬──────────────┐`);
     for (const t of toolIssues.sort((a, b) => a.number - b.number)) {
-      const oracle = getOracle(t);
-      console.log(`│ \x1b[32m#${String(t.number).padEnd(3)}\x1b[0m │ ${t.title.slice(0, 48).padEnd(48)} │ ${oracle.padEnd(12)} │`);
+      const kappa = getKappa(t);
+      console.log(`│ \x1b[32m#${String(t.number).padEnd(3)}\x1b[0m │ ${t.title.slice(0, 48).padEnd(48)} │ ${kappa.padEnd(12)} │`);
     }
     console.log(`└──────┴${"─".repeat(50)}┴──────────────┘`);
   }
@@ -113,8 +113,8 @@ export async function cmdPulseLs(opts: { sync?: boolean }) {
   if (activeIssues.length) {
     console.log(`\n\x1b[33mActive Today (${activeIssues.length})\x1b[0m`);
     for (const a of activeIssues.sort((a2, b) => a2.number - b.number)) {
-      const oracle = getOracle(a);
-      console.log(`  \x1b[33m🟡\x1b[0m #${a.number} ${a.title} → ${oracle}`);
+      const kappa = getKappa(a);
+      console.log(`  \x1b[33m🟡\x1b[0m #${a.number} ${a.title} → ${kappa}`);
     }
   }
 
@@ -130,25 +130,25 @@ export async function cmdPulseLs(opts: { sync?: boolean }) {
     if (projects.length) {
       lines.push(`### Projects (${projects.length})`, "");
       for (const p of projects.sort((a, b) => a.number - b.number)) {
-        lines.push(`- [ ] #${p.number} ${p.title} → ${getOracle(p)}`);
+        lines.push(`- [ ] #${p.number} ${p.title} → ${getKappa(p)}`);
       }
       lines.push("");
     }
     if (toolIssues.length) {
       lines.push(`### Tools/Infra (${toolIssues.length})`, "");
       for (const t of toolIssues.sort((a, b) => a.number - b.number)) {
-        lines.push(`- [ ] #${t.number} ${t.title} → ${getOracle(t)}`);
+        lines.push(`- [ ] #${t.number} ${t.title} → ${getKappa(t)}`);
       }
       lines.push("");
     }
     if (activeIssues.length) {
       lines.push(`### Active Today (${activeIssues.length})`, "");
       for (const a of activeIssues.sort((a2, b) => a2.number - b.number)) {
-        lines.push(`- [ ] #${a.number} ${a.title} → ${getOracle(a)} 🟡`);
+        lines.push(`- [ ] #${a.number} ${a.title} → ${getKappa(a)} 🟡`);
       }
       lines.push("");
     }
-    lines.push(`**${issues.length - threads.length} open** — Homekeeper Oracle 🤖`);
+    lines.push(`**${issues.length - threads.length} open** — Homekeeper Kappa 🤖`);
 
     const body = lines.join("\n").replace(/'/g, "'\\''");
 

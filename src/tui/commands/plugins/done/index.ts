@@ -28,7 +28,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       // Find first non-flag arg
       const positional = args.filter(a => !a.startsWith("--"));
       if (!positional[0]) {
-        return { ok: false, error: "usage: aoi done <window-name> [--force] [--dry-run]" };
+        return { ok: false, error: "usage: ki done <window-name> [--force] [--dry-run]" };
       }
       name = positional[0];
       force = args.includes("--force");

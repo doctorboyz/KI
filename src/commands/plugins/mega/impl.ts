@@ -69,7 +69,7 @@ function modelShort(model?: string): string {
   return model.split("-").pop() || model;
 }
 
-/** aoi mega status — show hierarchy tree */
+/** ki mega status — show hierarchy tree */
 export async function cmdMegaStatus() {
   const panes = await livePaneIds();
 
@@ -148,7 +148,7 @@ export async function cmdMegaStatus() {
   console.log(`\n\x1b[90m${totalAlive} alive · ${teamDirs.length - totalAlive} stale · ${totalMembers} agents total\x1b[0m\n`);
 }
 
-/** aoi mega stop — graceful shutdown all teams */
+/** ki mega stop — graceful shutdown all teams */
 export async function cmdMegaStop() {
   let teamDirs: string[] = [];
   try {
@@ -186,5 +186,5 @@ export async function cmdMegaStop() {
     }
   }
 
-  console.log(`\n\x1b[32m✓\x1b[0m Panes killed. Run \x1b[36maoi mega status\x1b[0m to verify.`);
+  console.log(`\n\x1b[32m✓\x1b[0m Panes killed. Run \x1b[36mki mega status\x1b[0m to verify.`);
 }

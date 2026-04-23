@@ -7,7 +7,7 @@ import { join } from "path";
 
 const mockEvent: FeedEvent = {
   timestamp: "2026-04-10 16:00",
-  oracle: "neo",
+  kappa: "neo",
   host: "white.local",
   event: "SessionStart",
   project: "/home/test",
@@ -27,7 +27,7 @@ describe("PluginSystem", () => {
 
     await sys.emit(mockEvent);
     expect(received).toHaveLength(1);
-    expect(received[0].oracle).toBe("neo");
+    expect(received[0].kappa).toBe("neo");
   });
 
   test("wildcard * receives all events", async () => {
@@ -78,7 +78,7 @@ describe("PluginSystem", () => {
       hooks.on("SessionStart", () => { throw new Error("boom"); });
     });
     sys.load((hooks) => {
-      hooks.on("SessionStart", (e) => received.push(e.oracle));
+      hooks.on("SessionStart", (e) => received.push(e.kappa));
     });
 
     await sys.emit(mockEvent);
@@ -139,7 +139,7 @@ describe("PluginSystem", () => {
       hooks.filter("*", () => { throw new Error("filter boom"); });
     });
     sys.load((hooks) => {
-      hooks.on("SessionStart", (e) => received.push(e.oracle));
+      hooks.on("SessionStart", (e) => received.push(e.kappa));
     });
 
     await sys.emit(mockEvent);
@@ -148,8 +148,8 @@ describe("PluginSystem", () => {
 
   test("loadPlugins skips non-plugin wasm files", async () => {
     const sys = new PluginSystem();
-    // ~/.oracle/plugins/ has demo.wasm (add/mul) — should skip gracefully
-    await loadPlugins(sys, require("path").join(require("os").homedir(), ".oracle", "plugins"));
+    // ~/.kappa/plugins/ has demo.wasm (add/mul) — should skip gracefully
+    await loadPlugins(sys, require("path").join(require("os").homedir(), ".kappa", "plugins"));
     // Should not throw, demo.wasm has no handle or _start
   });
 
@@ -169,7 +169,7 @@ describe("PluginSystem", () => {
       hooks.gate("SessionStart", () => false); // CANCEL
     });
     sys.load((hooks) => {
-      hooks.on("SessionStart", (e) => received.push(e.oracle));
+      hooks.on("SessionStart", (e) => received.push(e.kappa));
     });
 
     const result = await sys.emit(mockEvent);
@@ -185,7 +185,7 @@ describe("PluginSystem", () => {
       hooks.gate("SessionStart", () => true); // ALLOW
     });
     sys.load((hooks) => {
-      hooks.on("SessionStart", (e) => received.push(e.oracle));
+      hooks.on("SessionStart", (e) => received.push(e.kappa));
     });
 
     const result = await sys.emit(mockEvent);
@@ -217,7 +217,7 @@ describe("PluginSystem", () => {
       hooks.gate("SessionStart", () => { throw new Error("gate boom"); });
     });
     sys.load((hooks) => {
-      hooks.on("SessionStart", (e) => received.push(e.oracle));
+      hooks.on("SessionStart", (e) => received.push(e.kappa));
     });
 
     const result = await sys.emit(mockEvent);
@@ -524,7 +524,7 @@ describe("PluginSystem", () => {
 
     sys.register("good.ts", "ts", "user");
     sys.load((hooks) => {
-      hooks.on("SessionStart", (e) => received.push(e.oracle));
+      hooks.on("SessionStart", (e) => received.push(e.kappa));
     }, "user", "good.ts");
 
     await sys.emit(mockEvent);

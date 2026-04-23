@@ -2,7 +2,7 @@ import { loadConfig } from "../config";
 
 /** Resolve tmux socket path from env or config. */
 export function resolveSocket(): string | undefined {
-  return process.env.AOI_TMUX_SOCKET || loadConfig().tmuxSocket || undefined;
+  return process.env.KI_TMUX_SOCKET || loadConfig().tmuxSocket || undefined;
 }
 
 /** Build the `tmux` (or `tmux -S <socket>`) prefix for raw commands. */

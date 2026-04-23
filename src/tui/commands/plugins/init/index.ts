@@ -3,7 +3,7 @@ import { cmdInit } from "./impl";
 
 export const command = {
   name: "init",
-  description: "First-run wizard — configure ~/.config/aoi/aoi.config.json",
+  description: "First-run wizard — configure ~/.config/ki/ki.config.json",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -23,7 +23,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       if (args[0] === "--help" || args[0] === "-h") {
         return {
           ok: true,
-          output: "aoi init [--non-interactive --node <name> --ghq-root <path> --token <t> --federate --peer <url> --peer-name <name> --federation-token <hex> --force]\n\nInteractive 4-question wizard. Writes ~/.config/aoi/aoi.config.json.\nIn non-interactive mode, all required fields fall back to detected defaults\n(hostname, ghq root). Existing config requires --force to overwrite.",
+          output: "ki init [--non-interactive --node <name> --ghq-root <path> --token <t> --federate --peer <url> --peer-name <name> --federation-token <hex> --force]\n\nInteractive 4-question wizard. Writes ~/.config/ki/ki.config.json.\nIn non-interactive mode, all required fields fall back to detected defaults\n(hostname, ghq root). Existing config requires --force to overwrite.",
         };
       }
       const result = await cmdInit({ args, writer });

@@ -1,12 +1,12 @@
 import { tmux } from "../../../../sdk";
 
 /**
- * aoi broadcast <message> — send to ALL Claude windows across ALL sessions
+ * ki broadcast <message> — send to ALL Claude windows across ALL sessions
  * Always prefixes with sender identity so receivers know who broadcasted.
  */
 export async function cmdBroadcast(message: string) {
   if (!message) {
-    throw new Error("usage: aoi broadcast <message>");
+    throw new Error("usage: ki broadcast <message>");
   }
 
   // Detect sender from current tmux window

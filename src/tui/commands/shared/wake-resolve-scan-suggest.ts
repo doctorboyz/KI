@@ -19,7 +19,7 @@ export interface ScanSuggestDeps {
   promptFn?: (msg: string) => boolean | null;
   /** Async exec — used for ghq get and ghq list --full-path */
   hostExecFn?: (cmd: string) => Promise<string>;
-  /** Load aoi config (injectable for tests) */
+  /** Load ki config (injectable for tests) */
   configFn?: () => any;
 }
 
@@ -28,7 +28,7 @@ export function extractGhqOrgs(ghqOutput: string): string[] {
   const orgs = new Set<string>();
   for (const line of ghqOutput.split("\n")) {
     const parts = line.trim().split("/");
-    // e.g. "github.com/Soul-Brews-Studio/wireboy-oracle" → parts[1] = org
+    // e.g. "github.com/doctorboyz/wireboy-kappa" → parts[1] = org
     if (parts.length >= 3 && parts[1]) orgs.add(parts[1]);
   }
   return [...orgs].sort();
@@ -80,13 +80,13 @@ export function checkGhRepo(slug: string, execFn: (cmd: string) => string): stri
   }
 }
 
-/** Scan orgs for <oracle>-oracle, stop on first match. Returns URL or null. */
+/** Scan orgs for <kappa>-kappa, stop on first match. Returns URL or null. */
 export function scanOrgs(
-  oracle: string,
+  kappa: string,
   orgs: OrgEntry[],
   execFn: (cmd: string) => string,
 ): { org: string; url: string } | null {
-  const stem = oracle.endsWith("-oracle") ? oracle : `${oracle}-oracle`;
+  const stem = kappa.endsWith("-kappa") ? kappa : `${kappa}-kappa`;
   for (const { name: org } of orgs) {
     process.stdout.write(`→ scanning ${org}/${stem} ... `);
     const url = checkGhRepo(`${org}/${stem}`, execFn);
@@ -100,13 +100,13 @@ export function scanOrgs(
 }
 
 /**
- * Offer to scan known orgs for <oracle>-oracle when all local resolution fails.
+ * Offer to scan known orgs for <kappa>-kappa when all local resolution fails.
  *
  * Returns resolved repo info if found and cloned, or null if skipped/not found.
  * Calls process.exit(0) if user explicitly aborts (says N).
  */
-export async function scanSuggestOracle(
-  oracle: string,
+export async function scanSuggestKappa(
+  kappa: string,
   deps?: ScanSuggestDeps,
 ): Promise<{ repoPath: string; repoName: string; parentDir: string } | null> {
   const cfg = deps?.configFn ? deps.configFn() : loadConfig();
@@ -132,9 +132,9 @@ export async function scanSuggestOracle(
     return null;
   }
 
-  // Strip -oracle suffix if caller passed it (we always append exactly once)
-  const name = oracle.endsWith("-oracle") ? oracle.slice(0, -7) : oracle;
-  const stem = `${name}-oracle`;
+  // Strip -kappa suffix if caller passed it (we always append exactly once)
+  const name = kappa.endsWith("-kappa") ? kappa.slice(0, -7) : kappa;
+  const stem = `${name}-kappa`;
 
   // Display scan plan — flat, 1-2 indent levels max
   const orgLines = orgs.map(o => {
@@ -151,11 +151,11 @@ export async function scanSuggestOracle(
   if (response === null) {
     // Non-TTY — can't prompt, print manual hint and bail
     console.log(`\x1b[90m(non-interactive — cannot prompt)\x1b[0m`);
-    console.log(`\x1b[90mManually: gh repo view <org>/${stem}  then: ghq get -u <url>  then re-run aoi wake ${name}\x1b[0m`);
+    console.log(`\x1b[90mManually: gh repo view <org>/${stem}  then: ghq get -u <url>  then re-run ki wake ${name}\x1b[0m`);
     return null;
   }
   if (!response) {
-    console.log(`\x1b[90maborted. Manually: ghq get -u <url>  then re-run aoi wake ${name}\x1b[0m`);
+    console.log(`\x1b[90maborted. Manually: ghq get -u <url>  then re-run ki wake ${name}\x1b[0m`);
     process.exit(0);
   }
 
@@ -163,7 +163,7 @@ export async function scanSuggestOracle(
   const found = scanOrgs(name, orgs, execFn);
   if (!found) {
     console.error(`\x1b[33mno org had ${stem}\x1b[0m`);
-    console.error(`\x1b[90mTry: aoi bud ${name}  OR  ghq get <url>  manually\x1b[0m`);
+    console.error(`\x1b[90mTry: ki bud ${name}  OR  ghq get <url>  manually\x1b[0m`);
     return null;
   }
 

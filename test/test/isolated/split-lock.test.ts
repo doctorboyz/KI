@@ -112,9 +112,9 @@ describe("splitWindowLocked", () => {
 
 describe("tagPane", () => {
   test("sets title via select-pane -T", async () => {
-    await tagPane("s:0.1", { title: "oracle" });
+    await tagPane("s:0.1", { title: "kappa" });
     expect(commands).toEqual([
-      { cmd: "tmux select-pane -t s:0.1 -T oracle", time: expect.any(Number) },
+      { cmd: "tmux select-pane -t s:0.1 -T kappa", time: expect.any(Number) },
     ]);
   });
 
@@ -130,8 +130,8 @@ describe("tagPane", () => {
   });
 
   test("quotes values containing spaces", async () => {
-    await tagPane("s:0.1", { title: "oracle main" });
-    expect(commands[0].cmd).toBe("tmux select-pane -t s:0.1 -T 'oracle main'");
+    await tagPane("s:0.1", { title: "kappa main" });
+    expect(commands[0].cmd).toBe("tmux select-pane -t s:0.1 -T 'kappa main'");
   });
 });
 
@@ -177,12 +177,12 @@ describe("readPaneTags (round-trip)", () => {
     };
 
     await tagPane(target, {
-      title: "oracle",
+      title: "kappa",
       meta: { "agent-name": "scout", role: "teammate" },
     });
     const tags = await readPaneTags(target);
 
-    expect(tags.title).toBe("oracle");
+    expect(tags.title).toBe("kappa");
     expect(tags.meta).toEqual({
       "@agent-name": "scout",
       "@role": "teammate",

@@ -97,7 +97,7 @@ describe("isFleetOrViewSession — fleet/view safety check (Bug F lineage)", () 
     expect(isFleetOrViewSession("maw-view", fleet)).toBe(true);
   });
 
-  test("per-oracle *-view matches", () => {
+  test("per-kappa *-view matches", () => {
     expect(isFleetOrViewSession("mawjs-view", fleet)).toBe(true);
     expect(isFleetOrViewSession("fusion-view", fleet)).toBe(true);
   });

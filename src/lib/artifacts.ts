@@ -5,9 +5,9 @@
  *   Task assigned   → spec.md auto-written
  *   Task in progress → intermediate artifacts accumulate
  *   Task done       → result.md sealed
- *   Task discoverable → `aoi artifacts ls` finds what any team produced
+ *   Task discoverable → `ki artifacts ls` finds what any team produced
  *
- * Storage: ~/.aoi/artifacts/{team}/{task-id}/
+ * Storage: ~/.ki/artifacts/{team}/{task-id}/
  *   ├── spec.md           # auto-written from TaskCreate description
  *   ├── result.md         # agent writes before reporting
  *   ├── attachments/      # files produced (images, data, etc.)
@@ -18,7 +18,7 @@ import { mkdirSync, existsSync, readdirSync, readFileSync, writeFileSync, statSy
 import { join, basename } from "path";
 import { homedir } from "os";
 
-const ARTIFACTS_ROOT = join(homedir(), ".aoi", "artifacts");
+const ARTIFACTS_ROOT = join(homedir(), ".ki", "artifacts");
 
 export interface ArtifactMeta {
   team: string;

@@ -3,7 +3,7 @@ import { cmdSleep } from "../../shared/fleet";
 
 export const command = {
   name: ["stop", "rest"],
-  description: "Stop ALL oracle fleet sessions.",
+  description: "Stop ALL kappa fleet sessions.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {

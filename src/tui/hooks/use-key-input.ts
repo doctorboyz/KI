@@ -4,7 +4,7 @@ import { useAgentStore } from "../stores/agent-store";
 import { useCommandStore } from "../stores/command-store";
 import { useFeedStore } from "../stores/feed-store";
 import { registry } from "../commands/registry";
-import { getAoiUrl } from "../utils/constants";
+import { getKiUrl } from "../utils/constants";
 
 export function useKeyInput(mode: AppMode, onAction: (action: "tmux" | "logs" | "kill", agent: string) => void) {
   const commandStore = useCommandStore.getState();
@@ -24,7 +24,7 @@ export function useKeyInput(mode: AppMode, onAction: (action: "tmux" | "logs" | 
       if (key.return) {
         const result = registry.execute(commandStore.buffer, {
           selectedAgent: useAgentStore.getState().selectedAgent()?.target ?? null,
-          apiBase: getAoiUrl(),
+          apiBase: getKiUrl(),
         });
         result.then((r) => commandStore.setLastResult(r));
         commandStore.commitCommand();

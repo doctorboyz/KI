@@ -1,7 +1,7 @@
 import { discoverPackages } from "../plugin/registry";
 
 export function usage() {
-  const title = `\x1b[36maoi\x1b[0m — Multi-Agent Workflow`;
+  const title = `\x1b[36mki\x1b[0m — Multi-Agent Workflow`;
 
   try {
     const all = discoverPackages();
@@ -24,7 +24,7 @@ export function usage() {
         : `\x1b[33m${tier.name}:\x1b[0m`;
       lines.push(label);
       for (const p of tier.plugins) {
-        const cmd = `aoi ${p.manifest.cli!.command}`.padEnd(28);
+        const cmd = `ki ${p.manifest.cli!.command}`.padEnd(28);
         const desc = p.manifest.description ?? "";
         lines.push(`  ${cmd} ${desc}`);
       }
@@ -32,13 +32,13 @@ export function usage() {
     }
 
     const countLine = hasDisabled
-      ? `\x1b[90m${active.length} commands active. Run 'aoi plugin enable <name>' for more.\x1b[0m`
+      ? `\x1b[90m${active.length} commands active. Run 'ki plugin enable <name>' for more.\x1b[0m`
       : `\x1b[90m${active.length} commands active.\x1b[0m`;
     lines.push(countLine);
 
     console.log(lines.join("\n"));
   } catch {
     // Registry not loaded yet — minimal fallback
-    console.log(`${title}\n\nRun \x1b[33maoi plugin ls\x1b[0m to see available commands.`);
+    console.log(`${title}\n\nRun \x1b[33mki plugin ls\x1b[0m to see available commands.`);
   }
 }

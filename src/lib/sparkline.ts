@@ -1,7 +1,7 @@
 /**
  * sparkline — render a Unicode block-character sparkline from numeric values.
  *
- * Used by `aoi costs --daily` to visualise per-day cost per agent.
+ * Used by `ki costs --daily` to visualise per-day cost per agent.
  *
  * Block characters (index 0 = space sentinel, 1–8 = ▁..█):
  *   BLOCKS = [" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]

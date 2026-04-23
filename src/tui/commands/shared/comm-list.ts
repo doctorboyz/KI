@@ -5,13 +5,13 @@
 import { listSessions, getPaneInfos, scanWorktrees } from "../../../sdk";
 
 /**
- * #359 — render a session header line for `aoi ls`.
- * View sessions (`*-view` suffix or the `aoi-view` meta-session — see
+ * #359 — render a session header line for `ki ls`.
+ * View sessions (`*-view` suffix or the `ki-view` meta-session — see
  * team/impl.ts:264) render dimmed with a trailing `[view]` tag; source
  * sessions stay bright cyan. Pure function, exported for tests.
  */
 export function renderSessionName(name: string): string {
-  const isView = /-view$/.test(name) || name === "aoi-view";
+  const isView = /-view$/.test(name) || name === "ki-view";
   return isView
     ? `\x1b[90m${name}\x1b[0m \x1b[90m[view]\x1b[0m`
     : `\x1b[36m${name}\x1b[0m`;
@@ -65,19 +65,19 @@ export async function cmdList() {
         console.log(`  \x1b[33m⚠ orphaned:\x1b[0m ${dirName} \x1b[90m(${label})\x1b[0m`);
       }
       console.log("");
-      console.log(`\x1b[90m  → aoi ls --fix       to prune orphans\x1b[0m`);
+      console.log(`\x1b[90m  → ki ls --fix       to prune orphans\x1b[0m`);
     }
   } catch (e: any) {
-    // Don't crash aoi ls on scan failure (non-critical) — but surface the error in debug mode
+    // Don't crash ki ls on scan failure (non-critical) — but surface the error in debug mode
     // so silent failures have a diagnosable cause.
-    if (process.env.AOI_DEBUG) {
-      console.error(`\x1b[33m⚠ aoi ls: scanWorktrees failed (non-fatal): ${e?.message || e}\x1b[0m`);
+    if (process.env.KI_DEBUG) {
+      console.error(`\x1b[33m⚠ ki ls: scanWorktrees failed (non-fatal): ${e?.message || e}\x1b[0m`);
     }
   }
 
   if (sessions.length === 0 && orphans.length === 0) {
     console.log("\x1b[90mNo active sessions.\x1b[0m");
-    console.log("\x1b[90m  → aoi bud <name>     create new oracle\x1b[0m");
-    console.log("\x1b[90m  → aoi wake <name>    attach existing\x1b[0m");
+    console.log("\x1b[90m  → ki bud <name>     create new kappa\x1b[0m");
+    console.log("\x1b[90m  → ki wake <name>    attach existing\x1b[0m");
   }
 }

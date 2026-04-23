@@ -5,7 +5,7 @@
  * ships the WIRING only: the TriggerEvent union admits "cron", `fire("cron")`
  * dispatches configured cron triggers, and `wouldFireAt()` parses a crontab
  * expression for dry-run inspection. It does NOT run a daemon — external
- * scheduling (system cron, systemd timer, a future aoi-cron process) must
+ * scheduling (system cron, systemd timer, a future ki-cron process) must
  * invoke `fire("cron")` at trigger times.
  */
 

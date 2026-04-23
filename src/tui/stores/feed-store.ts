@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { FeedEvent } from "../types/aoi";
+import type { FeedEvent } from "../types/ki";
 import { FEED_MAX_LINES } from "../utils/constants";
 
 interface FeedState {
@@ -9,7 +9,7 @@ interface FeedState {
 
   setHistory: (events: FeedEvent[]) => void;
   addEvent: (event: FeedEvent) => void;
-  setFilter: (oracle: string | null) => void;
+  setFilter: (kappa: string | null) => void;
   scrollUp: () => void;
   scrollDown: () => void;
   clear: () => void;
@@ -29,7 +29,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
       return { events, scrollOffset: 0 };
     }),
 
-  setFilter: (oracle) => set({ filter: oracle, scrollOffset: 0 }),
+  setFilter: (kappa) => set({ filter: kappa, scrollOffset: 0 }),
 
   scrollUp: () =>
     set((state) => ({
@@ -46,6 +46,6 @@ export const useFeedStore = create<FeedState>((set, get) => ({
   filteredEvents: () => {
     const { events, filter } = get();
     if (!filter) return events;
-    return events.filter((e) => e.oracle === filter);
+    return events.filter((e) => e.kappa === filter);
   },
 }));

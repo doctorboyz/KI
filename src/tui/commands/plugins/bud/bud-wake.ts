@@ -29,7 +29,7 @@ export async function finalizeBud(ctx: BudFinalizeCtx): Promise<void> {
   const { name, parentName, org, budRepoName, budRepoPath, psiDir, ghqRoot, opts } = ctx;
 
   // 5. Soul-sync: consent-based model.
-  // Default: born blank — child pulls memory later via `aoi soul-sync <parent> --from`.
+  // Default: born blank — child pulls memory later via `ki soul-sync <parent> --from`.
   // Opt-in: --seed explicitly requests bulk push from parent at birth.
   // Legacy: --blank still accepted (no-op, birth is already blank by default).
   if (opts.seed && parentName) {
@@ -40,15 +40,15 @@ export async function finalizeBud(ctx: BudFinalizeCtx): Promise<void> {
       console.log(`  \x1b[33m⚠\x1b[0m soul-sync seed failed (parent may have empty ψ/)`);
     }
   } else if (parentName) {
-    console.log(`  \x1b[90m○\x1b[0m born blank — pull memory when ready: aoi soul-sync ${parentName} --from`);
+    console.log(`  \x1b[90m○\x1b[0m born blank — pull memory when ready: ki soul-sync ${parentName} --from`);
   } else {
-    console.log(`  \x1b[90m○\x1b[0m root oracle — no parent`);
+    console.log(`  \x1b[90m○\x1b[0m root kappa — no parent`);
   }
 
   // 6. Initial git commit + push
   try {
     await hostExec(`git -C '${budRepoPath}' add -A`);
-    await hostExec(`git -C '${budRepoPath}' commit -m 'feat: birth — ${parentName ? `budded from ${parentName}` : "root oracle"}'`);
+    await hostExec(`git -C '${budRepoPath}' commit -m 'feat: birth — ${parentName ? `budded from ${parentName}` : "root kappa"}'`);
     await hostExec(`git -C '${budRepoPath}' push -u origin HEAD`);
     console.log(`  \x1b[32m✓\x1b[0m initial commit pushed`);
   } catch {
@@ -57,7 +57,7 @@ export async function finalizeBud(ctx: BudFinalizeCtx): Promise<void> {
 
   // 7. Update parent's sync_peers (skip for root buds)
   if (!parentName) {
-    console.log(`  \x1b[90m○\x1b[0m root oracle — no parent sync_peers to update`);
+    console.log(`  \x1b[90m○\x1b[0m root kappa — no parent sync_peers to update`);
   }
   for (const entry of parentName ? loadFleetEntries() : []) {
     const entryName = entry.session.name.replace(/^\d+-/, "");
@@ -96,7 +96,7 @@ export async function finalizeBud(ctx: BudFinalizeCtx): Promise<void> {
     console.log(`  \x1b[32m✓\x1b[0m ${name} is alive`);
   } catch (e: any) {
     console.log(`  \x1b[33m⚠\x1b[0m wake failed: ${e.message || e}`);
-    console.log(`  \x1b[90m  try: aoi wake ${name}\x1b[0m`);
+    console.log(`  \x1b[90m  try: ki wake ${name}\x1b[0m`);
   }
 
   // 8.25. Optional --split: show the child in a right-side pane so parent watches it awaken.

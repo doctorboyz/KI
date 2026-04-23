@@ -3,7 +3,7 @@
  *
  * Each command defines its flag spec. `parseFlags` wraps arg() with:
  * - permissive mode (unknown flags don't throw — they go to argv._)
- * - sliced argv (strips "aoi" + command name)
+ * - sliced argv (strips "ki" + command name)
  *
  * Usage:
  *   const flags = parseFlags(args, { "--verbose": Boolean, "-v": "--verbose" }, 2);

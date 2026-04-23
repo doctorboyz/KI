@@ -7,17 +7,17 @@ type DualCtx = InvokeContext | string[];
 
 export const command = {
   name: "restart",
-  description: "Restart the aoi server with optional update.",
+  description: "Restart the ki server with optional update.",
 };
 
 const HELP_TEXT = [
-  "usage: aoi restart [--no-update] [--ref <git-ref>]",
+  "usage: ki restart [--no-update] [--ref <git-ref>]",
   "",
-  "  Restart the whole aoi fleet:",
+  "  Restart the whole ki fleet:",
   "    1. kill stale *-view sessions",
-  "    2. update aoi-js (unless --no-update)",
-  "    3. stop fleet (aoi stop)",
-  "    4. wake fleet (aoi wake all)",
+  "    2. update ki-js (unless --no-update)",
+  "    3. stop fleet (ki stop)",
+  "    4. wake fleet (ki wake all)",
   "",
   "  Flags:",
   "    --no-update   skip the git pull + rebuild step",

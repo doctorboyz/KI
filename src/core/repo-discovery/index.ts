@@ -10,14 +10,14 @@
  * critic-agent's alpha.55-58 retro that flagged this as the smoking gun for
  * premature abstraction. We kept the seam, removed the lie.
  *
- * When the second backend ships (same PR), wire `process.env.AOI_REPO_DISCOVERY`
+ * When the second backend ships (same PR), wire `process.env.KI_REPO_DISCOVERY`
  * here with a real branch.
  *
  * Tests may inject a mock via `setRepos(mock)` and clean up with `resetRepos()`.
  *
  * The `ghqList` / `ghqFind` re-exports preserve the legacy API used at:
  *   - src/commands/plugins/soul-sync/resolve.ts
- *   - src/commands/plugins/oracle/impl-helpers.ts
+ *   - src/commands/plugins/kappa/impl-helpers.ts
  *   - src/commands/plugins/workon/impl.ts
  *   - src/commands/plugins/fleet/fleet-init-scan.ts
  * New code should prefer `getRepos().findBySuffix(...)` directly.

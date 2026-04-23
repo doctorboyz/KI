@@ -1,17 +1,17 @@
 /**
  * Shared routing resolver — unifies cmdSend (client) and /api/send (server).
  *
- * Resolution order (consensus with oracle-world:aoijs, 2026-04-09):
+ * Resolution order (consensus with kappa-world:kijs, 2026-04-09):
  *   1. Local findWindow → { type: 'local' }
  *   2. Node:prefix → namedPeers → { type: 'peer' } or { type: 'self-node' }
  *   3. Agents map → peer URL → { type: 'peer' } (skip if self-node)
  *   4. null (caller handles peer discovery fallback separately — it's async/network)
  *
- * See: Soul-Brews-Studio/aoi#201
+ * See: doctorboyz/ki#201
  */
 
 import { findWindow, type Session } from "./runtime/find-window";
-import type { AoiConfig } from "./config";
+import type { KiConfig } from "./config";
 import { resolveFleetSession } from "../commands/shared/wake";
 
 export type { Session };
@@ -29,10 +29,10 @@ export type ResolveResult =
  */
 export function resolveTarget(
   query: string,
-  config: AoiConfig,
+  config: KiConfig,
   sessions: Session[],
 ): ResolveResult {
-  if (!query) return { type: "error", reason: "empty_query", detail: "no target specified", hint: "usage: aoi hey <agent> <message>" };
+  if (!query) return { type: "error", reason: "empty_query", detail: "no target specified", hint: "usage: ki hey <agent> <message>" };
 
   const selfNode = config.node ?? "local";
 
@@ -41,11 +41,11 @@ export function resolveTarget(
   if (localTarget) {
     return { type: "local", target: localTarget };
   }
-  // Fleet config: oracle name → session name → findWindow (#281)
-  const fleetSession = resolveFleetSession(query) || resolveFleetSession(query.replace(/-oracle$/, ""));
+  // Fleet config: kappa name → session name → findWindow (#281)
+  const fleetSession = resolveFleetSession(query) || resolveFleetSession(query.replace(/-kappa$/, ""));
   if (fleetSession) {
     const fleetTarget = findWindow(sessions.filter(s => s.name === fleetSession), query)
-      || findWindow(sessions.filter(s => s.name === fleetSession), query.replace(/-oracle$/, ""));
+      || findWindow(sessions.filter(s => s.name === fleetSession), query.replace(/-kappa$/, ""));
     if (fleetTarget) return { type: "local", target: fleetTarget };
     // Fleet config matched but session not running — try first window of fleet session
     const fleetSess = sessions.find(s => s.name === fleetSession);
@@ -59,17 +59,17 @@ export function resolveTarget(
     const agentName = query.slice(colonIdx + 1);
     if (!nodeName || !agentName) return { type: "error", reason: "empty_node_or_agent", detail: `invalid format: '${query}'`, hint: "use node:agent format (e.g. mba:homekeeper)" };
 
-    // Self-node check: "white:aoijs" from white → resolve locally
+    // Self-node check: "white:kijs" from white → resolve locally
     if (nodeName === selfNode) {
       const selfTarget = findWindow(sessions, agentName);
       if (selfTarget) return { type: "self-node", target: selfTarget };
       // Try fleet config resolution (#281)
-      const selfFleet = resolveFleetSession(agentName) || resolveFleetSession(agentName.replace(/-oracle$/, ""));
+      const selfFleet = resolveFleetSession(agentName) || resolveFleetSession(agentName.replace(/-kappa$/, ""));
       if (selfFleet) {
         const fleetSess = sessions.find(s => s.name === selfFleet);
         if (fleetSess?.windows.length) return { type: "self-node", target: `${selfFleet}:${fleetSess.windows[0].index}` };
       }
-      return { type: "error", reason: "self_not_running", detail: `'${agentName}' not found in local sessions on ${selfNode}`, hint: `aoi wake ${agentName}` };
+      return { type: "error", reason: "self_not_running", detail: `'${agentName}' not found in local sessions on ${selfNode}`, hint: `ki wake ${agentName}` };
     }
 
     // Remote node: find peer URL
@@ -79,17 +79,17 @@ export function resolveTarget(
     }
 
     // Unknown node
-    return { type: "error", reason: "unknown_node", detail: `node '${nodeName}' not in namedPeers or peers`, hint: "add to aoi.config.json namedPeers" };
+    return { type: "error", reason: "unknown_node", detail: `node '${nodeName}' not in namedPeers or peers`, hint: "add to ki.config.json namedPeers" };
   }
 
   // --- Step 3: Agents map (bare name, e.g. "homekeeper") ---
   const agentNode =
     config.agents?.[query] ||
-    config.agents?.[query.replace(/-oracle$/, "")];
+    config.agents?.[query.replace(/-kappa$/, "")];
 
   if (agentNode) {
     // Self-node: agent is mapped to our own node → treat as local miss
-    if (agentNode === selfNode) return { type: "error", reason: "self_not_running", detail: `'${query}' mapped to ${selfNode} (local) but not found in sessions`, hint: `aoi wake ${query}` };
+    if (agentNode === selfNode) return { type: "error", reason: "self_not_running", detail: `'${query}' mapped to ${selfNode} (local) but not found in sessions`, hint: `ki wake ${query}` };
 
     // Remote node: find peer URL
     const peerUrl = findPeerUrl(agentNode, config);
@@ -98,15 +98,15 @@ export function resolveTarget(
     }
 
     // Agent mapped to unknown node (no peer URL found)
-    return { type: "error", reason: "no_peer_url", detail: `'${query}' mapped to node '${agentNode}' but no URL found`, hint: `add ${agentNode} to aoi.config.json namedPeers` };
+    return { type: "error", reason: "no_peer_url", detail: `'${query}' mapped to node '${agentNode}' but no URL found`, hint: `add ${agentNode} to ki.config.json namedPeers` };
   }
 
   // --- Step 4: Not resolved (caller handles peer discovery fallback) ---
-  return { type: "error", reason: "not_found", detail: `'${query}' not in local sessions or agents map`, hint: "check: aoi ls" };
+  return { type: "error", reason: "not_found", detail: `'${query}' not in local sessions or agents map`, hint: "check: ki ls" };
 }
 
 /** Find a peer URL by node name from namedPeers or legacy peers[] */
-function findPeerUrl(nodeName: string, config: AoiConfig): string | undefined {
+function findPeerUrl(nodeName: string, config: KiConfig): string | undefined {
   const peer = config.namedPeers?.find((p) => p.name === nodeName);
   if (peer) return peer.url;
   return config.peers?.find((p) => p.includes(nodeName));

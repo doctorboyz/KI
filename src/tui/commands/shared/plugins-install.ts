@@ -12,7 +12,7 @@ import { archiveToTmp } from "./plugins-ui";
 const URL_SCHEME_RE = /^https?:\/\//;
 
 function getPluginHome(): string {
-  return process.env.AOI_PLUGIN_HOME ?? join(require("os").homedir(), ".aoi", "plugins");
+  return process.env.KI_PLUGIN_HOME ?? join(require("os").homedir(), ".ki", "plugins");
 }
 
 export async function doInstall(srcPath: string, force: boolean): Promise<void> {
@@ -54,7 +54,7 @@ export async function doInstall(srcPath: string, force: boolean): Promise<void> 
             console.log(`    ${pkg.padEnd(25)} ${m.name} v${m.version}`);
           } catch { console.log(`    ${pkg}`); }
         }
-        console.log(`\n  Install: aoi plugin install ${pkgDir}/<name>`);
+        console.log(`\n  Install: ki plugin install ${pkgDir}/<name>`);
         return;
       }
     }
@@ -111,6 +111,6 @@ export function doRemove(name: string, discover: () => LoadedPlugin[]): void {
   }
   archiveToTmp(name, p.dir);
   console.log(
-    `\x1b[32m✓\x1b[0m removed ${name} → archived to /tmp/aoi-plugin-${name}-*`,
+    `\x1b[32m✓\x1b[0m removed ${name} → archived to /tmp/ki-plugin-${name}-*`,
   );
 }

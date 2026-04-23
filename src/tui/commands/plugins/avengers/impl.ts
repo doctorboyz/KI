@@ -1,5 +1,5 @@
 /**
- * aoi avengers — rate limit monitor integration with ARRA-01/avengers.
+ * ki avengers — rate limit monitor integration with ARRA-01/avengers.
  */
 
 import { loadConfig } from "../../../../core/config";
@@ -12,7 +12,7 @@ export async function cmdAvengers(sub: string) {
   const base = getAvengersUrl();
 
   if (!base) {
-    throw new Error(`Avengers not configured. Add to aoi.config.json:\n  "avengers": "http://white.local:8090"`);
+    throw new Error(`Avengers not configured. Add to ki.config.json:\n  "avengers": "http://white.local:8090"`);
   }
 
   if (sub === "status" || sub === "all") {
@@ -24,11 +24,11 @@ export async function cmdAvengers(sub: string) {
   } else if (sub === "health") {
     await showHealth(base);
   } else {
-    console.log(`\x1b[36maoi avengers\x1b[0m — ARRA-01 rate limit monitor\n`);
-    console.log(`  aoi avengers status    All accounts + rate limits`);
-    console.log(`  aoi avengers best      Account with most capacity`);
-    console.log(`  aoi avengers traffic   Traffic stats`);
-    console.log(`  aoi avengers health    Quick connectivity check\n`);
+    console.log(`\x1b[36mki avengers\x1b[0m — ARRA-01 rate limit monitor\n`);
+    console.log(`  ki avengers status    All accounts + rate limits`);
+    console.log(`  ki avengers best      Account with most capacity`);
+    console.log(`  ki avengers traffic   Traffic stats`);
+    console.log(`  ki avengers health    Quick connectivity check\n`);
   }
 }
 

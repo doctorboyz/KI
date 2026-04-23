@@ -1,13 +1,13 @@
 /**
- * aoi restart — clean slate: kill stale views, update, stop fleet, wake all.
+ * ki restart — clean slate: kill stale views, update, stop fleet, wake all.
  *
  * Like restarting Claude Code but for the whole fleet.
  *
  * Steps:
  *   1. Kill all *-view sessions (stale grouped sessions)
- *   2. Update aoi-js (optional, --no-update to skip)
- *   3. Stop fleet (aoi stop)
- *   4. Wake fleet (aoi wake all)
+ *   2. Update ki-js (optional, --no-update to skip)
+ *   3. Stop fleet (ki stop)
+ *   4. Wake fleet (ki wake all)
  */
 
 import { listSessions } from "../../../sdk";
@@ -17,13 +17,13 @@ import { execSync } from "child_process";
 import { ghqFindSync } from "../../../core/ghq";
 
 const HELP_TEXT = [
-  "usage: aoi restart [--no-update] [--ref <git-ref>]",
+  "usage: ki restart [--no-update] [--ref <git-ref>]",
   "",
-  "  Restart the whole aoi fleet:",
+  "  Restart the whole ki fleet:",
   "    1. kill stale *-view sessions",
-  "    2. update aoi-js (unless --no-update)",
-  "    3. stop fleet (aoi stop)",
-  "    4. wake fleet (aoi wake all)",
+  "    2. update ki-js (unless --no-update)",
+  "    3. stop fleet (ki stop)",
+  "    4. wake fleet (ki wake all)",
   "",
   "  Flags:",
   "    --no-update   skip the git pull + rebuild step",
@@ -40,12 +40,12 @@ export async function cmdRestart(opts: { noUpdate?: boolean; ref?: string; help?
     return;
   }
   const tmux = new Tmux();
-  console.log(`\n  \x1b[36m🔄 aoi restart\x1b[0m\n`);
+  console.log(`\n  \x1b[36m🔄 ki restart\x1b[0m\n`);
 
   // 1. Kill stale sessions (views, PTYs, bash leftovers)
   const sessions = await listSessions();
   const stale = sessions.filter(s =>
-    s.name.endsWith("-view") || s.name.startsWith("aoi-pty-") ||
+    s.name.endsWith("-view") || s.name.startsWith("ki-pty-") ||
     s.windows.every(w => w.name === "bash")
   );
   if (stale.length > 0) {
@@ -58,16 +58,16 @@ export async function cmdRestart(opts: { noUpdate?: boolean; ref?: string; help?
     console.log(`  \x1b[90m1. No stale sessions\x1b[0m`);
   }
 
-  // 2. Update aoi-js
+  // 2. Update ki-js
   if (!opts.noUpdate) {
     const ref = opts.ref || "main";
-    console.log(`\n  \x1b[33m2. Updating aoi-js (${ref})...\x1b[0m`);
+    console.log(`\n  \x1b[33m2. Updating ki-js (${ref})...\x1b[0m`);
     try {
       const pkg = require("../../../../package.json");
       const before = `v${pkg.version}`;
       // Atomic install sequence — try install over existing FIRST so that a
       // transient failure (network, auth, bun version) cannot leave the user
-      // with an uninstalled aoi. `bun remove` only runs as a fallback when
+      // with an uninstalled ki. `bun remove` only runs as a fallback when
       // the initial install fails. Mirrors the alpha.132 fix in cmd-update.ts
       // (regression #507 — this site was missed in the original sweep).
       const tryInstall = (): boolean => {
@@ -78,26 +78,26 @@ export async function cmdRestart(opts: { noUpdate?: boolean; ref?: string; help?
       };
       if (!tryInstall()) {
         console.log(`    \x1b[33m⚠ first install attempt failed — clearing stale global refs and retrying\x1b[0m`);
-        try { execSync(`bun remove -g aoi`, { stdio: "pipe" }); } catch {}
+        try { execSync(`bun remove -g ki`, { stdio: "pipe" }); } catch {}
         if (!tryInstall()) {
           console.log(`    \x1b[31m✗ update failed — manual recovery: bun add -g github:${pkg.repository}#alpha\x1b[0m`);
           return;
         }
       }
       let after = "";
-      try { after = execSync(`aoi --version`, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim(); } catch {}
+      try { after = execSync(`ki --version`, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim(); } catch {}
       console.log(`    ${before} → ${after || "updated"}`);
       // Link SDK for plugins
       try {
-        const aoiDir = ghqFindSync("/Soul-Brews-Studio/aoi-js");
-        if (aoiDir) {
-          execSync(`cd ${aoiDir} && bun link`, { stdio: "pipe" });
-          const oDir = require("os").homedir() + "/.oracle";
+        const kiDir = ghqFindSync("/doctorboyz/ki-js");
+        if (kiDir) {
+          execSync(`cd ${kiDir} && bun link`, { stdio: "pipe" });
+          const oDir = require("os").homedir() + "/.kappa";
           require("fs").mkdirSync(oDir, { recursive: true });
           if (!require("fs").existsSync(oDir + "/package.json")) {
-            require("fs").writeFileSync(oDir + "/package.json", '{"name":"oracle-plugins","private":true}\n');
+            require("fs").writeFileSync(oDir + "/package.json", '{"name":"kappa-plugins","private":true}\n');
           }
-          execSync(`cd ${oDir} && bun link aoi`, { stdio: "pipe" });
+          execSync(`cd ${oDir} && bun link ki`, { stdio: "pipe" });
           console.log(`    🔗 SDK linked`);
         }
       } catch { /* non-fatal */ }

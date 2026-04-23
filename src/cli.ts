@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
-// AOI — Agent Office Interface
-// CLI entry: aoi <command>
-//   aoi          → start TUI (default)
-//   aoi serve    → start API + WS server
-//   aoi tui      → start TUI client
-//   aoi <cmd>    → run CLI command (wake, sleep, bud, etc.)
+// KI — Kappa Interface
+// CLI entry: ki <command>
+//   ki          → start TUI (default)
+//   ki serve    → start API + WS server
+//   ki tui      → start TUI client
+//   ki <cmd>    → run CLI command (wake, sleep, bud, etc.)
 
-process.env.AOI_CLI = "1";
+process.env.KI_CLI = "1";
 
 // #566: apply --as <name> BEFORE any state-touching import
 import { applyInstancePreset } from "./cli-src/instance-preset";
@@ -18,8 +18,8 @@ const cmd = rawArgs[0]?.toLowerCase();
 // TUI mode — start Ink terminal UI
 if (!cmd || cmd === "tui" || cmd === "office") {
   if (!process.stdin.isTTY) {
-    console.error("Error: AOI TUI requires an interactive terminal (TTY).");
-    console.error("Run 'aoi help' for non-interactive commands.");
+    console.error("Error: KI TUI requires an interactive terminal (TTY).");
+    console.error("Run 'ki help' for non-interactive commands.");
     process.exit(1);
   }
   const { render } = await import("ink");
@@ -38,28 +38,28 @@ if (cmd === "--version" || cmd === "-v" || cmd === "version") {
 
 // Help
 if (cmd === "--help" || cmd === "-h" || cmd === "help") {
-  console.log(`AOI — Agent Office Interface
+  console.log(`KI — Kappa Interface
 
-Usage: aoi [command]
+Usage: ki [command]
 
 Commands:
-  aoi              Start TUI (default)
-  aoi tui          Start TUI
-  aoi serve        Start API + WebSocket server
-  aoi help         Show this help
-  aoi version      Show version
+  ki              Start TUI (default)
+  ki tui          Start TUI
+  ki serve        Start API + WebSocket server
+  ki help         Show this help
+  ki version      Show version
 
-All aoi CLI commands are also available:
-  aoi wake <oracle>   Wake an agent
-  aoi sleep <oracle>  Sleep an agent
-  aoi bud <name>      Create new Oracle bud
-  aoi done <window>   Mark window as done
-  aoi talk-to <oracle> <msg>  Send message
-  aoi peek <oracle>   View agent output
-  aoi hey <oracle> <msg>      Quick message
-  aoi fleet           Show fleet status
-  aoi federation      Show peer connectivity
-  aoi health          Check health
+All ki CLI commands are also available:
+  ki wake <kappa>   Wake an agent
+  ki sleep <kappa>  Sleep an agent
+  ki bud <name>      Create new Kappa bud
+  ki done <window>   Mark window as done
+  ki talk-to <kappa> <msg>  Send message
+  ki peek <kappa>   View agent output
+  ki hey <kappa> <msg>      Quick message
+  ki fleet           Show fleet status
+  ki federation      Show peer connectivity
+  ki health          Check health
   ... and 60+ more commands
 
 TUI Key Bindings:
@@ -84,7 +84,7 @@ if (cmd === "serve" || cmd === "server") {
 }
 
 // All other commands — delegate to original CLI router
-// Import the full CLI logic from the aoi-derived code
+// Import the full CLI logic from the ki-derived code
 const { logAudit } = await import("./core/fleet/audit");
 const { usage } = await import("./cli-src/usage");
 const { routeComm } = await import("./cli-src/route-comm");
@@ -116,7 +116,7 @@ async function runCommand(): Promise<void> {
   }
 
   // Auto-bootstrap plugins
-  const pluginDir = join(homedir(), ".aoi", "plugins");
+  const pluginDir = join(homedir(), ".ki", "plugins");
   await runBootstrap(pluginDir, import.meta.dir);
   await scanCommands(pluginDir, "user");
 
@@ -157,7 +157,7 @@ async function runCommand(): Promise<void> {
     return;
   }
 
-  // Unknown command fallback — try oracle name
+  // Unknown command fallback — try kappa name
   const { listCommands } = await import("./cli-src/command-registry");
   const CORE_ROUTES = [
     "hey", "send", "tell",
@@ -178,17 +178,17 @@ async function runCommand(): Promise<void> {
   const isKnownCommand = knownCommands.some(n => n.toLowerCase() === cmd);
 
   if (!isKnownCommand) {
-    const ORACLE_NAME_SHAPE = /^[a-z0-9][a-z0-9:_-]*$/i;
-    if (ORACLE_NAME_SHAPE.test(args[0])) {
+    const KAPPA_NAME_SHAPE = /^[a-z0-9][a-z0-9:_-]*$/i;
+    if (KAPPA_NAME_SHAPE.test(args[0])) {
       const { listSessions } = await import("./sdk");
       const sessions = await listSessions().catch(() => [] as Awaited<ReturnType<typeof listSessions>>);
       const target = args[0].toLowerCase();
-      const isOracle = sessions.some(s => {
+      const isKappa = sessions.some(s => {
         const name = s.name.toLowerCase();
         return name === target || name.replace(/^\d+-/, "") === target;
       });
-      if (isOracle) {
-        // Oracle shorthand
+      if (isKappa) {
+        // Kappa shorthand
         if (args.length >= 2) {
           const f = args.includes("--force");
           const m = args.slice(1).filter(a => a !== "--force");
@@ -201,7 +201,7 @@ async function runCommand(): Promise<void> {
     }
 
     console.error(`\x1b[31m✗\x1b[0m unknown command: ${args[0]}`);
-    console.error(`  run 'aoi --help' to see available commands`);
+    console.error(`  run 'ki --help' to see available commands`);
     throw new UserError(`unknown command: ${args[0]}`);
   }
 }

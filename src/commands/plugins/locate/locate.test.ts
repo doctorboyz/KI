@@ -1,5 +1,5 @@
 /**
- * Smoke tests for aoi locate (alpha.79).
+ * Smoke tests for ki locate (alpha.79).
  *
  * Strategy: test arg-parsing + error paths directly. Full happy-path
  * requires live ghq + tmux + fleet state, which is hard to reproduce
@@ -19,44 +19,44 @@ function makeCtx(args: string[]): InvokeContext {
   } as InvokeContext;
 }
 
-describe("aoi locate — metadata", () => {
+describe("ki locate — metadata", () => {
   test("exports command with name + description", () => {
     expect(command.name).toBe("locate");
-    expect(command.description).toContain("oracle");
+    expect(command.description).toContain("kappa");
   });
 });
 
-describe("aoi locate — error paths", () => {
-  test("missing oracle arg returns ok:false with usage hint", async () => {
+describe("ki locate — error paths", () => {
+  test("missing kappa arg returns ok:false with usage hint", async () => {
     const result = await handler(makeCtx([]));
     expect(result.ok).toBe(false);
-    expect(result.error?.toLowerCase()).toContain("usage: aoi locate");
+    expect(result.error?.toLowerCase()).toContain("usage: ki locate");
   });
 
-  test("nonexistent oracle returns ok:false with 'no oracle named'", async () => {
-    const result = await handler(makeCtx(["definitely-nonexistent-oracle-xxxyyy"]));
+  test("nonexistent kappa returns ok:false with 'no kappa named'", async () => {
+    const result = await handler(makeCtx(["definitely-nonexistent-kappa-xxxyyy"]));
     expect(result.ok).toBe(false);
-    expect(result.error?.toLowerCase()).toContain("no oracle named");
-    expect(result.error?.toLowerCase()).toContain("aoi oracle ls");
+    expect(result.error?.toLowerCase()).toContain("no kappa named");
+    expect(result.error?.toLowerCase()).toContain("ki kappa ls");
   });
 
-  test("--path on a real oracle returns single line (live — skipped if aoijs missing)", async () => {
-    const result = await handler(makeCtx(["aoijs", "--path"]));
-    // This test runs live — if aoijs-oracle is on the local ghq, the path is emitted.
-    // If not, it'll be ok:false with "no oracle named" — both valid for CI.
+  test("--path on a real kappa returns single line (live — skipped if kijs missing)", async () => {
+    const result = await handler(makeCtx(["kijs", "--path"]));
+    // This test runs live — if kijs-kappa is on the local ghq, the path is emitted.
+    // If not, it'll be ok:false with "no kappa named" — both valid for CI.
     if (result.ok) {
       expect(result.output).toContain("/");
       expect(result.output?.split("\n").filter(Boolean).length).toBe(1);
     } else {
-      expect(result.error?.toLowerCase()).toMatch(/no oracle named|no repo path/);
+      expect(result.error?.toLowerCase()).toMatch(/no kappa named|no repo path/);
     }
   });
 
-  test("--json on real oracle returns parseable JSON", async () => {
-    const result = await handler(makeCtx(["aoijs", "--json"]));
+  test("--json on real kappa returns parseable JSON", async () => {
+    const result = await handler(makeCtx(["kijs", "--json"]));
     if (result.ok) {
       const parsed = JSON.parse(result.output || "{}");
-      expect(parsed.name).toBe("aoijs");
+      expect(parsed.name).toBe("kijs");
       // These fields exist in the shape regardless of resolution state
       expect(parsed).toHaveProperty("repoPath");
       expect(parsed).toHaveProperty("hasPsi");
@@ -65,8 +65,8 @@ describe("aoi locate — error paths", () => {
       expect(parsed).toHaveProperty("federationNode");
       expect(parsed).toHaveProperty("inAgentsConfig");
     } else {
-      // If aoijs isn't resolvable on this machine, the error path is also fine
-      expect(result.error?.toLowerCase()).toContain("no oracle named");
+      // If kijs isn't resolvable on this machine, the error path is also fine
+      expect(result.error?.toLowerCase()).toContain("no kappa named");
     }
   });
 });

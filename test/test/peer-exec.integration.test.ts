@@ -6,7 +6,7 @@
  * PROTOTYPE — iteration 9 (convergence iteration) of the federation-join-easy
  * /loop. Drafted on feat/wormhole-http-endpoint-draft. Companion to
  * test/peer-exec.test.ts (which covers the helpers + route 400/401/403/404
- * paths in-process). See mawui-oracle/ψ/writing/federation-join-easy.md.
+ * paths in-process). See mawui-kappa/ψ/writing/federation-join-easy.md.
  *
  * ## Strategy
  *
@@ -270,7 +270,7 @@ describe("peer-exec integration — body round-trip", () => {
   });
 
   test("UTF-8 bodies (Thai script) round-trip cleanly", async () => {
-    // Federation oracles use Thai phrases throughout. The relay must
+    // Federation kappas use Thai phrases throughout. The relay must
     // not corrupt unicode anywhere in the round-trip.
     const captures: PeerCapture[] = [];
     const stubPeerUrl = "http://stub-peer-test:9999";

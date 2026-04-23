@@ -3,7 +3,7 @@ import { join } from "path";
 import { homedir } from "os";
 
 function configBase(): string {
-  return process.env.AOI_CONFIG_DIR ?? join(homedir(), ".config/aoi");
+  return process.env.KI_CONFIG_DIR ?? join(homedir(), ".config/ki");
 }
 
 function tasksDir(team: string): string {
@@ -35,17 +35,17 @@ function nextId(team: string): number {
   return id;
 }
 
-function readTask(team: string, id: number): AoiTask | null {
+function readTask(team: string, id: number): KiTask | null {
   const p = taskPath(team, id);
   if (!existsSync(p)) return null;
   try { return JSON.parse(readFileSync(p, "utf-8")); } catch { return null; }
 }
 
-function writeTask(team: string, task: AoiTask): void {
+function writeTask(team: string, task: KiTask): void {
   writeFileSync(taskPath(team, task.id), JSON.stringify(task, null, 2));
 }
 
-export interface AoiTask {
+export interface KiTask {
   id: number;
   subject: string;
   description?: string;
@@ -59,10 +59,10 @@ export function cmdTeamTaskAdd(
   team: string,
   subject: string,
   opts?: { description?: string; assign?: string },
-): AoiTask {
+): KiTask {
   ensureTasksDir(team);
   const now = new Date().toISOString();
-  const task: AoiTask = {
+  const task: KiTask = {
     id: nextId(team),
     subject,
     ...(opts?.description ? { description: opts.description } : {}),
@@ -76,18 +76,18 @@ export function cmdTeamTaskAdd(
   return task;
 }
 
-export function cmdTeamTaskList(team: string): AoiTask[] {
+export function cmdTeamTaskList(team: string): KiTask[] {
   const dir = tasksDir(team);
   if (!existsSync(dir)) {
     console.log(`\x1b[36mℹ\x1b[0m no tasks for team "${team}"`);
     return [];
   }
-  const tasks: AoiTask[] = readdirSync(dir)
+  const tasks: KiTask[] = readdirSync(dir)
     .filter(f => f.endsWith(".json") && f !== "_counter.json")
     .map(f => {
-      try { return JSON.parse(readFileSync(join(dir, f), "utf-8")) as AoiTask; } catch { return null; }
+      try { return JSON.parse(readFileSync(join(dir, f), "utf-8")) as KiTask; } catch { return null; }
     })
-    .filter(Boolean) as AoiTask[];
+    .filter(Boolean) as KiTask[];
 
   tasks.sort((a, b) => a.id - b.id);
 
@@ -109,7 +109,7 @@ export function cmdTeamTaskList(team: string): AoiTask[] {
   return tasks;
 }
 
-export function cmdTeamTaskDone(team: string, id: number): AoiTask | null {
+export function cmdTeamTaskDone(team: string, id: number): KiTask | null {
   ensureTasksDir(team);
   const task = readTask(team, id);
   if (!task) {
@@ -123,7 +123,7 @@ export function cmdTeamTaskDone(team: string, id: number): AoiTask | null {
   return task;
 }
 
-export function cmdTeamTaskAssign(team: string, id: number, agent: string): AoiTask | null {
+export function cmdTeamTaskAssign(team: string, id: number, agent: string): KiTask | null {
   ensureTasksDir(team);
   const task = readTask(team, id);
   if (!task) {

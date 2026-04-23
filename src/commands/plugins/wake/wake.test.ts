@@ -2,7 +2,7 @@ import { describe, it, expect, mock, beforeEach } from "bun:test";
 import { join } from "path";
 import type { InvokeContext } from "../../../plugin/types";
 
-let lastWakeCall: { oracle: string; opts: any } | null = null;
+let lastWakeCall: { kappa: string; opts: any } | null = null;
 let lastWakeAllCall: { opts: any } | null = null;
 // Track lastWakeCall outside TS control flow so null reassignment doesn't narrow
 function getWakeCall() { return lastWakeCall; }
@@ -24,9 +24,9 @@ mock.module(join(src, "config"), () => ({
 }));
 
 mock.module(join(src, "commands/shared/wake"), () => ({
-  cmdWake: async (oracle: string, opts: any) => {
-    lastWakeCall = { oracle, opts };
-    console.log(`woke ${oracle}`);
+  cmdWake: async (kappa: string, opts: any) => {
+    lastWakeCall = { kappa, opts };
+    console.log(`woke ${kappa}`);
   },
   isPaneIdle: async () => true,
   ensureSessionRunning: async () => 0,
@@ -65,10 +65,10 @@ describe("wake plugin", () => {
     handler = mod.default;
   });
 
-  it("CLI basic: wake <name> → calls cmdWake with oracle name", async () => {
+  it("CLI basic: wake <name> → calls cmdWake with kappa name", async () => {
     const result = await handler({ source: "cli", args: ["neo"] });
     expect(result.ok).toBe(true);
-    expect(lastWakeCall?.oracle).toBe("neo");
+    expect(lastWakeCall?.kappa).toBe("neo");
     expect(result.output).toContain("woke neo");
   });
 
@@ -90,22 +90,22 @@ describe("wake plugin", () => {
     expect(lastWakeAllCall?.opts.kill).toBe(true);
   });
 
-  it("API: { oracle: 'neo' } → calls cmdWake", async () => {
-    const result = await handler({ source: "api", args: { oracle: "neo" } });
+  it("API: { kappa: 'neo' } → calls cmdWake", async () => {
+    const result = await handler({ source: "api", args: { kappa: "neo" } });
     expect(result.ok).toBe(true);
-    expect(lastWakeCall?.oracle).toBe("neo");
+    expect(lastWakeCall?.kappa).toBe("neo");
   });
 
-  it("CLI: missing oracle name → returns error with usage", async () => {
+  it("CLI: missing kappa name → returns error with usage", async () => {
     const result = await handler({ source: "cli", args: [] });
     expect(result.ok).toBe(false);
     expect(result.error).toContain("usage");
   });
 
-  it("API: missing oracle → returns error", async () => {
+  it("API: missing kappa → returns error", async () => {
     const result = await handler({ source: "api", args: {} });
     expect(result.ok).toBe(false);
-    expect(result.error).toContain("missing oracle");
+    expect(result.error).toContain("missing kappa");
   });
 
   it("CLI --wt <name>: populates wakeOpts.wt", async () => {

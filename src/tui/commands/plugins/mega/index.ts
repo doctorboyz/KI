@@ -26,10 +26,10 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     } else if (sub === "status" || sub === "ls" || sub === "tree" || !sub) {
       await cmdMegaStatus();
     } else {
-      console.log("aoi mega — MegaAgent hierarchical multi-agent system\n");
-      console.log("  aoi mega              Show all teams (hierarchy tree)");
-      console.log("  aoi mega status       Same as above");
-      console.log("  aoi mega stop         Kill all active team panes");
+      console.log("ki mega — MegaAgent hierarchical multi-agent system\n");
+      console.log("  ki mega              Show all teams (hierarchy tree)");
+      console.log("  ki mega status       Same as above");
+      console.log("  ki mega stop         Kill all active team panes");
     }
     return { ok: true, output: logs.join("\n") || undefined };
   } catch (e: any) {

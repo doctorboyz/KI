@@ -27,14 +27,14 @@ function isOrgRepoSlug(input: string): boolean {
   return ORG_REPO_SLUG.test(input);
 }
 
-function stripOracleSuffix(repoName: string): string {
-  return repoName.replace(/-oracle$/, "");
+function stripKappaSuffix(repoName: string): string {
+  return repoName.replace(/-kappa$/, "");
 }
 
 export interface ParsedWakeTarget {
-  /** Oracle name derived from repo (e.g. "aoijs" from "aoijs-oracle") */
-  oracle: string;
-  /** org/repo slug for ghq clone (e.g. "Soul-Brews-Studio/aoijs-oracle") */
+  /** Kappa name derived from repo (e.g. "kijs" from "kijs-kappa") */
+  kappa: string;
+  /** org/repo slug for ghq clone (e.g. "doctorboyz/kijs-kappa") */
   slug: string;
   /** Issue number if the URL contained /issues/N */
   issueNum?: number;
@@ -42,7 +42,7 @@ export interface ParsedWakeTarget {
 
 /**
  * Detect whether a wake target is a GitHub URL or org/repo slug.
- * Returns null if the target is a plain oracle name (existing behavior).
+ * Returns null if the target is a plain kappa name (existing behavior).
  */
 export function parseWakeTarget(target: string): ParsedWakeTarget | null {
   const cleaned = target.trim();
@@ -51,7 +51,7 @@ export function parseWakeTarget(target: string): ParsedWakeTarget | null {
   const ghUrl = matchGitHubUrl(cleaned);
   if (ghUrl) {
     return {
-      oracle: stripOracleSuffix(ghUrl.repo),
+      kappa: stripKappaSuffix(ghUrl.repo),
       slug: `${ghUrl.org}/${ghUrl.repo}`,
       ...(ghUrl.issueNum ? { issueNum: ghUrl.issueNum } : {}),
     };
@@ -61,17 +61,17 @@ export function parseWakeTarget(target: string): ParsedWakeTarget | null {
   if (isOrgRepoSlug(cleaned)) {
     const [org, rawRepo] = cleaned.split("/");
     const repo = rawRepo.replace(/\.git$/, "");
-    return { oracle: stripOracleSuffix(repo), slug: `${org}/${repo}` };
+    return { kappa: stripKappaSuffix(repo), slug: `${org}/${repo}` };
   }
 
-  // Plain oracle name — let existing resolution handle it
+  // Plain kappa name — let existing resolution handle it
   return null;
 }
 
 /**
  * Ensure a repo is cloned via ghq. Checks locally first (fast),
  * clones from GitHub only if not found. Silent on failure — lets
- * resolveOracle handle the error downstream.
+ * resolveKappa handle the error downstream.
  */
 export async function ensureCloned(slug: string): Promise<void> {
   const ghqHit = await ghqFind(`/${slug}`);

@@ -12,7 +12,7 @@ import { WakeBody, SleepBody, SendBody } from "../../lib/schemas";
 
 export const sessionsApi = new Elysia();
 
-/** Resolve oracle name → tmux target, same logic as local peek (#273). */
+/** Resolve kappa name → tmux target, same logic as local peek (#273). */
 function resolveCapture(query: string, sessions: Session[]): string {
   const config = loadConfig();
   const mapped = (config.sessions as Record<string, string>)?.[query];
@@ -82,9 +82,9 @@ sessionsApi.post("/send", async ({ body, set}) => {
     // --- Unified resolution via resolveTarget (#201) ---
     const result = resolveTarget(target, config, local);
 
-    // Also try with -oracle stripped (backwards compat)
+    // Also try with -kappa stripped (backwards compat)
     const isResolved = result && result.type !== "error";
-    const altResult = !isResolved ? resolveTarget(target.replace(/-oracle$/, ""), config, local) : null;
+    const altResult = !isResolved ? resolveTarget(target.replace(/-kappa$/, ""), config, local) : null;
     const altResolved = altResult && altResult.type !== "error";
     const resolved = isResolved ? result : altResolved ? altResult : (result || altResult);
 

@@ -11,7 +11,7 @@ export interface TagOpts {
 }
 
 /**
- * aoi tag <target> [--pane N] [--title <text>] [--meta key=val ...]
+ * ki tag <target> [--pane N] [--title <text>] [--meta key=val ...]
  *
  * Set pane metadata so callers can identify panes deterministically
  * instead of guessing via active-pane heuristics. Wraps two tmux knobs:
@@ -20,20 +20,20 @@ export interface TagOpts {
  *   - tmux set-option -p @<key> '<val>' — sets user option on the pane
  *
  * Why: enables route-by-name for skills that need to distinguish the
- * oracle's main pane from team-agent panes, without depending on pane
+ * kappa's main pane from team-agent panes, without depending on pane
  * index ordering or process name. Example:
  *
- *   aoi tag aoijs --title 'oracle' --meta agent-name=aoijs --meta role=oracle
- *   aoi tag aoijs --pane 1 --title 'scout' --meta agent-name=scout --meta role=teammate
+ *   ki tag kijs --title 'kappa' --meta agent-name=kijs --meta role=kappa
+ *   ki tag kijs --pane 1 --title 'scout' --meta agent-name=scout --meta role=teammate
  *
- * Then `aoi panes` shows the title column; skills can grep it or read
+ * Then `ki panes` shows the title column; skills can grep it or read
  * the @custom options via `tmux show-options -p -t <target>`.
  */
 export async function cmdTag(target: string, opts: TagOpts = {}) {
   if (!target) {
-    console.error("usage: aoi tag <target> [--pane N] [--title <text>] [--meta key=val]");
-    console.error("       aoi tag <target>                   (read mode — show current tags)");
-    throw new Error("usage: aoi tag <target> [--pane N] [--title <text>] [--meta key=val]");
+    console.error("usage: ki tag <target> [--pane N] [--title <text>] [--meta key=val]");
+    console.error("       ki tag <target>                   (read mode — show current tags)");
+    throw new Error("usage: ki tag <target> [--pane N] [--title <text>] [--meta key=val]");
   }
 
   // Read mode: no write flags → show current tags on the target pane.
@@ -75,7 +75,7 @@ export async function cmdTag(target: string, opts: TagOpts = {}) {
         console.error(`  \x1b[90m  did you mean:\x1b[0m`);
         for (const s of r.hints) console.error(`  \x1b[90m    • ${s.name}\x1b[0m`);
       } else {
-        console.error(`  \x1b[90m  try: aoi ls\x1b[0m`);
+        console.error(`  \x1b[90m  try: ki ls\x1b[0m`);
       }
       throw new Error(`session '${target}' not found`);
     }

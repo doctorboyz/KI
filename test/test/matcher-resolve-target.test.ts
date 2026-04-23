@@ -69,7 +69,7 @@ describe("resolveByName — ambiguous (2+ fuzzy hits)", () => {
     // User report (alpha.77): `maw a mawjs` was ambiguous between
     // `101-mawjs` (canonical NN-name session) and `mawjs-view` (aux view).
     // Suffix now wins because that's the maw tmux naming convention —
-    // oracle sessions are `NN-oracle-name`. Prefix match is Tier 2b, only
+    // kappa sessions are `NN-kappa-name`. Prefix match is Tier 2b, only
     // tried when no suffix match exists.
     const items = [sess("maw-js"), sess("110-maw"), sess("other")];
     const r = resolveByName("maw", items);
@@ -156,9 +156,9 @@ describe("resolveByName — no match", () => {
 
 describe("resolveSessionTarget — #535 regression (numeric-prefix fleet collision)", () => {
   test("`mawjs` does NOT match `114-mawjs-no2` via middle segment", () => {
-    // Repro: fleet has oracle `mawjs-no2` (Bloom) with session `114-mawjs-no2`.
-    // User types `mawjs` expecting their own oracle. Pre-fix: Tier 2b matched
-    // `-mawjs-` middle segment → silently resolved to the wrong oracle.
+    // Repro: fleet has kappa `mawjs-no2` (Bloom) with session `114-mawjs-no2`.
+    // User types `mawjs` expecting their own kappa. Pre-fix: Tier 2b matched
+    // `-mawjs-` middle segment → silently resolved to the wrong kappa.
     // Post-fix: numeric-prefix sessions skip Tier 2b; only Tier 2a (exact `-mawjs`
     // suffix) can match them → no suffix match → `none`.
     const items = [sess("114-mawjs-no2")];
@@ -184,7 +184,7 @@ describe("resolveSessionTarget — #535 regression (numeric-prefix fleet collisi
   });
 
   test("`mawjs-no2` correctly resolves to its own fleet session", () => {
-    // The other half of the #535 test: typing the actual oracle name works.
+    // The other half of the #535 test: typing the actual kappa name works.
     const items = [sess("114-mawjs-no2"), sess("101-mawjs")];
     const r = resolveSessionTarget("mawjs-no2", items);
     expect(r.kind).toBe("fuzzy");

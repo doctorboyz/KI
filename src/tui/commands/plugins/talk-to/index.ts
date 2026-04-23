@@ -19,7 +19,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     const args = ctx.source === "cli" ? (ctx.args as string[]) : [];
     const force = args.includes("--force");
     const filtered = args.filter(a => a !== "--force");
-    if (!filtered[0] || filtered.length < 2) throw new Error("usage: aoi talk-to <agent> <message> [--force]");
+    if (!filtered[0] || filtered.length < 2) throw new Error("usage: ki talk-to <agent> <message> [--force]");
     await cmdTalkTo(filtered[0], filtered.slice(1).join(" "), force);
     return { ok: true, output: logs.join("\n") || undefined };
   } catch (e: any) {

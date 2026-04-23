@@ -2,10 +2,10 @@ import { describe, test, expect, mock } from "bun:test";
 import type { TmuxPane } from "../../src/sdk";
 
 // Regression test for #393 Bug F — `maw cleanup --zombie-agents` was
-// flagging live fleet oracles whose canonical listing was a `*-view`
-// session. The hardcoded "maw-view" literal didn't cover per-oracle
+// flagging live fleet kappas whose canonical listing was a `*-view`
+// session. The hardcoded "maw-view" literal didn't cover per-kappa
 // views like `mawjs-view`, `mawui-view`, etc. Would have killed live
-// oracles on `--yes`.
+// kappas on `--yes`.
 //
 // Surfaced by zombie-auditor in iter 3 of the test loop (cron 93ad2418,
 // 2026-04-17 10:26) with full evidence at

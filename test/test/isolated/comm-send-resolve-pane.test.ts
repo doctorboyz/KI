@@ -1,7 +1,7 @@
 /**
  * test/isolated/comm-send-resolve-pane.test.ts
  *
- * Unit tests for resolveOraclePane() after the defensive refactor (H1).
+ * Unit tests for resolveKappaPane() after the defensive refactor (H1).
  * Verifies that target strings are passed as discrete args to Tmux.run()
  * rather than interpolated into a shell string — which means injection
  * characters in target values cannot break out of the tmux target context.
@@ -60,9 +60,9 @@ mock.module(join(srcRoot, "src/sdk"), () => ({
 }));
 
 // --- Import the module under test AFTER all mock.module installs ---
-const { resolveOraclePane } = await import("../../src/commands/shared/comm-send");
+const { resolveKappaPane } = await import("../../src/commands/shared/comm-send");
 
-describe("resolveOraclePane — H1 defensive refactor", () => {
+describe("resolveKappaPane — H1 defensive refactor", () => {
   beforeEach(() => {
     runCalls = [];
     runReturnValue = "";
@@ -71,20 +71,20 @@ describe("resolveOraclePane — H1 defensive refactor", () => {
   test("Case 1 — benign target: Tmux.run called with correct args, agent pane selected", async () => {
     // Two panes: index 0 = claude (agent), index 1 = zsh
     runReturnValue = "0 claude\n1 zsh\n";
-    const result = await resolveOraclePane("mawjs-session:mawjs-oracle");
+    const result = await resolveKappaPane("mawjs-session:mawjs-kappa");
     // Should resolve to pane 0 (agent at index 0)
-    expect(result).toBe("mawjs-session:mawjs-oracle.0");
+    expect(result).toBe("mawjs-session:mawjs-kappa.0");
     // Should have called Tmux.run with discrete args
     expect(runCalls).toHaveLength(1);
     expect(runCalls[0].subcommand).toBe("list-panes");
-    expect(runCalls[0].args).toEqual(["-t", "mawjs-session:mawjs-oracle", "-F", "#{pane_index} #{pane_current_command}"]);
+    expect(runCalls[0].args).toEqual(["-t", "mawjs-session:mawjs-kappa", "-F", "#{pane_index} #{pane_current_command}"]);
   });
 
   test("Case 2 — injection character in target does NOT reach shell as interpreted text", async () => {
     // Single-pane result so we don't alter the return value
     runReturnValue = "0 claude\n";
     const injectionTarget = "a'; touch /tmp/pwned; tmux #";
-    await resolveOraclePane(injectionTarget);
+    await resolveKappaPane(injectionTarget);
     // Tmux.run must have been called with the literal injection string as a separate arg
     expect(runCalls).toHaveLength(1);
     // The target must appear as a discrete argument element, not inside a shell string
@@ -96,7 +96,7 @@ describe("resolveOraclePane — H1 defensive refactor", () => {
   });
 
   test("Case 3 — pane-specific target passes through untouched (no Tmux.run call)", async () => {
-    const result = await resolveOraclePane("session:window.2");
+    const result = await resolveKappaPane("session:window.2");
     // Regex short-circuit: already has .N suffix
     expect(result).toBe("session:window.2");
     expect(runCalls).toHaveLength(0);
@@ -104,14 +104,14 @@ describe("resolveOraclePane — H1 defensive refactor", () => {
 
   test("Case 4 — single-pane window: returns target unchanged", async () => {
     runReturnValue = "0 zsh\n";
-    const result = await resolveOraclePane("my-session:oracle");
-    expect(result).toBe("my-session:oracle");
+    const result = await resolveKappaPane("my-session:kappa");
+    expect(result).toBe("my-session:kappa");
   });
 
   test("Case 5 — no agent pane found: returns target unchanged", async () => {
     runReturnValue = "0 zsh\n1 bash\n";
-    const result = await resolveOraclePane("my-session:oracle");
-    expect(result).toBe("my-session:oracle");
+    const result = await resolveKappaPane("my-session:kappa");
+    expect(result).toBe("my-session:kappa");
   });
 
   test("Case 6 — Tmux.run throws: returns target unchanged (error swallowed)", async () => {
@@ -119,8 +119,8 @@ describe("resolveOraclePane — H1 defensive refactor", () => {
     const _rTmuxAgain = await import("../../src/core/transport/tmux");
     const origRun = (_rTmuxAgain.Tmux.prototype as any).run;
     (_rTmuxAgain.Tmux.prototype as any).run = async () => { throw new Error("tmux not running"); };
-    const result = await resolveOraclePane("my-session:oracle");
-    expect(result).toBe("my-session:oracle");
+    const result = await resolveKappaPane("my-session:kappa");
+    expect(result).toBe("my-session:kappa");
     (_rTmuxAgain.Tmux.prototype as any).run = origRun;
   });
 });

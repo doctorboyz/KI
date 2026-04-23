@@ -7,7 +7,7 @@ import { teamsApi } from "./teams";
 import { configApi } from "./config";
 import { fleetApi } from "./fleet";
 import { asksApi } from "./asks";
-import { oracleApi } from "./oracle";
+import { kappaApi } from "./kappa";
 import { federationApi } from "./federation";
 import { worktreesApi } from "./worktrees";
 import { uiStateApi } from "./ui-state";
@@ -34,7 +34,7 @@ export const api = new Elysia({ prefix: "/api" })
   .use(swagger({
     path: "/docs",
     documentation: {
-      info: { title: "aoi API", version: "2.0.0-alpha.1" },
+      info: { title: "ki API", version: "2.0.0-alpha.1" },
     },
   }))
   .use(sessionsApi)
@@ -43,7 +43,7 @@ export const api = new Elysia({ prefix: "/api" })
   .use(configApi)
   .use(fleetApi)
   .use(asksApi)
-  .use(oracleApi)
+  .use(kappaApi)
   .use(federationApi)
   .use(worktreesApi)
   .use(uiStateApi)

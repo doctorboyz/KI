@@ -1,7 +1,7 @@
 // deprecated.ts — proper 410 Gone rotation for retired endpoints
 //
-// Author: FORGE Oracle — 2026-04-18
-// Rationale: VELA's silent-errors-deprecated-endpoints pattern (~/david-oracle/
+// Author: FORGE Kappa — 2026-04-18
+// Rationale: VELA's silent-errors-deprecated-endpoints pattern (~/david-kappa/
 // ψ/memory/vela/patterns/2026-04-18_silent-errors-deprecated-endpoints.md).
 // Previous cleanup commit b0b0de2 removed the stub-corpse handlers, but that
 // produced silent 404s from the framework instead of a loud deprecation signal.
@@ -11,7 +11,7 @@
 // Three routes covered:
 //   GET /api/tokens       → 410 + Link: /api/feed      (was: 410 no-link)
 //   GET /api/tokens/rate  → 410 + Link: /api/costs     (was: 200 zero-stub)
-//   GET /api/aoi-log      → 410 + Link: /api/feed      (was: 200 empty-stub)
+//   GET /api/ki-log      → 410 + Link: /api/feed      (was: 200 empty-stub)
 
 import { Elysia } from "elysia";
 
@@ -41,4 +41,4 @@ export const deprecatedApi = new Elysia();
 
 deprecatedApi.get("/tokens", ({ set }) => gone(set, "/api/feed"));
 deprecatedApi.get("/tokens/rate", ({ set }) => gone(set, "/api/costs"));
-deprecatedApi.get("/aoi-log", ({ set }) => gone(set, "/api/feed"));
+deprecatedApi.get("/ki-log", ({ set }) => gone(set, "/api/feed"));

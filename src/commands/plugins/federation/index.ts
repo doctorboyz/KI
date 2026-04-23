@@ -45,7 +45,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     } else {
       return {
         ok: false,
-        error: "usage: aoi federation <status|sync> [--verify|--dry-run|--check|--prune|--force|--json]",
+        error: "usage: ki federation <status|sync> [--verify|--dry-run|--check|--prune|--force|--json]",
       };
     }
 

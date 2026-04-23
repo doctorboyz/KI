@@ -1,13 +1,13 @@
 import { capture } from "../transport/ssh";
 import { tmux } from "../transport/tmux";
-import type { AoiWS } from "../types";
+import type { KiWS } from "../types";
 
 type SessionInfo = { name: string; windows: { index: number; name: string; active: boolean }[] };
 
 /** Push terminal capture to a subscribed WebSocket client. */
 export async function pushCapture(
-  ws: AoiWS,
-  lastContent: Map<AoiWS, string>,
+  ws: KiWS,
+  lastContent: Map<KiWS, string>,
 ) {
   if (!ws.data.target) return;
   try {
@@ -24,8 +24,8 @@ export async function pushCapture(
 
 /** Push preview captures for subscribed targets (15 lines to catch status text like "Compacting"). */
 export async function pushPreviews(
-  ws: AoiWS,
-  lastPreviews: Map<AoiWS, Map<string, string>>,
+  ws: KiWS,
+  lastPreviews: Map<KiWS, Map<string, string>>,
 ) {
   const targets = ws.data.previewTargets;
   if (!targets || targets.size === 0) return;
@@ -56,7 +56,7 @@ export async function pushPreviews(
  *  cache.sessions always holds local-only sessions for status detection / busy-agent scanning.
  */
 export async function broadcastSessions(
-  clients: Set<AoiWS>,
+  clients: Set<KiWS>,
   cache: { sessions: SessionInfo[]; json: string },
   peerSessions: SessionInfo[] = [],
 ): Promise<SessionInfo[]> {
@@ -75,7 +75,7 @@ export async function broadcastSessions(
 }
 
 /** Scan panes for running claude and send `recent` to client. */
-export async function sendBusyAgents(ws: AoiWS, sessions: SessionInfo[]) {
+export async function sendBusyAgents(ws: KiWS, sessions: SessionInfo[]) {
   const allTargets = sessions.flatMap(s => s.windows.map(w => `${s.name}:${w.index}`));
   const cmds = await tmux.getPaneCommands(allTargets);
   const busy = allTargets

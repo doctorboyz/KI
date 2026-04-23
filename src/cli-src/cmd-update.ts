@@ -13,26 +13,26 @@ import { withUpdateLock } from "./update-lock";
 export async function runUpdate(args: string[]): Promise<void> {
   const { repository } = require("../../package.json");
   // args[0] is "update"; first non-flag positional is the ref.
-  // Prevents `aoi update --yes` from treating "--yes" as a ref (alpha.72 fix).
+  // Prevents `ki update --yes` from treating "--yes" as a ref (alpha.72 fix).
   const positionals = args.slice(1).filter(a => !a.startsWith("-"));
   let ref = positionals[0] || "main";
 
   const UPDATE_HELP_TEXT = [
-    "usage: aoi update [ref]",
+    "usage: ki update [ref]",
     "",
-    "  Update aoi to a specific ref, channel, or branch.",
+    "  Update ki to a specific ref, channel, or branch.",
     "",
     "  Examples:",
-    "    aoi update          update to main (default)",
-    "    aoi update alpha    update to latest alpha tag",
-    "    aoi update beta     update to latest beta tag",
-    "    aoi update main     update to main branch",
+    "    ki update          update to main (default)",
+    "    ki update alpha    update to latest alpha tag",
+    "    ki update beta     update to latest beta tag",
+    "    ki update main     update to main branch",
     "",
     "  Flags:",
     "    --yes, -y     skip confirmation prompt (for scripts/fleet)",
     "    --help, -h    show this message and exit (no side effects)",
     "",
-    "  ⚠ Manual `bun add -g` may loop — use `aoi update <ref>` instead.",
+    "  ⚠ Manual `bun add -g` may loop — use `ki update <ref>` instead.",
   ].join("\n");
 
   // Layer 1: short-circuit --help/-h BEFORE any side effects (#356)
@@ -47,7 +47,7 @@ export async function runUpdate(args: string[]): Promise<void> {
   const KNOWN_FLAGS = new Set(["--yes", "-y", "--help", "-h"]);
   const unknownFlag = args.slice(1).find(a => a.startsWith("-") && !KNOWN_FLAGS.has(a));
   if (unknownFlag) {
-    console.error(`\x1b[31merror\x1b[0m: invalid ref "${unknownFlag}" — looks like a flag. Run \`aoi update --help\` for usage.`);
+    console.error(`\x1b[31merror\x1b[0m: invalid ref "${unknownFlag}" — looks like a flag. Run \`ki update --help\` for usage.`);
     process.exit(1);
   }
 
@@ -85,18 +85,18 @@ export async function runUpdate(args: string[]): Promise<void> {
   }
 
   const before = getVersionString();
-  // Strip "aoi " prefix so the arrow line stays readable: "v2.0.0-alpha.20 → v2.0.0-alpha.21"
-  const beforeVer = before.replace(/^aoi\s+/, "");
+  // Strip "ki " prefix so the arrow line stays readable: "v2.0.0-alpha.20 → v2.0.0-alpha.21"
+  const beforeVer = before.replace(/^ki\s+/, "");
   const arrow = beforeVer === ref ? "\x1b[90m=\x1b[0m" : "\x1b[32m→\x1b[0m";
   const sameNote = beforeVer === ref ? " \x1b[90m(re-sync)\x1b[0m" : "";
-  console.log(`\n  🍺 aoi \x1b[36m${beforeVer}\x1b[0m ${arrow} \x1b[36m${ref}\x1b[0m${sameNote}\n`);
+  console.log(`\n  🍺 ki \x1b[36m${beforeVer}\x1b[0m ${arrow} \x1b[36m${ref}\x1b[0m${sameNote}\n`);
 
   // Confirmation gate — show from→to, ask before destructive install.
   // Skip with --yes/-y for scripted usage (e.g. fleet update).
   if (!args.includes("--yes") && !args.includes("-y")) {
     // Non-interactive environments (Claude Code sandbox, CI, piped) have no
     // /dev/tty → openSync would throw ENXIO. Bail with an actionable hint
-    // instead (alpha.72 fix — reported by user trying `aoi update` in a
+    // instead (alpha.72 fix — reported by user trying `ki update` in a
     // non-TTY sandbox).
     if (!process.stdin.isTTY) {
       console.error("  \x1b[31m✗\x1b[0m non-interactive environment — re-run with --yes (or -y) to skip confirmation");
@@ -117,8 +117,8 @@ export async function runUpdate(args: string[]): Promise<void> {
   // Allowlist: git tag names, branch names, commit SHAs — no shell metacharacters.
   // Channel shortcuts ("alpha"/"beta") resolve to a validated tag above; all
   // resolved refs must still pass this gate (defense-in-depth after channel resolve).
-  // CRITICAL: this MUST run BEFORE `bun remove -g aoi` below. If validation
-  // fails after remove, the user is left with aoi uninstalled and no reinstall.
+  // CRITICAL: this MUST run BEFORE `bun remove -g ki` below. If validation
+  // fails after remove, the user is left with ki uninstalled and no reinstall.
   // (Regression: #356/#473-class. Fix 2026-04-18 — emergency after user report.)
   const REF_RE = /^[a-zA-Z0-9._\-\/]+$/;
   if (!REF_RE.test(ref)) {
@@ -128,14 +128,14 @@ export async function runUpdate(args: string[]): Promise<void> {
 
   // Atomic install sequence — try install over existing FIRST so that a
   // transient failure (network, auth, bun version) cannot leave the user
-  // with an uninstalled aoi. `bun remove` only runs as a fallback when the
+  // with an uninstalled ki. `bun remove` only runs as a fallback when the
   // initial install fails — the historical reason for remove-first was a
   // dep-loop class (#214/#347), which is narrower than "every install".
   //
   // Order matters: validation (above) → try add → on fail, remove + retry →
-  // on still-fail, print recovery command. User always has a working aoi
+  // on still-fail, print recovery command. User always has a working ki
   // unless BOTH adds fail.
-  // #551 — serialize concurrent `aoi update` invocations via filesystem lock.
+  // #551 — serialize concurrent `ki update` invocations via filesystem lock.
   // Channel-resolve + validation above runs unlocked; destructive install ops
   // below (stash, bun remove, bun add, link refresh) are serialized.
   await withUpdateLock(async () => {
@@ -148,8 +148,8 @@ export async function runUpdate(args: string[]): Promise<void> {
       console.warn(`\x1b[33m⚠\x1b[0m first install attempt failed — clearing stale global refs and retrying`);
       // #551 — stash the current binary before destructive 'bun remove -g'.
       // If the retry also fails, we restore from stash so the user never ends up
-      // with no aoi. Empty-try around rename: stash is best-effort, retry not blocked.
-      const BIN = join(homedir(), ".bun", "bin", "aoi");
+      // with no ki. Empty-try around rename: stash is best-effort, retry not blocked.
+      const BIN = join(homedir(), ".bun", "bin", "ki");
       const STASH = `${BIN}.prev`;
       let stashed = false;
       // Refuse if .prev already exists — that's a prior crashed update's
@@ -159,7 +159,7 @@ export async function runUpdate(args: string[]): Promise<void> {
         console.error(`\x1b[31merror\x1b[0m: ${STASH} already exists (prior update crashed — last-known-good binary).`);
         console.error(`  restore manually:  mv ${STASH} ${BIN}`);
         console.error(`  or discard it:     rm ${STASH}   \x1b[90m# only if you're sure\x1b[0m`);
-        console.error(`  then re-run:       aoi update ${ref}`);
+        console.error(`  then re-run:       ki update ${ref}`);
         process.exit(1);
       }
       try {
@@ -169,14 +169,14 @@ export async function runUpdate(args: string[]): Promise<void> {
         }
       } catch { /* stash best-effort */ }
 
-      try { execSync(`bun remove -g aoi`, { stdio: "pipe" }); } catch {}
+      try { execSync(`bun remove -g ki`, { stdio: "pipe" }); } catch {}
       installCode = await spawnInstall().exited;
 
       if (installCode !== 0 && stashed && existsSync(STASH)) {
         // Retry failed — restore the previous binary so the user isn't stranded.
         try {
           renameSync(STASH, BIN);
-          console.warn(`\x1b[33m↺\x1b[0m restored previous aoi binary from stash`);
+          console.warn(`\x1b[33m↺\x1b[0m restored previous ki binary from stash`);
         } catch (e: any) {
           console.error(`failed to restore stash: ${e.message || e}`);
         }
@@ -186,42 +186,42 @@ export async function runUpdate(args: string[]): Promise<void> {
       }
     }
     if (installCode !== 0) {
-      console.error(`\x1b[31merror\x1b[0m: bun add failed with exit ${installCode} — previous aoi restored from stash (if available)`);
+      console.error(`\x1b[31merror\x1b[0m: bun add failed with exit ${installCode} — previous ki restored from stash (if available)`);
       console.error(`  manual recovery: bun add -g github:${repository}#alpha`);
       process.exit(installCode);
     }
-    // Link SDK so plugins can `import { aoi } from "@aoi/sdk"` (workspace package at packages/sdk/)
-    // Legacy plugins using bare `aoi/sdk` are still resolved via `bun link aoi`.
+    // Link SDK so plugins can `import { ki } from "@ki/sdk"` (workspace package at packages/sdk/)
+    // Legacy plugins using bare `ki/sdk` are still resolved via `bun link ki`.
     try {
-      const aoiDir = ghqFindSync("/Soul-Brews-Studio/aoi");
-      if (aoiDir) {
+      const kiDir = ghqFindSync("/doctorboyz/ki");
+      if (kiDir) {
         // #346: Gate link on version match — stale ghq clone would override the fresh global install
-        const cloneVersion: string = require(join(aoiDir, "package.json")).version;
+        const cloneVersion: string = require(join(kiDir, "package.json")).version;
         const refNormalized = ref.replace(/^v/, "");
         if (ref !== "main" && !cloneVersion.includes(refNormalized)) {
           console.log(`  ⚠ SDK link skipped — local clone is ${cloneVersion}, installed ${ref}`);
         } else {
-          execSync(`cd ${aoiDir} && bun link`, { stdio: "pipe" });
-          const oracleDir = join(homedir(), ".oracle");
-          mkdirSync(oracleDir, { recursive: true });
-          if (!existsSync(join(oracleDir, "package.json"))) {
-            writeFileSync(join(oracleDir, "package.json"), '{"name":"oracle-plugins","private":true}\n');
+          execSync(`cd ${kiDir} && bun link`, { stdio: "pipe" });
+          const kappaDir = join(homedir(), ".kappa");
+          mkdirSync(kappaDir, { recursive: true });
+          if (!existsSync(join(kappaDir, "package.json"))) {
+            writeFileSync(join(kappaDir, "package.json"), '{"name":"kappa-plugins","private":true}\n');
           }
-          execSync(`cd ${oracleDir} && bun link aoi`, { stdio: "pipe" });
-          console.log(`  🔗 SDK linked (@aoi/sdk)`);
+          execSync(`cd ${kappaDir} && bun link ki`, { stdio: "pipe" });
+          console.log(`  🔗 SDK linked (@ki/sdk)`);
         }
       }
     } catch { /* ghq not available or link failed — non-fatal */ }
     let after = "";
-    try { after = execSync(`aoi --version`, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim(); } catch {}
+    try { after = execSync(`ki --version`, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim(); } catch {}
 
     // Refresh bundled plugin symlinks (point to new install)
     try {
-      const pluginDir = join(homedir(), ".aoi", "plugins");
+      const pluginDir = join(homedir(), ".ki", "plugins");
       mkdirSync(pluginDir, { recursive: true });
-      const aoiBin = execSync("which aoi", { encoding: "utf-8" }).trim();
-      const aoiSrc = dirname(realpathSync(aoiBin));
-      const bundled = join(aoiSrc, "commands", "plugins");
+      const kiBin = execSync("which ki", { encoding: "utf-8" }).trim();
+      const kiSrc = dirname(realpathSync(kiBin));
+      const bundled = join(kiSrc, "commands", "plugins");
       if (existsSync(bundled)) {
         let refreshed = 0;
         for (const d of readdirSync(bundled)) {
@@ -238,7 +238,7 @@ export async function runUpdate(args: string[]): Promise<void> {
 
     // Arrow confirmation — "before → after" mirrors the header but with the
     // actual resolved version (in case ref was 'main' or channel shortcut).
-    const afterVer = after.replace(/^aoi\s+/, "");
+    const afterVer = after.replace(/^ki\s+/, "");
     if (afterVer) {
       const sameAfter = beforeVer === afterVer;
       const doneArrow = sameAfter ? "\x1b[90m=\x1b[0m" : "\x1b[32m→\x1b[0m";

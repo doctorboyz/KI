@@ -1,4 +1,4 @@
-import type { FeedEvent } from "./aoi";
+import type { FeedEvent } from "./ki";
 
 export type FocusTarget = "agent-list" | "feed" | "command-bar";
 export type AppMode = "normal" | "command" | "action-menu";

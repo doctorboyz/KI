@@ -10,7 +10,7 @@ import { homedir } from "os";
 import { archiveToTmp } from "./plugins-ui";
 
 function getPluginHome(): string {
-  return process.env.AOI_PLUGIN_HOME ?? join(homedir(), ".aoi", "plugins");
+  return process.env.KI_PLUGIN_HOME ?? join(homedir(), ".ki", "plugins");
 }
 
 export function doProfile(profile: "core" | "standard" | "full", discover: () => LoadedPlugin[]): void {
@@ -42,7 +42,7 @@ export function doProfile(profile: "core" | "standard" | "full", discover: () =>
   for (const n of toDisable) console.log(`  \x1b[33m✗\x1b[0m ${n}`);
   const remaining = plugins.length - toDisable.length;
   console.log(`\n\x1b[32m✓\x1b[0m ${profile} — ${remaining} active, ${toDisable.length} disabled`);
-  console.log(`\x1b[90m  Profiles: aoi plugin lean | standard | full\x1b[0m`);
+  console.log(`\x1b[90m  Profiles: ki plugin lean | standard | full\x1b[0m`);
 }
 
 export function doNuke(): void {
@@ -59,5 +59,5 @@ export function doNuke(): void {
   }
 
   console.log(`\n\x1b[31m💥\x1b[0m nuked — all plugins archived to /tmp/`);
-  console.log(`\x1b[90m   next aoi run will auto-bootstrap core plugins\x1b[0m`);
+  console.log(`\x1b[90m   next ki run will auto-bootstrap core plugins\x1b[0m`);
 }

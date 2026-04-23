@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "ink";
-import type { FeedEvent } from "../../types/aoi";
+import type { FeedEvent } from "../../types/ki";
 import { formatTime, eventColor, truncate } from "../../utils/format";
 
 interface FeedLineProps {
@@ -18,7 +18,7 @@ export function FeedLine({ event }: FeedLineProps) {
       <Text dimColor>{time}</Text>
       <Text dimColor>]</Text>
       <Text> </Text>
-      <Text color="cyan">{event.oracle}</Text>
+      <Text color="cyan">{event.kappa}</Text>
       <Text> ▸ </Text>
       <Text color={color}>{event.event}</Text>
       <Text>{msg}</Text>

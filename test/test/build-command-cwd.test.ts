@@ -19,7 +19,7 @@ mock.module("../src/core/transport/ssh", () => ({
 // contract); these cases remain as a quoting-pattern sanity check only.
 describe("shell path quoting (reference tests)", () => {
   test("prepends cd before command", () => {
-    const cwd = "/home/nat/Code/github.com/laris-co/neo-oracle";
+    const cwd = "/home/nat/Code/github.com/laris-co/neo-kappa";
     const cmd = "claude --dangerously-skip-permissions --continue";
     const result = `cd '${cwd}' && ${cmd}`;
     expect(result).toStartWith(`cd '${cwd}' && `);

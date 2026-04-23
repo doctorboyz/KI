@@ -255,7 +255,7 @@ export class Tmux {
   /**
    * Smart text sending — uses load-buffer for multiline/long messages,
    * send-keys for short single-line. Always appends Enter.
-   * Ported from old bash aoi hey (Dec 2025).
+   * Ported from old bash ki hey (Dec 2025).
    */
   async sendText(target: string, text: string): Promise<void> {
     if (text.includes("\n") || text.length > 500) {

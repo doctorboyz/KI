@@ -13,12 +13,12 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
   // Handle --help before monkey-patching so output always reaches stdout
   if (args[0] === "--help" || args[0] === "-h") {
     const help = [
-      "usage: aoi avengers [status|best|traffic|health] — ARRA-01 rate limit monitor",
+      "usage: ki avengers [status|best|traffic|health] — ARRA-01 rate limit monitor",
       "",
-      "  aoi avengers status    All accounts + rate limits",
-      "  aoi avengers best      Account with most capacity",
-      "  aoi avengers traffic   Traffic stats",
-      "  aoi avengers health    Quick connectivity check",
+      "  ki avengers status    All accounts + rate limits",
+      "  ki avengers best      Account with most capacity",
+      "  ki avengers traffic   Traffic stats",
+      "  ki avengers health    Quick connectivity check",
     ].join("\n");
     if (ctx.writer) ctx.writer(help);
     else console.log(help);

@@ -1,12 +1,12 @@
 import { describe, test, expect } from "bun:test";
 
 /**
- * Tests for `maw bud --root` flag — parentless oracle creation.
+ * Tests for `maw bud --root` flag — parentless kappa creation.
  *
- * Background: `maw bud` historically required a parent oracle (via `--from`
+ * Background: `maw bud` historically required a parent kappa (via `--from`
  * or tmux-cwd auto-detect). The `--root` flag (PR #254, feat/bud-root)
  * relaxes that so fresh-shell usage works: `maw bud white-wormhole --root`
- * creates a root oracle with no parent lineage.
+ * creates a root kappa with no parent lineage.
  *
  * cmdBud is large and effectful (hostExec, gh, ghq, fs writes, git push),
  * so following the wake.test.ts convention we inline the small branching
@@ -25,7 +25,7 @@ function resolveParent(
   let parentName: string | null = opts.from || null;
   if (!parentName && !opts.root) {
     if (tmuxCwdName === null) return "ERROR"; // cmdBud would process.exit(1)
-    parentName = tmuxCwdName.replace(/\.wt-.*$/, "").replace(/-oracle$/, "");
+    parentName = tmuxCwdName.replace(/\.wt-.*$/, "").replace(/-kappa$/, "");
   }
   return parentName;
 }
@@ -42,7 +42,7 @@ function buildNewFleetConfig(args: {
   const { name, org, budRepoName, budNum, parentName, nowIso } = args;
   const cfg: Record<string, unknown> = {
     name: `${String(budNum).padStart(2, "0")}-${name}`,
-    windows: [{ name: `${name}-oracle`, repo: `${org}/${budRepoName}` }],
+    windows: [{ name: `${name}-kappa`, repo: `${org}/${budRepoName}` }],
     sync_peers: parentName ? [parentName] : [],
   };
   if (parentName) {
@@ -60,7 +60,7 @@ function buildClaudeMdLineage(parentName: string | null, now: string): {
   return {
     header: parentName
       ? `> Budded from **${parentName}** on ${now}`
-      : `> Root oracle — born ${now} (no parent lineage)`,
+      : `> Root kappa — born ${now} (no parent lineage)`,
     field: parentName
       ? `- **Budded from**: ${parentName}`
       : `- **Origin**: root (no parent)`,
@@ -71,7 +71,7 @@ function buildClaudeMdLineage(parentName: string | null, now: string): {
 
 describe("maw bud --root — parent resolution", () => {
   test("--root alone → parentName is null (no tmux detection attempted)", () => {
-    expect(resolveParent({ root: true }, "some-oracle")).toBeNull();
+    expect(resolveParent({ root: true }, "some-kappa")).toBeNull();
   });
 
   test("--root with no tmux context → still null (doesn't error)", () => {
@@ -84,18 +84,18 @@ describe("maw bud --root — parent resolution", () => {
     expect(resolveParent({ root: true, from: "mawjs" }, null)).toBe("mawjs");
   });
 
-  test("no --root, no --from, tmux cwd 'mawjs-oracle' → parentName 'mawjs'", () => {
-    expect(resolveParent({}, "mawjs-oracle")).toBe("mawjs");
+  test("no --root, no --from, tmux cwd 'mawjs-kappa' → parentName 'mawjs'", () => {
+    expect(resolveParent({}, "mawjs-kappa")).toBe("mawjs");
   });
 
-  test("no --root, no --from, worktree cwd → .wt- suffix AND -oracle stripped", () => {
-    // Fix for #255: bud.ts now runs `.replace(/\.wt-.*$/)` BEFORE `.replace(/-oracle$/)`,
-    // so "mawjs-oracle.wt-feat-x" → "mawjs-oracle" → "mawjs" (correct parent name).
-    // Before the fix, only .wt- was stripped (because -oracle$ didn't match the
-    // .wt-suffixed string) and the result was "mawjs-oracle", which silently
+  test("no --root, no --from, worktree cwd → .wt- suffix AND -kappa stripped", () => {
+    // Fix for #255: bud.ts now runs `.replace(/\.wt-.*$/)` BEFORE `.replace(/-kappa$/)`,
+    // so "mawjs-kappa.wt-feat-x" → "mawjs-kappa" → "mawjs" (correct parent name).
+    // Before the fix, only .wt- was stripped (because -kappa$ didn't match the
+    // .wt-suffixed string) and the result was "mawjs-kappa", which silently
     // corrupted lineage fields (budded_from, sync_peers lookup miss, soul-sync
     // seed target miss) when budding from any worktree.
-    expect(resolveParent({}, "mawjs-oracle.wt-feat-x")).toBe("mawjs");
+    expect(resolveParent({}, "mawjs-kappa.wt-feat-x")).toBe("mawjs");
   });
 
   test("no --root, no --from, no tmux cwd → error sentinel (would process.exit)", () => {
@@ -109,8 +109,8 @@ describe("maw bud --root — fleet config shape", () => {
   test("root bud → sync_peers: [], no budded_from, no budded_at", () => {
     const cfg = buildNewFleetConfig({
       name: "white-wormhole",
-      org: "Soul-Brews-Studio",
-      budRepoName: "white-wormhole-oracle",
+      org: "doctorboyz",
+      budRepoName: "white-wormhole-kappa",
       budNum: 42,
       parentName: null,
       nowIso,
@@ -120,15 +120,15 @@ describe("maw bud --root — fleet config shape", () => {
     expect(cfg.budded_at).toBeUndefined();
     expect(cfg.name).toBe("42-white-wormhole");
     expect(cfg.windows).toEqual([
-      { name: "white-wormhole-oracle", repo: "Soul-Brews-Studio/white-wormhole-oracle" },
+      { name: "white-wormhole-kappa", repo: "doctorboyz/white-wormhole-kappa" },
     ]);
   });
 
   test("parent bud → sync_peers: [parent], budded_from + budded_at set", () => {
     const cfg = buildNewFleetConfig({
       name: "alpha",
-      org: "Soul-Brews-Studio",
-      budRepoName: "alpha-oracle",
+      org: "doctorboyz",
+      budRepoName: "alpha-kappa",
       budNum: 5,
       parentName: "mawjs",
       nowIso,
@@ -140,10 +140,10 @@ describe("maw bud --root — fleet config shape", () => {
 
   test("fleet config serializes to JSON cleanly for both shapes", () => {
     const rootCfg = buildNewFleetConfig({
-      name: "r", org: "O", budRepoName: "r-oracle", budNum: 1, parentName: null, nowIso,
+      name: "r", org: "O", budRepoName: "r-kappa", budNum: 1, parentName: null, nowIso,
     });
     const parentCfg = buildNewFleetConfig({
-      name: "p", org: "O", budRepoName: "p-oracle", budNum: 2, parentName: "m", nowIso,
+      name: "p", org: "O", budRepoName: "p-kappa", budNum: 2, parentName: "m", nowIso,
     });
     // Must round-trip through JSON without losing shape (fleet files are JSON).
     expect(JSON.parse(JSON.stringify(rootCfg))).toEqual(rootCfg);
@@ -154,9 +154,9 @@ describe("maw bud --root — fleet config shape", () => {
 describe("maw bud --root — CLAUDE.md lineage header", () => {
   const now = "2026-04-11";
 
-  test("root bud → 'Root oracle' header + 'Origin: root' identity field", () => {
+  test("root bud → 'Root kappa' header + 'Origin: root' identity field", () => {
     const { header, field } = buildClaudeMdLineage(null, now);
-    expect(header).toContain("Root oracle");
+    expect(header).toContain("Root kappa");
     expect(header).toContain("no parent lineage");
     expect(header).toContain(now);
     expect(field).toContain("Origin");
@@ -171,7 +171,7 @@ describe("maw bud --root — CLAUDE.md lineage header", () => {
     expect(header).toContain(now);
     expect(field).toContain("Budded from");
     expect(field).toContain("mawjs");
-    expect(field).not.toContain("Root oracle");
+    expect(field).not.toContain("Root kappa");
   });
 
   test("root bud header never mentions a parent name by accident", () => {

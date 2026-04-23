@@ -6,13 +6,13 @@ export const command = {
 };
 
 /**
- * aoi peers — core plugin (#568).
+ * ki peers — core plugin (#568).
  *
  * Subcommand dispatcher over the impl.ts CRUD functions. Shape mirrors
  * the `project` plugin (#560): peel off positional[0] as the verb,
  * dispatch on a switch, print helpText() on missing/unknown.
  *
- * Integration with `aoi hey`/`peek`/`send` (alias:agent resolution)
+ * Integration with `ki hey`/`peek`/`send` (alias:agent resolution)
  * is intentionally deferred — this PR stands on its own with CRUD.
  * Follow-up: resolve `<alias>:<agent>` via loadPeers() before the
  * existing federation node lookup.
@@ -34,13 +34,13 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
 
   const out = () => logs.join("\n");
   const help = () => [
-    "usage: aoi peers <add|list|info|remove> [...]",
+    "usage: ki peers <add|list|info|remove> [...]",
     "  add    <alias> <url> [--node <name>]  — register alias (auto-resolves node via /info)",
     "  list                                   — tabular list of all peers",
     "  info   <alias>                         — JSON details for one peer",
     "  remove <alias>                         — remove (idempotent)",
     "",
-    "storage: ~/.aoi/peers.json (v1)",
+    "storage: ~/.ki/peers.json (v1)",
   ].join("\n");
 
   try {
@@ -58,7 +58,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         const alias = positional[1];
         const url = positional[2];
         if (!alias || !url) {
-          return { ok: false, error: "usage: aoi peers add <alias> <url> [--node <name>]" };
+          return { ok: false, error: "usage: ki peers add <alias> <url> [--node <name>]" };
         }
         const nodeIdx = args.indexOf("--node");
         const node = nodeIdx >= 0 ? args[nodeIdx + 1] : undefined;
@@ -74,7 +74,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       }
       case "info": {
         const alias = positional[1];
-        if (!alias) return { ok: false, error: "usage: aoi peers info <alias>" };
+        if (!alias) return { ok: false, error: "usage: ki peers info <alias>" };
         const found = impl.cmdInfo(alias);
         if (!found) return { ok: false, error: `peer "${alias}" not found` };
         console.log(JSON.stringify(found, null, 2));
@@ -83,7 +83,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       case "remove":
       case "rm": {
         const alias = positional[1];
-        if (!alias) return { ok: false, error: "usage: aoi peers remove <alias>" };
+        if (!alias) return { ok: false, error: "usage: ki peers remove <alias>" };
         const removed = impl.cmdRemove(alias);
         console.log(removed ? `removed ${alias}` : `no-op: ${alias} not present`);
         return { ok: true, output: out() };
@@ -92,7 +92,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         console.log(help());
         return {
           ok: false,
-          error: `aoi peers: unknown subcommand "${sub}" (expected add|list|info|remove)`,
+          error: `ki peers: unknown subcommand "${sub}" (expected add|list|info|remove)`,
           output: out() || help(),
         };
       }

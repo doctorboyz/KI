@@ -4,8 +4,8 @@
  * Why this exists:
  *   Shell completion (`ls`-style tab complete on a directory) and copy-paste
  *   from file managers routinely leave trailing slashes on a name. The bare
- *   form `aoi wake token-oracle/` was failing lookup because "token-oracle/"
- *   is not the same string as "token-oracle" — the resolver refused to match.
+ *   form `ki wake token-kappa/` was failing lookup because "token-kappa/"
+ *   is not the same string as "token-kappa" — the resolver refused to match.
  *
  *   Rather than patching each lookup site to strip slashes defensively, this
  *   helper centralizes the rule: every verb that takes a bare target/name

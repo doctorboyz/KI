@@ -29,7 +29,7 @@ export async function cmdCosts() {
   try {
     res = await fetch(`${base}/api/costs`);
   } catch {
-    throw new UserError("cannot reach aoi server — is `aoi serve` running?");
+    throw new UserError("cannot reach ki server — is `ki serve` running?");
   }
 
   // Read body as text once — avoids the "body already read" trap if json() fails
@@ -38,14 +38,14 @@ export async function cmdCosts() {
 
   if (!res.ok) {
     const suffix = bodyText ? `: ${bodyText.slice(0, 100)}` : "";
-    throw new Error(`aoi server returned ${res.status} ${res.statusText}${suffix}`);
+    throw new Error(`ki server returned ${res.status} ${res.statusText}${suffix}`);
   }
 
   let data: CostsResponse;
   try {
     data = JSON.parse(bodyText) as CostsResponse;
   } catch {
-    throw new Error(`aoi server returned non-JSON response: ${bodyText.slice(0, 100)}`);
+    throw new Error(`ki server returned non-JSON response: ${bodyText.slice(0, 100)}`);
   }
 
   if (data.error) {
@@ -115,20 +115,20 @@ export async function cmdCostsDaily(days: number, json: boolean) {
   try {
     res = await fetch(`${base}/api/costs/daily?days=${days}`);
   } catch {
-    throw new UserError("cannot reach aoi server — is `aoi serve` running?");
+    throw new UserError("cannot reach ki server — is `ki serve` running?");
   }
 
   const bodyText = await res.text().catch(() => "");
   if (!res.ok) {
     const suffix = bodyText ? `: ${bodyText.slice(0, 100)}` : "";
-    throw new Error(`aoi server returned ${res.status} ${res.statusText}${suffix}`);
+    throw new Error(`ki server returned ${res.status} ${res.statusText}${suffix}`);
   }
 
   let data: DailyResponse;
   try {
     data = JSON.parse(bodyText) as DailyResponse;
   } catch {
-    throw new Error(`aoi server returned non-JSON response: ${bodyText.slice(0, 100)}`);
+    throw new Error(`ki server returned non-JSON response: ${bodyText.slice(0, 100)}`);
   }
 
   if (data.error) throw new Error(data.error);

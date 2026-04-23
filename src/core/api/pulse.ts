@@ -2,7 +2,7 @@
  * Pulse API -- GitHub Issues proxy for Dashboard Pro kanban panel.
  *
  * Wraps gh CLI so the browser doesn't need a GitHub token.
- * Reads from the Pulse repo (laris-co/pulse-oracle by default).
+ * Reads from the Pulse repo (laris-co/pulse-kappa by default).
  *
  * GET  /api/pulse           -> list open issues (kanban items)
  * POST /api/pulse           -> create issue
@@ -11,7 +11,7 @@
 
 import { Elysia, t} from "elysia";
 import { hostExec } from "../transport/ssh";
-import { loadConfig, type AoiConfig } from "../config";
+import { loadConfig, type KiConfig } from "../config";
 
 const LABEL_RE = /^[a-zA-Z0-9_:/.\- ]+$/;
 function assertLabels(labels: string[]): void {
@@ -34,8 +34,8 @@ async function ghSpawn(args: string[]): Promise<string> {
 export const pulseApi = new Elysia();
 
 function getPulseRepo(): string {
-  const config = loadConfig() as AoiConfig & { pulseRepo?: string };
-  return config.pulseRepo || "Soul-Brews-Studio/aoi";
+  const config = loadConfig() as KiConfig & { pulseRepo?: string };
+  return config.pulseRepo || "doctorboyz/ki";
 }
 
 pulseApi.get("/pulse", async ({ query, set}) => {
@@ -60,12 +60,12 @@ pulseApi.get("/pulse", async ({ query, set}) => {
 });
 
 pulseApi.post("/pulse", async ({ body, set}) => {
-  const { title, body: issueBody, labels, oracle } = body;
+  const { title, body: issueBody, labels, kappa } = body;
   if (!title) { set.status = 400; return { error: "title required" }; }
   const repo = getPulseRepo();
   try {
     const allLabels = [...(labels || [])];
-    if (oracle) allLabels.push(`oracle:${oracle}`);
+    if (kappa) allLabels.push(`kappa:${kappa}`);
     assertLabels(allLabels);
     const args = ["issue", "create", "--repo", repo, "-t", title, "-b", issueBody || ""];
     for (const l of allLabels) args.push("-l", l);
@@ -79,7 +79,7 @@ pulseApi.post("/pulse", async ({ body, set}) => {
     title: t.Optional(t.String()),
     body: t.Optional(t.String()),
     labels: t.Optional(t.Array(t.String())),
-    oracle: t.Optional(t.String()),
+    kappa: t.Optional(t.String()),
   }),
 });
 

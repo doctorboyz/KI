@@ -29,10 +29,10 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
 
       target = flags._[0];
       if (!target || target === "--help" || target === "-h") {
-        return { ok: false, error: "usage: aoi zoom <target> [--pane N]" };
+        return { ok: false, error: "usage: ki zoom <target> [--pane N]" };
       }
       if (target.startsWith("-")) {
-        return { ok: false, error: `"${target}" looks like a flag, not a target.\n  usage: aoi zoom <target>` };
+        return { ok: false, error: `"${target}" looks like a flag, not a target.\n  usage: ki zoom <target>` };
       }
       opts = { pane: flags["--pane"] };
     } else {

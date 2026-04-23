@@ -37,7 +37,7 @@ describe("hostedAgents — /api/identity filter", () => {
 
   test("'local' entries are included (regression: 2026-04-11)", () => {
     // Before the fix, 'local' entries were silently dropped from /api/identity,
-    // causing peers to false-flag the oracle as stale during federation sync.
+    // causing peers to false-flag the kappa as stale during federation sync.
     expect(
       hostedAgents({ "volt-colab-ml": "local", mawjs: "white" }, "white").sort(),
     ).toEqual(["mawjs", "volt-colab-ml"]);
@@ -48,12 +48,12 @@ describe("hostedAgents — /api/identity filter", () => {
       hostedAgents(
         {
           boonkeeper: "local",
-          mawjs: "oracle-world",
+          mawjs: "kappa-world",
           homekeeper: "mba",
           volt: "mba",
           pulse: "white",
         },
-        "oracle-world",
+        "kappa-world",
       ).sort(),
     ).toEqual(["boonkeeper", "mawjs"]);
   });
@@ -68,43 +68,43 @@ describe("hostedAgents — /api/identity filter", () => {
 });
 
 describe("computeSyncDiff — add", () => {
-  test("new oracle on a reachable peer is added", () => {
+  test("new kappa on a reachable peer is added", () => {
     const diff = computeSyncDiff(
       {},
       [mkPeer("white", "white", ["mawjs", "volt-colab-ml"])],
-      "oracle-world",
+      "kappa-world",
     );
-    expect(diff.add.map((a) => a.oracle).sort()).toEqual(["mawjs", "volt-colab-ml"]);
+    expect(diff.add.map((a) => a.kappa).sort()).toEqual(["mawjs", "volt-colab-ml"]);
     expect(diff.conflict).toEqual([]);
     expect(diff.stale).toEqual([]);
     expect(diff.unreachable).toEqual([]);
   });
 
-  test("already-routed oracle is not added", () => {
+  test("already-routed kappa is not added", () => {
     const diff = computeSyncDiff(
       { mawjs: "white" },
       [mkPeer("white", "white", ["mawjs"])],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.add).toEqual([]);
     expect(diff.conflict).toEqual([]);
   });
 
-  test("oracle routed to 'local' is left alone even if peer also claims it", () => {
+  test("kappa routed to 'local' is left alone even if peer also claims it", () => {
     const diff = computeSyncDiff(
       { mawjs: "local" },
       [mkPeer("white", "white", ["mawjs"])],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.add).toEqual([]);
     expect(diff.conflict).toEqual([]);
   });
 
-  test("oracle routed to the local node is treated like 'local'", () => {
+  test("kappa routed to the local node is treated like 'local'", () => {
     const diff = computeSyncDiff(
-      { mawjs: "oracle-world" },
+      { mawjs: "kappa-world" },
       [mkPeer("white", "white", ["mawjs"])],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.add).toEqual([]);
     expect(diff.conflict).toEqual([]);
@@ -112,29 +112,29 @@ describe("computeSyncDiff — add", () => {
 });
 
 describe("computeSyncDiff — conflict", () => {
-  test("same oracle routed locally elsewhere is a conflict", () => {
+  test("same kappa routed locally elsewhere is a conflict", () => {
     const diff = computeSyncDiff(
       { mawjs: "mba" },
       [mkPeer("white", "white", ["mawjs"])],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.conflict.length).toBe(1);
     expect(diff.conflict[0]).toEqual({
-      oracle: "mawjs",
+      kappa: "mawjs",
       current: "mba",
       proposed: "white",
       fromPeer: "white",
     });
   });
 
-  test("two peers claiming the same oracle → first peer wins", () => {
+  test("two peers claiming the same kappa → first peer wins", () => {
     const diff = computeSyncDiff(
       {},
       [
         mkPeer("white", "white", ["ghost"]),
         mkPeer("mba", "mba", ["ghost"]),
       ],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.add.length).toBe(1);
     expect(diff.add[0].peerNode).toBe("white");
@@ -143,20 +143,20 @@ describe("computeSyncDiff — conflict", () => {
 });
 
 describe("computeSyncDiff — stale", () => {
-  test("route to reachable peer where oracle no longer exists → stale", () => {
+  test("route to reachable peer where kappa no longer exists → stale", () => {
     const diff = computeSyncDiff(
       { oldGuy: "white" },
       [mkPeer("white", "white", ["mawjs"])],
-      "oracle-world",
+      "kappa-world",
     );
-    expect(diff.stale).toEqual([{ oracle: "oldGuy", peerNode: "white" }]);
+    expect(diff.stale).toEqual([{ kappa: "oldGuy", peerNode: "white" }]);
   });
 
   test("route to UNREACHABLE peer is NOT stale (we can't prove it's gone)", () => {
     const diff = computeSyncDiff(
       { oldGuy: "mba" },
       [mkPeer("mba", "mba", [], false)],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.stale).toEqual([]);
     expect(diff.unreachable.length).toBe(1);
@@ -166,16 +166,16 @@ describe("computeSyncDiff — stale", () => {
     const diff = computeSyncDiff(
       { mawjs: "local" },
       [mkPeer("white", "white", [])],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.stale).toEqual([]);
   });
 
   test("routes pointing at localNode are never stale", () => {
     const diff = computeSyncDiff(
-      { mawjs: "oracle-world" },
+      { mawjs: "kappa-world" },
       [mkPeer("white", "white", [])],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.stale).toEqual([]);
   });
@@ -189,7 +189,7 @@ describe("computeSyncDiff — unreachable tracking", () => {
         mkPeer("white", "white", ["mawjs"]),
         mkPeer("mba", "mba", [], false),
       ],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.add.length).toBe(1);
     expect(diff.unreachable.length).toBe(1);
@@ -203,7 +203,7 @@ describe("computeSyncDiff — unreachable tracking", () => {
         mkPeer("white", "white", [], false),
         mkPeer("mba", "mba", [], false),
       ],
-      "oracle-world",
+      "kappa-world",
     );
     expect(diff.add).toEqual([]);
     expect(diff.stale).toEqual([]);
@@ -217,9 +217,9 @@ describe("computeSyncDiff — tonight's scenarios", () => {
     const diff = computeSyncDiff(
       { mawjs: "local", homekeeper: "mba" },
       [mkPeer("white", "white", ["mawjs", "volt-colab-ml", "pulse"])],
-      "oracle-world",
+      "kappa-world",
     );
-    const added = diff.add.map((a) => a.oracle).sort();
+    const added = diff.add.map((a) => a.kappa).sort();
     // mawjs is already routed to 'local' → skipped
     expect(added).toEqual(["pulse", "volt-colab-ml"]);
   });
@@ -232,11 +232,11 @@ describe("computeSyncDiff — tonight's scenarios", () => {
         mkPeer("mba", "mba", ["homekeeper", "netkeeper"]),
         mkPeer("clinic", "clinic-nat", [], false),
       ],
-      "oracle-world",
+      "kappa-world",
     );
     // Adds from white: pulse (mawjs is local, volt already routed)
     // Adds from mba: homekeeper, netkeeper
-    expect(diff.add.map((a) => a.oracle).sort()).toEqual([
+    expect(diff.add.map((a) => a.kappa).sort()).toEqual([
       "homekeeper",
       "netkeeper",
       "pulse",
@@ -251,7 +251,7 @@ describe("applySyncDiff — transforms agents map", () => {
     const { agents, applied } = applySyncDiff(
       { mawjs: "local" },
       {
-        add: [{ oracle: "pulse", peerNode: "white", fromPeer: "white" }],
+        add: [{ kappa: "pulse", peerNode: "white", fromPeer: "white" }],
         stale: [],
         conflict: [],
         unreachable: [],
@@ -269,7 +269,7 @@ describe("applySyncDiff — transforms agents map", () => {
       {
         add: [],
         stale: [],
-        conflict: [{ oracle: "mawjs", current: "mba", proposed: "white", fromPeer: "white" }],
+        conflict: [{ kappa: "mawjs", current: "mba", proposed: "white", fromPeer: "white" }],
         unreachable: [],
       },
     );
@@ -283,7 +283,7 @@ describe("applySyncDiff — transforms agents map", () => {
       {
         add: [],
         stale: [],
-        conflict: [{ oracle: "mawjs", current: "mba", proposed: "white", fromPeer: "white" }],
+        conflict: [{ kappa: "mawjs", current: "mba", proposed: "white", fromPeer: "white" }],
         unreachable: [],
       },
       { force: true },
@@ -300,7 +300,7 @@ describe("applySyncDiff — transforms agents map", () => {
       { oldGuy: "white" },
       {
         add: [],
-        stale: [{ oracle: "oldGuy", peerNode: "white" }],
+        stale: [{ kappa: "oldGuy", peerNode: "white" }],
         conflict: [],
         unreachable: [],
       },
@@ -314,7 +314,7 @@ describe("applySyncDiff — transforms agents map", () => {
       { oldGuy: "white", mawjs: "local" },
       {
         add: [],
-        stale: [{ oracle: "oldGuy", peerNode: "white" }],
+        stale: [{ kappa: "oldGuy", peerNode: "white" }],
         conflict: [],
         unreachable: [],
       },
@@ -329,9 +329,9 @@ describe("applySyncDiff — transforms agents map", () => {
     const { agents, applied } = applySyncDiff(
       { mawjs: "mba", oldGuy: "white" },
       {
-        add: [{ oracle: "pulse", peerNode: "white", fromPeer: "white" }],
-        conflict: [{ oracle: "mawjs", current: "mba", proposed: "white", fromPeer: "white" }],
-        stale: [{ oracle: "oldGuy", peerNode: "white" }],
+        add: [{ kappa: "pulse", peerNode: "white", fromPeer: "white" }],
+        conflict: [{ kappa: "mawjs", current: "mba", proposed: "white", fromPeer: "white" }],
+        stale: [{ kappa: "oldGuy", peerNode: "white" }],
         unreachable: [],
       },
       { force: true, prune: true },

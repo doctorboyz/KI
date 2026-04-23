@@ -18,7 +18,7 @@ import { readLock, pinPlugin } from "./lock";
  * (core <10, standard <50, extra >=50). When `install --link` replaces a
  * plugin whose new plugin.json omits `weight`, the default-50 would silently
  * reclassify it. Before removing the prior install we capture its weight
- * into ~/.aoi/plugins/.overrides.json, where the loader picks it up so the
+ * into ~/.ki/plugins/.overrides.json, where the loader picks it up so the
  * category is preserved. An explicit `weight` on the incoming manifest
  * always wins; an `explicit` weight (e.g. --category flag) always wins.
  */
@@ -106,8 +106,8 @@ export async function installFromTarball(
   }
 
   // Extract into a staging dir so we can read the manifest + verify hash
-  // before any ~/.aoi/plugins/ mutation.
-  const staging = mkdtempSync(join(tmpdir(), "aoi-install-"));
+  // before any ~/.ki/plugins/ mutation.
+  const staging = mkdtempSync(join(tmpdir(), "ki-install-"));
   const extractResult = extractTarball(tarballPath, staging);
   if (!extractResult.ok) {
     rmSync(staging, { recursive: true, force: true });
@@ -128,7 +128,7 @@ export async function installFromTarball(
 
   // Defense-in-depth fencepost (#487 §8 Phase 1): manifest-embedded hash still
   // catches transport corruption and hand-edited tarballs before we touch
-  // ~/.aoi/plugins. It is NOT the adversarial check — plugins.lock is.
+  // ~/.ki/plugins. It is NOT the adversarial check — plugins.lock is.
   const selfHashResult = verifyArtifactHash(staging, manifest!);
   if (!selfHashResult.ok) {
     rmSync(staging, { recursive: true, force: true });
@@ -150,7 +150,7 @@ export async function installFromTarball(
     if (!opts.pin) {
       rmSync(staging, { recursive: true, force: true });
       throw new Error(
-        `plugin '${manifest!.name}' not in plugins.lock — run: aoi plugin pin ${manifest!.name} ${opts.source}\n` +
+        `plugin '${manifest!.name}' not in plugins.lock — run: ki plugin pin ${manifest!.name} ${opts.source}\n` +
         `  (or re-run install with --pin to add it now)`,
       );
     }
@@ -200,7 +200,7 @@ export async function installFromTarball(
   }
 
   // --pin: after a successful install, stage the lockfile entry. We pin using
-  // the original tarball path so `aoi plugin pin --verify` (future) can
+  // the original tarball path so `ki plugin pin --verify` (future) can
   // re-hash from the same source.
   if (opts.pin && !lock.plugins[manifest!.name]) {
     pinPlugin(manifest!.name, tarballPath);

@@ -37,14 +37,14 @@ export function loadTeam(name: string): TeamConfig | null {
 }
 
 /**
- * Resolve ψ/ directory by walking UP from cwd looking for an oracle root
+ * Resolve ψ/ directory by walking UP from cwd looking for an kappa root
  * (marked by CLAUDE.md + ψ/). Falls back to cwd/ψ for backward compat when
  * no marker is found. Prevents rogue nested vaults when the CLI is run from
  * a sub-directory (#393 — Bug A).
  */
 export function resolvePsi(): string {
   let dir = process.cwd();
-  // Walk up looking for an oracle root (CLAUDE.md + ψ/ both present)
+  // Walk up looking for an kappa root (CLAUDE.md + ψ/ both present)
   while (true) {
     const psi = join(dir, "ψ");
     if (existsSync(psi) && existsSync(join(dir, "CLAUDE.md"))) return psi;
@@ -68,7 +68,7 @@ export function writeShutdownRequest(teamName: string, memberName: string, reaso
   }
   const requestId = `shutdown-${Date.now()}@${memberName}`;
   messages.push({
-    from: "aoi-team-shutdown",
+    from: "ki-team-shutdown",
     text: JSON.stringify({ type: "shutdown_request", reason, request_id: requestId }),
     summary: `Shutdown request: ${reason}`,
     timestamp: new Date().toISOString(),

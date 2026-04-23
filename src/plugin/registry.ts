@@ -2,7 +2,7 @@
  * Plugin registry — discover plugin packages and invoke them.
  *
  * Scans the canonical plugin install directory for packages with a plugin.json:
- *   ~/.aoi/plugins/<name>/plugin.json
+ *   ~/.ki/plugins/<name>/plugin.json
  *
  * Reuses wasm-bridge.ts infra (buildImportObject, preCacheBridge, readString, textEncoder).
  * Timeout: 5s hard limit matching command-registry.ts:193 pattern.
@@ -12,7 +12,7 @@
  *     Mismatch → plugin refused with an actionable error message.
  *  2. Artifact hash — if `manifest.artifact.sha256` is set on a real (non-symlink)
  *     install, the on-disk bundle's sha256 must match. Mismatch → refuse.
- *  3. Dev-mode (symlink) detection — if ~/.aoi/plugins/<name>/ is a symlink,
+ *  3. Dev-mode (symlink) detection — if ~/.ki/plugins/<name>/ is a symlink,
  *     we treat it as a `linked (dev)` install and skip hash verification
  *     entirely. This replaces the rejected `sha256: "dev"` sentinel idea
  *     (sdk-consumer's cleaner label-only approach).
@@ -101,7 +101,7 @@ export function discoverPackages(): LoadedPlugin[] {
       try {
         loaded = loadManifestFromDir(pkgDir);
       } catch {
-        // Invalid manifest — skip silently (noisy dirs in ~/.aoi/plugins
+        // Invalid manifest — skip silently (noisy dirs in ~/.ki/plugins
         // that aren't plugins shouldn't spam users).
         continue;
       }
@@ -120,7 +120,7 @@ export function discoverPackages(): LoadedPlugin[] {
       if (m.artifact && !devMode) {
         if (m.artifact.sha256 === null) {
           console.warn(
-            `\x1b[33m⚠\x1b[0m plugin '${m.name}' is unbuilt — run \`aoi plugin build\` in ${pkgDir}`,
+            `\x1b[33m⚠\x1b[0m plugin '${m.name}' is unbuilt — run \`ki plugin build\` in ${pkgDir}`,
           );
           continue;
         }
@@ -138,7 +138,7 @@ export function discoverPackages(): LoadedPlugin[] {
             `\x1b[31m✗\x1b[0m plugin '${m.name}' artifact hash mismatch — refusing to load.\n` +
             `  expected: ${m.artifact.sha256}\n` +
             `  actual:   ${observed}\n` +
-            `  fix: re-install from a trusted source or re-run \`aoi plugin build\``,
+            `  fix: re-install from a trusted source or re-run \`ki plugin build\``,
           );
           continue;
         }
@@ -157,7 +157,7 @@ export function discoverPackages(): LoadedPlugin[] {
 
       // Aggregate mode for post-loop summary (#355 — replace 53 per-plugin
       // lines with one compact summary). Per-plugin detail is still
-      // retrievable via `aoi plugin ls` when needed.
+      // retrievable via `ki plugin ls` when needed.
       if (devMode) modeCounts.symlink++;
       else if (m.artifact?.sha256) modeCounts.artifact++;
       else if (m.artifact) modeCounts.unbuilt++;

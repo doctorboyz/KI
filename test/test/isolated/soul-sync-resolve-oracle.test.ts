@@ -1,14 +1,14 @@
 import { describe, test, expect, mock, beforeEach, afterEach } from "bun:test";
 import { mockConfigModule } from "../helpers/mock-config";
 
-// Regression for #372: resolveOraclePath defensive against -oracle suffix.
+// Regression for #372: resolveKappaPath defensive against -kappa suffix.
 //
-// Bug: maw bud passes parentName="neo-oracle" (with suffix) to cmdSoulSync.
-// resolveOraclePath did `grep -i '/${name}-oracle$'` → looking for
-// '/neo-oracle-oracle$' which doesn't match. Soul-sync silently failed.
+// Bug: maw bud passes parentName="neo-kappa" (with suffix) to cmdSoulSync.
+// resolveKappaPath did `grep -i '/${name}-kappa$'` → looking for
+// '/neo-kappa-kappa$' which doesn't match. Soul-sync silently failed.
 //
-// Fix: strip trailing -oracle before re-appending so callers passing either
-// "neo" or "neo-oracle" both land on the same lookup.
+// Fix: strip trailing -kappa before re-appending so callers passing either
+// "neo" or "neo-kappa" both land on the same lookup.
 
 let commands: string[] = [];
 const mockExec = async (cmd: string, _host?: string) => {
@@ -17,8 +17,8 @@ const mockExec = async (cmd: string, _host?: string) => {
   // (no inline grep). Return a realistic ghq output and let the helper filter.
   if (cmd.includes("ghq list")) {
     return [
-      "/home/test/Code/github.com/laris-co/neo-oracle",
-      "/home/test/Code/github.com/Soul-Brews-Studio/maw-js",
+      "/home/test/Code/github.com/laris-co/neo-kappa",
+      "/home/test/Code/github.com/doctorboyz/maw-js",
       "/home/test/Code/github.com/laris-co/some-other-repo",
     ].join("\n") + "\n";
   }
@@ -34,33 +34,33 @@ mock.module("../../src/core/transport/ssh", () => mockSshModule({
   ssh: mockExec,
 }));
 
-const { resolveOraclePath } = await import("../../src/commands/plugins/soul-sync/impl");
+const { resolveKappaPath } = await import("../../src/commands/plugins/soul-sync/impl");
 
 beforeEach(() => {
   commands = [];
 });
 
-describe("resolveOraclePath defensive suffix handling (#372)", () => {
-  test("bare name 'neo' resolves to neo-oracle path", async () => {
-    const path = await resolveOraclePath("neo");
-    expect(path).toBe("/home/test/Code/github.com/laris-co/neo-oracle");
+describe("resolveKappaPath defensive suffix handling (#372)", () => {
+  test("bare name 'neo' resolves to neo-kappa path", async () => {
+    const path = await resolveKappaPath("neo");
+    expect(path).toBe("/home/test/Code/github.com/laris-co/neo-kappa");
   });
 
-  test("full name 'neo-oracle' ALSO resolves (was broken pre-#372)", async () => {
-    const path = await resolveOraclePath("neo-oracle");
-    expect(path).toBe("/home/test/Code/github.com/laris-co/neo-oracle");
-    // Critical: must NOT look up /neo-oracle-oracle (the old double-suffix bug)
+  test("full name 'neo-kappa' ALSO resolves (was broken pre-#372)", async () => {
+    const path = await resolveKappaPath("neo-kappa");
+    expect(path).toBe("/home/test/Code/github.com/laris-co/neo-kappa");
+    // Critical: must NOT look up /neo-kappa-kappa (the old double-suffix bug)
     // — verified indirectly: the result is the SAME as the bare form below.
   });
 
   test("both forms produce identical lookup behavior", async () => {
-    const bare = await resolveOraclePath("neo");
-    const full = await resolveOraclePath("neo-oracle");
+    const bare = await resolveKappaPath("neo");
+    const full = await resolveKappaPath("neo-kappa");
     expect(bare).toBe(full);
   });
 
-  test("non-existent oracle returns null in both forms", async () => {
-    expect(await resolveOraclePath("doesnotexist")).toBe(null);
-    expect(await resolveOraclePath("doesnotexist-oracle")).toBe(null);
+  test("non-existent kappa returns null in both forms", async () => {
+    expect(await resolveKappaPath("doesnotexist")).toBe(null);
+    expect(await resolveKappaPath("doesnotexist-kappa")).toBe(null);
   });
 });

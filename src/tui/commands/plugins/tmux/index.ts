@@ -33,7 +33,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         "-h": "--help",
       }, 1);
       if (flags["--help"]) {
-        console.log("usage: aoi tmux send <target> <command> [--literal] [--allow-destructive] [--force]");
+        console.log("usage: ki tmux send <target> <command> [--literal] [--allow-destructive] [--force]");
         console.log("  target:  pane id (%N), session:w.p, team-agent, fleet stem, or session name");
         console.log("  --literal:           don't append Enter (raw keystrokes)");
         console.log("  --allow-destructive: bypass deny-list (rm/sudo/redirect/...)");
@@ -43,7 +43,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       const target = flags._[0];
       const command = flags._.slice(1).join(" ");
       if (!target || !command) {
-        console.log("usage: aoi tmux send <target> <command> [--literal] [--allow-destructive] [--force]");
+        console.log("usage: ki tmux send <target> <command> [--literal] [--allow-destructive] [--force]");
         return { ok: false, error: "target and command required", output: logs.join("\n") };
       }
       await cmdTmuxSend(target, command, {
@@ -60,7 +60,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         "-h": "--help",
       }, 1);
       if (flags["--help"]) {
-        console.log("usage: aoi tmux ls [--all|-a] [--json]");
+        console.log("usage: ki tmux ls [--all|-a] [--json]");
         console.log("  default: panes in current session only");
         console.log("  --all:   panes across every session");
         return { ok: true, output: logs.join("\n") || undefined };
@@ -77,13 +77,13 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         "-h": "--help",
       }, 1);
       if (flags["--help"]) {
-        console.log("usage: aoi tmux peek <target> [--lines N] [--history]");
+        console.log("usage: ki tmux peek <target> [--lines N] [--history]");
         console.log("  target: pane id (%N), session:w.p, team-agent name, or session name");
         return { ok: true, output: logs.join("\n") || undefined };
       }
       const target = flags._[0];
       if (!target) {
-        console.log("usage: aoi tmux peek <target> [--lines N] [--history]");
+        console.log("usage: ki tmux peek <target> [--lines N] [--history]");
         return { ok: false, error: "target required", output: logs.join("\n") };
       }
       const lines = (flags["--lines"] as number | undefined) ?? 30;
@@ -98,12 +98,12 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         "--help": Boolean,
       }, 1);
       if (flags["--help"]) {
-        console.log("usage: aoi tmux split <target> [-v|--vertical] [--pct N] [--cmd '<cmd>']");
+        console.log("usage: ki tmux split <target> [-v|--vertical] [--pct N] [--cmd '<cmd>']");
         return { ok: true, output: logs.join("\n") || undefined };
       }
       const target = flags._[0];
       if (!target) {
-        console.log("usage: aoi tmux split <target> [-v] [--pct N] [--cmd '<cmd>']");
+        console.log("usage: ki tmux split <target> [-v] [--pct N] [--cmd '<cmd>']");
         return { ok: false, error: "target required", output: logs.join("\n") };
       }
       await cmdTmuxSplit(target, {
@@ -118,14 +118,14 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         "--help": Boolean, "-h": "--help",
       }, 1);
       if (flags["--help"]) {
-        console.log("usage: aoi tmux kill <target> [--force] [--session|-s]");
+        console.log("usage: ki tmux kill <target> [--force] [--session|-s]");
         console.log("  default: kill the pane. --session/-s: kill the whole session.");
         console.log("  refuses fleet/view sessions unless --force.");
         return { ok: true, output: logs.join("\n") || undefined };
       }
       const target = flags._[0];
       if (!target) {
-        console.log("usage: aoi tmux kill <target> [--force] [--session]");
+        console.log("usage: ki tmux kill <target> [--force] [--session]");
         return { ok: false, error: "target required", output: logs.join("\n") };
       }
       await cmdTmuxKill(target, {
@@ -135,32 +135,32 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     } else if (sub === "layout") {
       const flags = parseFlags(args, { "--help": Boolean, "-h": "--help" }, 1);
       if (flags["--help"]) {
-        console.log("usage: aoi tmux layout <target> <preset>");
+        console.log("usage: ki tmux layout <target> <preset>");
         console.log("  presets: even-horizontal, even-vertical, main-horizontal, main-vertical, tiled");
         return { ok: true, output: logs.join("\n") || undefined };
       }
       const target = flags._[0];
       const preset = flags._[1];
       if (!target || !preset) {
-        console.log("usage: aoi tmux layout <target> <preset>");
+        console.log("usage: ki tmux layout <target> <preset>");
         return { ok: false, error: "target and preset required", output: logs.join("\n") };
       }
       await cmdTmuxLayout(target, preset);
     } else if (sub === "attach") {
       const flags = parseFlags(args, { "--help": Boolean, "-h": "--help" }, 1);
       if (flags["--help"]) {
-        console.log("usage: aoi tmux attach <target>");
+        console.log("usage: ki tmux attach <target>");
         console.log("  prints the tmux attach command for you to run (TTY required).");
         return { ok: true, output: logs.join("\n") || undefined };
       }
       const target = flags._[0];
       if (!target) {
-        console.log("usage: aoi tmux attach <target>");
+        console.log("usage: ki tmux attach <target>");
         return { ok: false, error: "target required", output: logs.join("\n") };
       }
       cmdTmuxAttach(target);
     } else if (!sub || sub === "--help" || sub === "-h") {
-      console.log("usage: aoi tmux <ls|peek|send|split|kill|layout|attach> [args]");
+      console.log("usage: ki tmux <ls|peek|send|split|kill|layout|attach> [args]");
       console.log("  ls [--all]              list panes with fleet + team annotations");
       console.log("  peek <target>           read content of a tmux pane");
       console.log("  send <target> <cmd>     send keys to a pane (with safety gates)");
@@ -171,7 +171,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       return { ok: true, output: logs.join("\n") || undefined };
     } else {
       console.log(`unknown tmux subcommand: ${sub}`);
-      console.log("usage: aoi tmux <ls|peek|send|split|kill|layout|attach>");
+      console.log("usage: ki tmux <ls|peek|send|split|kill|layout|attach>");
       return { ok: false, error: `unknown subcommand: ${sub}`, output: logs.join("\n") };
     }
 

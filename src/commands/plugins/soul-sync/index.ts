@@ -2,7 +2,7 @@ import type { InvokeContext, InvokeResult } from "../../../plugin/types";
 
 export const command = {
   name: "soul-sync",
-  description: "Synchronize oracle soul across nodes.",
+  description: "Synchronize kappa soul across nodes.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {

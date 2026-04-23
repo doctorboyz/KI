@@ -1,7 +1,7 @@
 import { tmux } from "../transport/tmux";
 import { loadConfig, buildCommand } from "../config";
 import type { FeedEvent } from "../../lib/feed";
-import type { AoiWS } from "../types";
+import type { KiWS } from "../types";
 import type { StatusDetector } from "./status";
 
 type SessionInfo = { name: string; windows: { index: number; name: string; active: boolean }[] };
@@ -10,7 +10,7 @@ type SessionInfo = { name: string; windows: { index: number; name: string; activ
 export async function handleCrashedAgents(
   status: StatusDetector,
   sessions: SessionInfo[],
-  clients: Set<AoiWS>,
+  clients: Set<KiWS>,
   feedListeners: Set<(event: FeedEvent) => void>,
 ): Promise<void> {
   const config = loadConfig();
@@ -26,7 +26,7 @@ export async function handleCrashedAgents(
 
       const event: FeedEvent = {
         timestamp: new Date().toISOString(),
-        oracle: agent.name.replace(/-oracle$/, ""),
+        kappa: agent.name.replace(/-kappa$/, ""),
         host: "local",
         event: "SubagentStart",
         project: agent.session,

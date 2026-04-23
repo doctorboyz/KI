@@ -4,7 +4,7 @@
  *
  * PROTOTYPE — iteration 4 of the federation-join-easy /loop. Drafted on the
  * feat/wormhole-http-endpoint-draft branch. See
- * mawui-oracle/ψ/writing/federation-join-easy.md for full context.
+ * mawui-kappa/ψ/writing/federation-join-easy.md for full context.
  *
  * These tests follow the bud-root.test.ts + contacts.test.ts conventions:
  * pure-function tests for the trust-boundary helpers, and in-process Elysia
@@ -30,27 +30,27 @@ import {
 
 describe("parseSignature", () => {
   test("parses [host:agent] into structured fields", () => {
-    const r = parseSignature("[oracle-world:mawjs-oracle]");
+    const r = parseSignature("[kappa-world:mawjs-kappa]");
     expect(r).toEqual({
-      originHost: "oracle-world",
-      originAgent: "mawjs-oracle",
+      originHost: "kappa-world",
+      originAgent: "mawjs-kappa",
       isAnon: false,
     });
   });
 
   test("flags anon-* agents", () => {
-    const r = parseSignature("[local.buildwithoracle.com:anon-a1b2c3d4]");
+    const r = parseSignature("[local.buildwithkappa.com:anon-a1b2c3d4]");
     expect(r).not.toBeNull();
     expect(r!.isAnon).toBe(true);
     expect(r!.originAgent).toBe("anon-a1b2c3d4");
   });
 
   test("returns null for malformed signatures (missing brackets)", () => {
-    expect(parseSignature("oracle-world:mawjs-oracle")).toBeNull();
+    expect(parseSignature("kappa-world:mawjs-kappa")).toBeNull();
   });
 
   test("returns null for malformed signatures (missing colon)", () => {
-    expect(parseSignature("[oracle-world-mawjs-oracle]")).toBeNull();
+    expect(parseSignature("[kappa-world-mawjs-kappa]")).toBeNull();
   });
 
   test("returns null for empty signature", () => {
@@ -58,14 +58,14 @@ describe("parseSignature", () => {
   });
 
   test("accepts hostnames with dots and hyphens (real-world shapes)", () => {
-    const r = parseSignature("[local.buildwithoracle.com:anon-12345678]");
-    expect(r?.originHost).toBe("local.buildwithoracle.com");
+    const r = parseSignature("[local.buildwithkappa.com:anon-12345678]");
+    expect(r?.originHost).toBe("local.buildwithkappa.com");
     expect(r?.isAnon).toBe(true);
   });
 
   test("agent name containing dashes is preserved (not just the anon- prefix)", () => {
-    const r = parseSignature("[white:white-wormhole-oracle]");
-    expect(r?.originAgent).toBe("white-wormhole-oracle");
+    const r = parseSignature("[white:white-wormhole-kappa]");
+    expect(r?.originAgent).toBe("white-wormhole-kappa");
     expect(r?.isAnon).toBe(false);
   });
 });
@@ -132,14 +132,14 @@ describe("resolvePeerUrl", () => {
   });
 
   test("returns a full http:// URL unchanged", () => {
-    expect(resolvePeerUrl("http://oracle-world.example:3456")).toBe(
-      "http://oracle-world.example:3456",
+    expect(resolvePeerUrl("http://kappa-world.example:3456")).toBe(
+      "http://kappa-world.example:3456",
     );
   });
 
   test("returns a full https:// URL unchanged", () => {
-    expect(resolvePeerUrl("https://local.buildwithoracle.com")).toBe(
-      "https://local.buildwithoracle.com",
+    expect(resolvePeerUrl("https://local.buildwithkappa.com")).toBe(
+      "https://local.buildwithkappa.com",
     );
   });
 
@@ -333,7 +333,7 @@ describe("trust boundary — anon-* can only run readonly cmds", () => {
     "/where-we-are",
   ];
 
-  const NON_READONLY_CMDS = ["/awaken", "/commit", "/rrr", "/oracle install"];
+  const NON_READONLY_CMDS = ["/awaken", "/commit", "/rrr", "/kappa install"];
 
   test.each(READONLY_CMDS)("anon-* permitted to run %s (trust check passes)", (cmd) => {
     expect(isReadOnlyCmd(cmd)).toBe(true);

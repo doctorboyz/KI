@@ -18,7 +18,7 @@ import {
 /**
  * Load a WASM command plugin. Expects exports: handle(ptr, len) + memory.
  * Optionally exports command_name/command_desc globals for metadata.
- * Host functions (aoi_print, aoi_identity, etc.) are injected via importObject.
+ * Host functions (ki_print, ki_identity, etc.) are injected via importObject.
  */
 export async function loadWasmCommand(path: string, filename: string, scope: "builtin" | "user", disabled: string[] = []): Promise<void> {
   const wasmBytes = readFileSync(path);
@@ -51,8 +51,8 @@ export async function loadWasmCommand(path: string, filename: string, scope: "bu
   }
 
   wasmMemory = instance.exports.memory as WebAssembly.Memory;
-  wasmAlloc = (instance.exports.aoi_alloc as (size: number) => number)
-    ?? bridge.env.aoi_alloc; // fallback to host-side bump allocator
+  wasmAlloc = (instance.exports.ki_alloc as (size: number) => number)
+    ?? bridge.env.ki_alloc; // fallback to host-side bump allocator
 
   // Validate exported memory against safety limit
   const memoryPages = wasmMemory.buffer.byteLength / 65_536;

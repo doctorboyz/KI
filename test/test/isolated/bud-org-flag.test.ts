@@ -10,7 +10,7 @@ import { join } from "path";
  *
  * Two guards regress-tested here:
  *   1. ensureBudRepo fails loudly if ghq get lands outside the expected path.
- *   2. cmdWake honors opts.repoPath and skips resolveOracle — so stale ghq
+ *   2. cmdWake honors opts.repoPath and skips resolveKappa — so stale ghq
  *      entries can't shadow the freshly-cloned bud.
  */
 
@@ -21,10 +21,10 @@ describe("maw bud --org — #421 propagation", () => {
     ghExec.length = 0;
   });
 
-  test("ensureBudRepo issues `gh repo create <org>/<name>-oracle` and `ghq get github.com/<org>/...`", async () => {
+  test("ensureBudRepo issues `gh repo create <org>/<name>-kappa` and `ghq get github.com/<org>/...`", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "bud-421-"));
     const org = "laris-co";
-    const budRepoName = "god-line-oracle";
+    const budRepoName = "god-line-kappa";
     const budRepoSlug = `${org}/${budRepoName}`;
     const budRepoPath = join(tmp, org, budRepoName);
 
@@ -58,11 +58,11 @@ describe("maw bud --org — #421 propagation", () => {
     }));
 
     const tmp = mkdtempSync(join(tmpdir(), "bud-421-"));
-    const budRepoPath = join(tmp, "laris-co", "god-line-oracle"); // never created
+    const budRepoPath = join(tmp, "laris-co", "god-line-kappa"); // never created
 
     const { ensureBudRepo } = await import("../../src/commands/plugins/bud/bud-repo");
     await expect(
-      ensureBudRepo("laris-co/god-line-oracle", budRepoPath, "god-line-oracle", "laris-co"),
+      ensureBudRepo("laris-co/god-line-kappa", budRepoPath, "god-line-kappa", "laris-co"),
     ).rejects.toThrow(/clone landed outside expected path/);
 
     rmSync(tmp, { recursive: true, force: true });
@@ -70,9 +70,9 @@ describe("maw bud --org — #421 propagation", () => {
 });
 
 describe("cmdWake — #421 repoPath bypass", () => {
-  // resolveOracle is a ghq-suffix match and can pick a stale same-named repo
+  // resolveKappa is a ghq-suffix match and can pick a stale same-named repo
   // in the wrong org. When bud passes the exact path it just cloned, cmdWake
-  // must skip resolveOracle entirely. We assert the precondition: cmdWake's
+  // must skip resolveKappa entirely. We assert the precondition: cmdWake's
   // type signature accepts `repoPath`, and the shape it derives from a path
   // is what downstream expects (repoPath/repoName/parentDir). The derivation
   // itself is trivial string ops, so we test that shape contract rather than
@@ -85,15 +85,15 @@ describe("cmdWake — #421 repoPath bypass", () => {
     };
   }
 
-  test("repoPath 'laris-co' → resolved parentDir points at laris-co, not Soul-Brews-Studio", () => {
-    const r = deriveFromRepoPath("/home/nat/Code/github.com/laris-co/god-line-oracle");
-    expect(r.repoName).toBe("god-line-oracle");
+  test("repoPath 'laris-co' → resolved parentDir points at laris-co, not doctorboyz", () => {
+    const r = deriveFromRepoPath("/home/nat/Code/github.com/laris-co/god-line-kappa");
+    expect(r.repoName).toBe("god-line-kappa");
     expect(r.parentDir).toBe("/home/nat/Code/github.com/laris-co");
-    expect(r.parentDir).not.toContain("Soul-Brews-Studio");
+    expect(r.parentDir).not.toContain("doctorboyz");
   });
 
   test("repoPath bypass preserves repoName — wake's window/session naming stays stable", () => {
-    const r = deriveFromRepoPath("/x/y/laris-co/god-line-oracle");
-    expect(r.repoName).toBe("god-line-oracle"); // matches `${oracle}-oracle`
+    const r = deriveFromRepoPath("/x/y/laris-co/god-line-kappa");
+    expect(r.repoName).toBe("god-line-kappa"); // matches `${kappa}-kappa`
   });
 });

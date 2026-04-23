@@ -2,7 +2,7 @@ import { hostExec } from "../../../../sdk";
 import { existsSync } from "fs";
 
 /**
- * Step 1: Ensure the oracle's GitHub repo exists and is cloned locally.
+ * Step 1: Ensure the kappa's GitHub repo exists and is cloned locally.
  * Idempotent — skips creation/clone if already present.
  */
 export async function ensureBudRepo(
@@ -30,7 +30,7 @@ export async function ensureBudRepo(
       console.log(`  \x1b[90m○\x1b[0m repo already exists on GitHub`);
     } else if (e.message?.includes("403") || e.message?.includes("admin")) {
       throw new Error(
-        `no permission to create repos in ${org} — ask an org admin to create ${budRepoSlug} first, then re-run aoi bud`,
+        `no permission to create repos in ${org} — ask an org admin to create ${budRepoSlug} first, then re-run ki bud`,
       );
     } else {
       throw e;

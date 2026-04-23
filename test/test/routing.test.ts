@@ -1,6 +1,6 @@
 /**
  * Tests for resolveTarget() — the shared routing resolver.
- * Test cases designed by oracle-world:mawjs, implemented by white:mawjs-oracle.
+ * Test cases designed by kappa-world:mawjs, implemented by white:mawjs-kappa.
  * See: #201
  */
 import { describe, test, expect } from "bun:test";
@@ -11,45 +11,45 @@ import type { MawConfig } from "../src/config";
 // --- Fixtures ---
 
 const SESSIONS: Session[] = [
-  { name: "08-mawjs", windows: [{ index: 1, name: "mawjs-oracle", active: true }] },
-  { name: "13-mother", windows: [{ index: 1, name: "mother-oracle", active: true }] },
-  { name: "01-pulse", windows: [{ index: 1, name: "pulse-oracle", active: true }] },
+  { name: "08-mawjs", windows: [{ index: 1, name: "mawjs-kappa", active: true }] },
+  { name: "13-mother", windows: [{ index: 1, name: "mother-kappa", active: true }] },
+  { name: "01-pulse", windows: [{ index: 1, name: "pulse-kappa", active: true }] },
 ];
 
 const BASE_CONFIG: MawConfig = {
   host: "local",
   port: 3456,
   ghqRoot: "/home/nat/Code/github.com",
-  oracleUrl: "http://localhost:47779",
+  kappaUrl: "http://localhost:47779",
   env: {},
   commands: { default: "claude" },
   sessions: {},
   node: "white",
   namedPeers: [
     { name: "mba", url: "http://10.20.0.3:3457" },
-    { name: "oracle-world", url: "http://100.120.242.120:3456" },
+    { name: "kappa-world", url: "http://100.120.242.120:3456" },
   ],
   agents: {
     homekeeper: "mba",
     neo: "white",
-    boonkeeper: "oracle-world",
+    boonkeeper: "kappa-world",
     volt: "mba",
   },
   peers: ["http://10.20.0.3:3457"],
 };
 
-// --- Test cases (designed by oracle-world:mawjs) ---
+// --- Test cases (designed by kappa-world:mawjs) ---
 
 describe("resolveTarget", () => {
   // #1: LOCAL SESSION FOUND (bare name)
   test("bare name matches local session window", () => {
-    const r = resolveTarget("mother-oracle", BASE_CONFIG, SESSIONS);
+    const r = resolveTarget("mother-kappa", BASE_CONFIG, SESSIONS);
     expect(r).toEqual({ type: "local", target: "13-mother:1" });
   });
 
   // #2: LOCAL SESSION FOUND (session:window format)
   test("session:window format matches locally", () => {
-    const r = resolveTarget("13-mother:mother-oracle", BASE_CONFIG, SESSIONS);
+    const r = resolveTarget("13-mother:mother-kappa", BASE_CONFIG, SESSIONS);
     expect(r).toEqual({ type: "local", target: "13-mother:1" });
   });
 
@@ -95,10 +95,10 @@ describe("resolveTarget", () => {
     expect(r).toMatchObject({ type: "error", reason: "not_found" });
   });
 
-  // #11: BARE NAME WITH -oracle SUFFIX STRIP
-  test("agents map matches after stripping -oracle suffix", () => {
-    const r = resolveTarget("homekeeper-oracle", BASE_CONFIG, SESSIONS);
-    expect(r).toEqual({ type: "peer", peerUrl: "http://10.20.0.3:3457", target: "homekeeper-oracle", node: "mba" });
+  // #11: BARE NAME WITH -kappa SUFFIX STRIP
+  test("agents map matches after stripping -kappa suffix", () => {
+    const r = resolveTarget("homekeeper-kappa", BASE_CONFIG, SESSIONS);
+    expect(r).toEqual({ type: "peer", peerUrl: "http://10.20.0.3:3457", target: "homekeeper-kappa", node: "mba" });
   });
 
   // #12: SLASH IN QUERY (not node:agent)
@@ -145,15 +145,15 @@ describe("resolveTarget", () => {
     expect(r).toEqual({ type: "peer", peerUrl: "http://10.20.0.3:3457", target: "home:keeper", node: "mba" });
   });
 
-  // BONUS: oracle-world:agent resolves correctly
-  test("oracle-world:boonkeeper resolves to peer", () => {
-    const r = resolveTarget("oracle-world:boonkeeper", BASE_CONFIG, SESSIONS);
-    expect(r).toEqual({ type: "peer", peerUrl: "http://100.120.242.120:3456", target: "boonkeeper", node: "oracle-world" });
+  // BONUS: kappa-world:agent resolves correctly
+  test("kappa-world:boonkeeper resolves to peer", () => {
+    const r = resolveTarget("kappa-world:boonkeeper", BASE_CONFIG, SESSIONS);
+    expect(r).toEqual({ type: "peer", peerUrl: "http://100.120.242.120:3456", target: "boonkeeper", node: "kappa-world" });
   });
 
   // BONUS: boonkeeper via agents map
   test("boonkeeper bare name resolves via agents map", () => {
     const r = resolveTarget("boonkeeper", BASE_CONFIG, SESSIONS);
-    expect(r).toEqual({ type: "peer", peerUrl: "http://100.120.242.120:3456", target: "boonkeeper", node: "oracle-world" });
+    expect(r).toEqual({ type: "peer", peerUrl: "http://100.120.242.120:3456", target: "boonkeeper", node: "kappa-world" });
   });
 });

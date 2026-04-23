@@ -78,7 +78,7 @@ export function doLs(json: boolean, showAll: boolean, discover: () => LoadedPlug
   if (showAll) {
     console.log(`\n${allPlugins.length} total (${activeCount} active, ${disabledCount} disabled)`);
   } else if (disabledCount > 0) {
-    console.log(`\n${activeCount} active. ${disabledCount} disabled — use 'aoi plugin ls --all' to see them.`);
+    console.log(`\n${activeCount} active. ${disabledCount} disabled — use 'ki plugin ls --all' to see them.`);
   } else {
     console.log(`\n${activeCount} active`);
   }

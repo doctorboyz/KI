@@ -1,5 +1,5 @@
 /**
- * aoi peers — unit tests (#568).
+ * ki peers — unit tests (#568).
  *
  * Each test points PEERS_FILE at a unique tmp path so they are
  * hermetic and parallel-safe. We exercise the impl layer directly
@@ -14,7 +14,7 @@ import { join } from "path";
 let dir: string;
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), "aoi-peers-"));
+  dir = mkdtempSync(join(tmpdir(), "ki-peers-"));
   process.env.PEERS_FILE = join(dir, "peers.json");
 });
 afterEach(() => {
@@ -130,7 +130,7 @@ describe("peers dispatcher (index.ts)", () => {
     const { default: handler } = await import("./index");
     const res = await handler({ source: "cli", args: [] });
     expect(res.ok).toBe(true);
-    expect(res.output).toContain("usage: aoi peers");
+    expect(res.output).toContain("usage: ki peers");
   });
 
   it("unknown subcommand → error + help in output", async () => {

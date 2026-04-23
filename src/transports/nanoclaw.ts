@@ -2,7 +2,7 @@
  * NanoClaw transport — bridge to external chat channels (Telegram, Discord, etc.)
  *
  * Routes messages through a running NanoClaw instance via HTTP.
- * Config: aoi.config.json → nanoclaw: { url: "http://localhost:3001", channels: { nat: "tg:123456789" } }
+ * Config: ki.config.json → nanoclaw: { url: "http://localhost:3001", channels: { nat: "tg:123456789" } }
  *
  * canReach() returns true for targets matching nanoclaw channel aliases or JID patterns.
  * send() POSTs { jid, text } to nanoclaw's /send endpoint for delivery.
@@ -13,12 +13,12 @@ import type { FeedEvent } from "../lib/feed";
 import { loadConfig } from "../core/config";
 import { curlFetch } from "../core/transport/curl-fetch";
 
-/** Resolve an oracle name to a NanoClaw JID + URL using config */
-function resolveNanoclawJid(oracle: string): { jid: string; url: string } | null {
+/** Resolve an kappa name to a NanoClaw JID + URL using config */
+function resolveNanoclawJid(kappa: string): { jid: string; url: string } | null {
   const config = loadConfig();
   const nc = (config as unknown as Record<string, unknown>).nanoclaw as { url?: string; channels?: Record<string, string> } | undefined;
   if (!nc?.url || !nc?.channels) return null;
-  const jid = nc.channels[oracle];
+  const jid = nc.channels[kappa];
   if (!jid) return null;
   return { jid, url: nc.url };
 }
@@ -46,7 +46,7 @@ export class NanoclawTransport implements Transport {
   async disconnect(): Promise<void> { this._connected = false; }
 
   async send(target: TransportTarget, message: string): Promise<boolean> {
-    const resolved = resolveNanoclawJid(target.oracle);
+    const resolved = resolveNanoclawJid(target.kappa);
     if (!resolved) return false;
     return sendViaNanoclaw(resolved.jid, message, resolved.url);
   }
@@ -60,6 +60,6 @@ export class NanoclawTransport implements Transport {
 
   /** Can reach targets that resolve to a nanoclaw channel JID */
   canReach(target: TransportTarget): boolean {
-    return resolveNanoclawJid(target.oracle) !== null;
+    return resolveNanoclawJid(target.kappa) !== null;
   }
 }

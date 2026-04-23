@@ -1,11 +1,11 @@
 /**
- * Safety gates for aoi tmux verbs that mutate pane state (send, kill).
+ * Safety gates for ki tmux verbs that mutate pane state (send, kill).
  * Centralized so `send` and `kill` share the same refuse/confirm logic.
  *
  * Three classes of gate:
  *   1. Destructive-command patterns (deny-list, `--allow-destructive` bypass)
  *   2. Claude-running pane refusal (never inject into a live claude process)
- *   3. Fleet-session kill refusal (never kill live oracles — Bug F class)
+ *   3. Fleet-session kill refusal (never kill live kappas — Bug F class)
  */
 
 /**
@@ -72,7 +72,7 @@ export function isClaudeLikePane(paneCurrentCommand: string | undefined): boolea
  */
 export function isFleetOrViewSession(sessionName: string, fleetSessions: ReadonlySet<string>): boolean {
   if (fleetSessions.has(sessionName)) return true;
-  if (sessionName === "aoi-view") return true;
+  if (sessionName === "ki-view") return true;
   if (/-view$/.test(sessionName)) return true;
   return false;
 }

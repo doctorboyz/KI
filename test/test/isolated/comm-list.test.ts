@@ -1,6 +1,6 @@
 /**
  * comm-list.ts — cmdList + renderSessionName (primary target).
- * comm-send.ts — cmdSend + resolveOraclePane + resolveMyName (bonus).
+ * comm-send.ts — cmdSend + resolveKappaPane + resolveMyName (bonus).
  * comm-log-feed.ts — logMessage + emitFeed (bonus).
  *
  * Isolated because we mock.module on four seams the three files import through:
@@ -98,7 +98,7 @@ let configOverride: Record<string, unknown> = {};
 let cfgLimitMap: Record<string, number> = {};
 
 let logMessageCalls: Array<{ from: string; to: string; msg: string; route: string }> = [];
-let emitFeedCalls: Array<{ event: string; oracle: string; node: string; message: string; port: number }> = [];
+let emitFeedCalls: Array<{ event: string; kappa: string; node: string; message: string; port: number }> = [];
 
 let discoverPackagesReturn: Array<{ manifest: { name: string } }> = [];
 let invokePluginReturn: { ok: boolean; output?: string; error?: string } = { ok: true, output: "plugin ran" };
@@ -210,8 +210,8 @@ mock.module(
     },
     emitFeed: (...args: unknown[]) => {
       if (!mockActive) return (realEmitFeed as (...a: unknown[]) => void)(...args);
-      const [event, oracle, node, message, port] = args as [string, string, string, string, number];
-      emitFeedCalls.push({ event, oracle, node, message, port });
+      const [event, kappa, node, message, port] = args as [string, string, string, string, number];
+      emitFeedCalls.push({ event, kappa, node, message, port });
     },
   }),
 );
@@ -244,7 +244,7 @@ mock.module(
 
 // NB: import targets AFTER mocks so their import graph resolves through our stubs.
 const { cmdList, renderSessionName } = await import("../../src/commands/shared/comm-list");
-const { cmdSend, resolveOraclePane, resolveMyName } = await import("../../src/commands/shared/comm-send");
+const { cmdSend, resolveKappaPane, resolveMyName } = await import("../../src/commands/shared/comm-send");
 
 // ─── Harness (stdout + stderr + process.exit capture) ───────────────────────
 
@@ -300,7 +300,7 @@ beforeEach(() => {
   osHomedirOverride = null;
   delete process.env.MAW_QUIET;
   delete process.env.MAW_DEBUG;
-  process.env.CLAUDE_AGENT_NAME = "test-oracle";
+  process.env.CLAUDE_AGENT_NAME = "test-kappa";
 });
 
 afterEach(() => {
@@ -352,7 +352,7 @@ describe("renderSessionName", () => {
 describe("cmdList — session rendering", () => {
   test("active agent pane → green dot", async () => {
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     getPaneInfosReturn = {
       "08-mawjs:0": { command: "claude", cwd: "/home/x" },
@@ -362,12 +362,12 @@ describe("cmdList — session rendering", () => {
 
     const joined = outs.join("\n");
     expect(joined).toContain("\x1b[32m●\x1b[0m"); // green
-    expect(joined).toContain("0: mawjs-oracle");
+    expect(joined).toContain("0: mawjs-kappa");
   });
 
   test("inactive agent pane → blue dot", async () => {
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: false }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: false }] },
     ];
     getPaneInfosReturn = {
       "08-mawjs:0": { command: "claude", cwd: "/home/x" },
@@ -407,7 +407,7 @@ describe("cmdList — session rendering", () => {
 
   test("cwd '(deleted)' → red dot + '(path deleted)' overrides agent detection", async () => {
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     getPaneInfosReturn = {
       "08-mawjs:0": { command: "claude", cwd: "/old/path (deleted)" },
@@ -424,7 +424,7 @@ describe("cmdList — session rendering", () => {
 
   test("cwd '(dead)' triggers the same broken-path branch", async () => {
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     getPaneInfosReturn = {
       "08-mawjs:0": { command: "claude", cwd: "/tmp (dead)" },
@@ -478,7 +478,7 @@ describe("cmdList — session rendering", () => {
 describe("cmdList — orphan detection", () => {
   test("stale + orphan worktrees → warnings + fix hint printed", async () => {
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     getPaneInfosReturn = { "08-mawjs:0": { command: "claude", cwd: "/" } };
     scanWorktreesReturn = [
@@ -528,7 +528,7 @@ describe("cmdList — orphan detection", () => {
 
   test("scanWorktrees throws without MAW_DEBUG → silent (no crash)", async () => {
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     getPaneInfosReturn = { "08-mawjs:0": { command: "claude", cwd: "/" } };
     scanWorktreesThrows = "scan exploded";
@@ -536,7 +536,7 @@ describe("cmdList — orphan detection", () => {
     await run(() => cmdList());
 
     // Session still listed; no orphan warnings.
-    expect(outs.some((o) => o.includes("mawjs-oracle"))).toBe(true);
+    expect(outs.some((o) => o.includes("mawjs-kappa"))).toBe(true);
     expect(outs.some((o) => o.includes("⚠ orphaned:"))).toBe(false);
     expect(errs.some((e) => e.includes("scanWorktrees failed"))).toBe(false);
   });
@@ -556,7 +556,7 @@ describe("cmdList — orphan detection", () => {
 
   test("scanWorktrees returns only 'active' entries → no orphan block rendered", async () => {
     listSessionsReturn = [
-      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-oracle", active: true }] },
+      { name: "08-mawjs", windows: [{ index: 0, name: "mawjs-kappa", active: true }] },
     ];
     getPaneInfosReturn = { "08-mawjs:0": { command: "claude", cwd: "/" } };
     scanWorktreesReturn = [
@@ -643,20 +643,20 @@ describe("resolveMyName", () => {
 });
 
 // ════════════════════════════════════════════════════════════════════════════
-// comm-send.ts — resolveOraclePane
+// comm-send.ts — resolveKappaPane
 // ════════════════════════════════════════════════════════════════════════════
 
-describe("resolveOraclePane", () => {
+describe("resolveKappaPane", () => {
   test("target already has .N pane suffix → passed through unchanged", async () => {
     // No hostExec call should be needed — early return.
     hostExecResponses = []; // would hit the default empty string otherwise
-    const out = await resolveOraclePane("08-mawjs:0.3");
+    const out = await resolveKappaPane("08-mawjs:0.3");
     expect(out).toBe("08-mawjs:0.3");
   });
 
   test("single-pane window (one line from list-panes) → target unchanged", async () => {
     hostExecResponses = [{ match: /list-panes/, result: "0 zsh" }];
-    const out = await resolveOraclePane("08-mawjs:0");
+    const out = await resolveKappaPane("08-mawjs:0");
     expect(out).toBe("08-mawjs:0");
   });
 
@@ -665,7 +665,7 @@ describe("resolveOraclePane", () => {
       match: /list-panes/,
       result: "0 zsh\n1 claude\n2 node\n3 claude",
     }];
-    const out = await resolveOraclePane("08-mawjs:0");
+    const out = await resolveKappaPane("08-mawjs:0");
     expect(out).toBe("08-mawjs:0.1");
   });
 
@@ -674,13 +674,13 @@ describe("resolveOraclePane", () => {
       match: /list-panes/,
       result: "0 zsh\n1 vim\n2 bash",
     }];
-    const out = await resolveOraclePane("08-mawjs:0");
+    const out = await resolveKappaPane("08-mawjs:0");
     expect(out).toBe("08-mawjs:0");
   });
 
   test("hostExec throws → falls back to target unchanged", async () => {
     hostExecResponses = [{ match: /list-panes/, error: "ssh failed" }];
-    const out = await resolveOraclePane("08-mawjs:0");
+    const out = await resolveKappaPane("08-mawjs:0");
     expect(out).toBe("08-mawjs:0");
   });
 
@@ -689,7 +689,7 @@ describe("resolveOraclePane", () => {
       match: /list-panes/,
       result: "garbled\n2 claude\n5 codex",
     }];
-    const out = await resolveOraclePane("08-mawjs:0");
+    const out = await resolveKappaPane("08-mawjs:0");
     expect(out).toBe("08-mawjs:0.2");
   });
 });
@@ -752,11 +752,11 @@ describe("cmdSend — local target (happy path + error branches)", () => {
     expect(runHookCalls.some((h) => h.event === "after_send")).toBe(true);
     expect(logMessageCalls).toHaveLength(1);
     expect(logMessageCalls[0]).toMatchObject({
-      from: "test-oracle", to: "mawjs", msg: "ping", route: "local",
+      from: "test-kappa", to: "mawjs", msg: "ping", route: "local",
     });
     expect(emitFeedCalls).toHaveLength(1);
     expect(emitFeedCalls[0]).toMatchObject({
-      event: "MessageSend", oracle: "test-oracle", node: "white", port: 4000,
+      event: "MessageSend", kappa: "test-kappa", node: "white", port: 4000,
     });
     expect(outs.some((o) => o.includes("delivered") && o.includes("08-mawjs:0: ping"))).toBe(true);
     expect(outs.some((o) => o.includes("⤷ hello back"))).toBe(true);
@@ -839,7 +839,7 @@ describe("cmdSend — local target (happy path + error branches)", () => {
     expect((caught as Error).message).toContain("config.node is required");
   });
 
-  test("pane resolution routes through resolveOraclePane (multi-pane → .N appended)", async () => {
+  test("pane resolution routes through resolveKappaPane (multi-pane → .N appended)", async () => {
     configOverride = { node: "white" };
     resolveTargetReturn = { type: "local", target: "08-mawjs:0" };
     hostExecResponses = [{
@@ -871,7 +871,7 @@ describe("cmdSend — peer target (federation)", () => {
     expect(curlFetchCalls[0].url).toBe("https://mba.example/api/send");
     expect(curlFetchCalls[0].opts).toMatchObject({ method: "POST" });
     expect(runHookCalls.some((h) => h.event === "after_send")).toBe(true);
-    expect(logMessageCalls[0]).toMatchObject({ from: "test-oracle", to: "mba:mawjs", route: "peer:mba" });
+    expect(logMessageCalls[0]).toMatchObject({ from: "test-kappa", to: "mba:mawjs", route: "peer:mba" });
     expect(emitFeedCalls[0]).toMatchObject({ event: "MessageSend", node: "white", port: 5000 });
     expect(outs.some((o) => o.includes("delivered") && o.includes("mba") && o.includes("mawjs: ping"))).toBe(true);
     expect(outs.some((o) => o.includes("⤷ peer saw it"))).toBe(true);
@@ -1099,13 +1099,13 @@ describe("logMessage — real fs under tempdir HOME", () => {
     osHomedirOverride = tmpHome;
     configOverride = { node: "white" };
 
-    await realLogMessage("test-oracle", "mawjs", "hello world", "local");
+    await realLogMessage("test-kappa", "mawjs", "hello world", "local");
 
-    const logPath = join(tmpHome, ".oracle", "maw-log.jsonl");
+    const logPath = join(tmpHome, ".kappa", "maw-log.jsonl");
     expect(existsSync(logPath)).toBe(true);
     const body = readFileSync(logPath, "utf-8").trim();
     const parsed = JSON.parse(body.split("\n").pop()!);
-    expect(parsed.from).toBe("white:test-oracle"); // normalized
+    expect(parsed.from).toBe("white:test-kappa"); // normalized
     expect(parsed.to).toBe("mawjs");
     expect(parsed.msg).toBe("hello world");
     expect(parsed.route).toBe("local");
@@ -1119,7 +1119,7 @@ describe("logMessage — real fs under tempdir HOME", () => {
 
     await realLogMessage("mba:neo", "mawjs", "cross", "peer:mba");
 
-    const logPath = join(tmpHome, ".oracle", "maw-log.jsonl");
+    const logPath = join(tmpHome, ".kappa", "maw-log.jsonl");
     const lines = readFileSync(logPath, "utf-8").trim().split("\n");
     const parsed = JSON.parse(lines[lines.length - 1]);
     expect(parsed.from).toBe("mba:neo");
@@ -1131,9 +1131,9 @@ describe("logMessage — real fs under tempdir HOME", () => {
     configOverride = { node: "white" };
     const long = "x".repeat(600);
 
-    await realLogMessage("oracle", "target", long, "local");
+    await realLogMessage("kappa", "target", long, "local");
 
-    const logPath = join(tmpHome, ".oracle", "maw-log.jsonl");
+    const logPath = join(tmpHome, ".kappa", "maw-log.jsonl");
     const lines = readFileSync(logPath, "utf-8").trim().split("\n");
     const parsed = JSON.parse(lines[lines.length - 1]);
     expect(parsed.msg.length).toBe(500);
@@ -1154,7 +1154,7 @@ describe("logMessage — real fs under tempdir HOME", () => {
 
   test("mkdir/appendFile fail → swallowed silently (no throw)", async () => {
     configOverride = { node: "white" };
-    // /dev/null as HOME → mkdir under /dev/null/.oracle fails deterministically.
+    // /dev/null as HOME → mkdir under /dev/null/.kappa fails deterministically.
     // The module catches both mkdir and appendFile errors and moves on.
     osHomedirOverride = "/dev/null";
 
@@ -1201,7 +1201,7 @@ describe("emitFeed — globalThis.fetch intercept", () => {
     const body = JSON.parse(fetchCalls[0].init.body as string);
     expect(body).toMatchObject({
       event: "MessageSend",
-      oracle: "mawjs",
+      kappa: "mawjs",
       host: "white",
       message: "hello",
     });

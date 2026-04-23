@@ -6,20 +6,20 @@ import { join } from "path";
 import { homedir } from "os";
 import { warn } from "../cli-src/verbosity";
 
-// JSON import inlined at build time — survives bundling (dist/aoi).
+// JSON import inlined at build time — survives bundling (dist/ki).
 // Source mode: resolved on load. Bundled mode: Bun embeds the JSON.
 // Either way runtimeSdkVersion() returns the real value, never "0.0.0".
-// See #543 — previous fs-read approach broke in dist/aoi because
+// See #543 — previous fs-read approach broke in dist/ki because
 // import.meta.dir walks to a path that doesn't exist post-bundle.
 import sdkPkg from "../../package.json" with { type: "json" };
 
-// Single scan dir — everything lives in ~/.aoi/plugins/ (or AOI_PLUGINS_DIR
+// Single scan dir — everything lives in ~/.ki/plugins/ (or KI_PLUGINS_DIR
 // if set). Resolved at call time so tests can override the root.
 export function scanDirs(): string[] {
-  return [process.env.AOI_PLUGINS_DIR || join(homedir(), ".aoi", "plugins")];
+  return [process.env.KI_PLUGINS_DIR || join(homedir(), ".ki", "plugins")];
 }
 
-/** Runtime SDK version — sourced from @aoi/sdk package.json (build-inlined). */
+/** Runtime SDK version — sourced from @ki/sdk package.json (build-inlined). */
 let _runtimeSdkVersion: string | null = null;
 export function runtimeSdkVersion(): string {
   if (_runtimeSdkVersion) return _runtimeSdkVersion;
@@ -39,7 +39,7 @@ export function hashFile(path: string): string {
 
 /**
  * Is the install a symlink (dev mode)? Checked against the plugin's top-level
- * install dir — the path that lives in ~/.aoi/plugins/<name>. Per the plan,
+ * install dir — the path that lives in ~/.ki/plugins/<name>. Per the plan,
  * symlinked installs skip hash verification (the `linked (dev)` label mode).
  */
 export function isDevModeInstall(pluginDir: string): boolean {
@@ -54,10 +54,10 @@ export function isDevModeInstall(pluginDir: string): boolean {
 
 const WARN_THROTTLE_MS = 3_600_000; // 1 hour
 
-// Resolved lazily so AOI_WARN_STATE_FILE env var can redirect the path (e.g. in tests).
+// Resolved lazily so KI_WARN_STATE_FILE env var can redirect the path (e.g. in tests).
 function warnStatePath(): string {
-  return process.env.AOI_WARN_STATE_FILE
-    || join(homedir(), ".config", "aoi", "session-warnings.state");
+  return process.env.KI_WARN_STATE_FILE
+    || join(homedir(), ".config", "ki", "session-warnings.state");
 }
 
 // Test-only bypass: set by __resetDiscoverStateForTests to skip the hourly

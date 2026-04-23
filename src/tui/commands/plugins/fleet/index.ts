@@ -92,7 +92,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     } else {
       return {
         ok: false,
-        error: `unknown fleet subcommand: ${sub}\nusage: aoi fleet <init|ls|renumber|validate|health|doctor|consolidate|sync|sync-windows|snapshots|restore|snapshot>`,
+        error: `unknown fleet subcommand: ${sub}\nusage: ki fleet <init|ls|renumber|validate|health|doctor|consolidate|sync|sync-windows|snapshots|restore|snapshot>`,
       };
     }
 

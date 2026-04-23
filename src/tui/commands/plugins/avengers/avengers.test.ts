@@ -18,7 +18,7 @@ describe("avengers plugin — smoke", () => {
     const result = await handler(ctx);
     expect(result.ok).toBe(true);
     expect(writes.join("\n")).toContain("usage:");
-    expect(writes.join("\n")).toContain("aoi avengers");
+    expect(writes.join("\n")).toContain("ki avengers");
   });
 
   it("CLI — -h short flag also returns ok via writer", async () => {

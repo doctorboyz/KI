@@ -1,6 +1,6 @@
 /**
  * Tests for wake-resolve-scan-suggest: the interactive org-scan flow that runs
- * when maw wake can't find an oracle via ghq, fleet, worktrees, or silent clone.
+ * when maw wake can't find an kappa via ghq, fleet, worktrees, or silent clone.
  *
  * All tests use injected deps — no real gh/ghq calls, no /dev/tty access.
  */
@@ -9,7 +9,7 @@ import {
   extractGhqOrgs,
   buildOrgList,
   scanOrgs,
-  scanSuggestOracle,
+  scanSuggestKappa,
   type OrgEntry,
 } from "../src/commands/shared/wake-resolve-scan-suggest";
 
@@ -20,12 +20,12 @@ import {
 describe("extractGhqOrgs", () => {
   test("extracts unique sorted org names from ghq list output", () => {
     const input = [
-      "github.com/Soul-Brews-Studio/wireboy-oracle",
-      "github.com/laris-co/neo-oracle",
-      "github.com/Soul-Brews-Studio/maw-js",
+      "github.com/doctorboyz/wireboy-kappa",
+      "github.com/laris-co/neo-kappa",
+      "github.com/doctorboyz/maw-js",
       "github.com/laris-co/maw-ui",
     ].join("\n");
-    expect(extractGhqOrgs(input)).toEqual(["Soul-Brews-Studio", "laris-co"]);
+    expect(extractGhqOrgs(input)).toEqual(["doctorboyz", "laris-co"]);
   });
 
   test("returns empty array for empty input", () => {
@@ -79,8 +79,8 @@ describe("scanOrgs — stop on first match", () => {
   test("returns first found org and does not scan remaining orgs", () => {
     const orgs: OrgEntry[] = [
       { name: "laris-co", source: "local" },
-      { name: "Soul-Brews-Studio", source: "local" },
-      { name: "arra-oracle", source: "config" },
+      { name: "doctorboyz", source: "local" },
+      { name: "arra-kappa", source: "config" },
     ];
 
     const scanned: string[] = [];
@@ -89,9 +89,9 @@ describe("scanOrgs — stop on first match", () => {
       if (!m) throw new Error("unexpected command");
       const org = m[1]!;
       scanned.push(org);
-      // Only Soul-Brews-Studio has the repo
-      if (org === "Soul-Brews-Studio") {
-        return JSON.stringify({ url: "https://github.com/Soul-Brews-Studio/wireboy-oracle" });
+      // Only doctorboyz has the repo
+      if (org === "doctorboyz") {
+        return JSON.stringify({ url: "https://github.com/doctorboyz/wireboy-kappa" });
       }
       throw new Error("not found");
     };
@@ -99,12 +99,12 @@ describe("scanOrgs — stop on first match", () => {
     const result = scanOrgs("wireboy", orgs, execFn);
 
     expect(result).not.toBeNull();
-    expect(result!.org).toBe("Soul-Brews-Studio");
-    expect(result!.url).toBe("https://github.com/Soul-Brews-Studio/wireboy-oracle");
-    // arra-oracle must NOT have been scanned — we stopped after Soul-Brews-Studio
-    expect(scanned).not.toContain("arra-oracle");
+    expect(result!.org).toBe("doctorboyz");
+    expect(result!.url).toBe("https://github.com/doctorboyz/wireboy-kappa");
+    // arra-kappa must NOT have been scanned — we stopped after doctorboyz
+    expect(scanned).not.toContain("arra-kappa");
     expect(scanned).toContain("laris-co");
-    expect(scanned).toContain("Soul-Brews-Studio");
+    expect(scanned).toContain("doctorboyz");
   });
 
   test("returns null when no org has the repo", () => {
@@ -116,38 +116,38 @@ describe("scanOrgs — stop on first match", () => {
     expect(result).toBeNull();
   });
 
-  test("strips -oracle suffix from oracle name before scanning", () => {
-    // If caller passes "wireboy-oracle" instead of "wireboy", we should not get
-    // "wireboy-oracle-oracle" as the target slug.
+  test("strips -kappa suffix from kappa name before scanning", () => {
+    // If caller passes "wireboy-kappa" instead of "wireboy", we should not get
+    // "wireboy-kappa-kappa" as the target slug.
     const orgs: OrgEntry[] = [{ name: "my-org", source: "local" }];
     const scanned: string[] = [];
     const execFn = (cmd: string): string => {
       scanned.push(cmd);
       throw new Error("not found");
     };
-    scanOrgs("wireboy-oracle", orgs, execFn);
-    // The slug checked should be "my-org/wireboy-oracle", not "my-org/wireboy-oracle-oracle"
-    expect(scanned[0]).toContain("my-org/wireboy-oracle");
-    expect(scanned[0]).not.toContain("wireboy-oracle-oracle");
+    scanOrgs("wireboy-kappa", orgs, execFn);
+    // The slug checked should be "my-org/wireboy-kappa", not "my-org/wireboy-kappa-kappa"
+    expect(scanned[0]).toContain("my-org/wireboy-kappa");
+    expect(scanned[0]).not.toContain("wireboy-kappa-kappa");
   });
 });
 
 // ---------------------------------------------------------------------------
-// scanSuggestOracle — non-TTY fallback
+// scanSuggestKappa — non-TTY fallback
 // ---------------------------------------------------------------------------
 
-describe("scanSuggestOracle — non-TTY fallback", () => {
+describe("scanSuggestKappa — non-TTY fallback", () => {
   test("returns null without crashing when TTY is unavailable (promptFn returns null)", async () => {
-    const result = await scanSuggestOracle("testoracle", {
+    const result = await scanSuggestKappa("testkappa", {
       execFn: (cmd) => {
         if (cmd.includes("gh --version")) return "gh version 2.0.0";
         if (cmd.includes("ghq list") && !cmd.includes("--full-path")) {
-          return "github.com/Soul-Brews-Studio/maw-js\n";
+          return "github.com/doctorboyz/maw-js\n";
         }
         throw new Error("unexpected");
       },
       promptFn: () => null,  // simulates non-TTY: /dev/tty unavailable
-      configFn: () => ({ githubOrg: "Soul-Brews-Studio" }),
+      configFn: () => ({ githubOrg: "doctorboyz" }),
       hostExecFn: async () => "",
     });
 
@@ -157,7 +157,7 @@ describe("scanSuggestOracle — non-TTY fallback", () => {
   test("returns null when user declines (process.exit guarded by not reaching it in tests)", async () => {
     // We can't test process.exit(0) directly, so we test the not-found path instead
     // (user consents → scan runs → nothing found → returns null)
-    const result = await scanSuggestOracle("notexistsoracle", {
+    const result = await scanSuggestKappa("notexistskappa", {
       execFn: (cmd) => {
         if (cmd.includes("gh --version")) return "gh version 2.0.0";
         if (cmd.includes("ghq list")) return "github.com/my-org/other-repo\n";
@@ -173,7 +173,7 @@ describe("scanSuggestOracle — non-TTY fallback", () => {
   });
 
   test("returns null gracefully when gh cli is not installed", async () => {
-    const result = await scanSuggestOracle("anyoracle", {
+    const result = await scanSuggestKappa("anykappa", {
       execFn: () => { throw new Error("gh: command not found"); },
       promptFn: () => true,
       configFn: () => ({}),

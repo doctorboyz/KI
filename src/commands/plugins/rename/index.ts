@@ -21,7 +21,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
   try {
     const args = ctx.source === "cli" ? (ctx.args as string[]) : [];
     if (!args[0] || !args[1]) {
-      throw new Error("usage: aoi rename <tab# or name> <new-name>");
+      throw new Error("usage: ki rename <tab# or name> <new-name>");
     }
     await cmdRename(args[0], args[1]);
     return { ok: true, output: logs.join("\n") || undefined };

@@ -41,20 +41,20 @@ interface FleetEntry {
 }
 
 /**
- * Pure logic — findProjectsForOracle without loadFleet() dependency.
+ * Pure logic — findProjectsForKappa without loadFleet() dependency.
  */
-export function findProjectsForOracleForTest(oracleName: string, fleet: FleetEntry[]): string[] {
+export function findProjectsForKappaForTest(kappaName: string, fleet: FleetEntry[]): string[] {
   for (const sess of fleet) {
     const name = sess.name.replace(/^\d+-/, "");
-    if (name === oracleName) return sess.project_repos || [];
+    if (name === kappaName) return sess.project_repos || [];
   }
   return [];
 }
 
 /**
- * Pure logic — findOracleForProject without loadFleet() dependency.
+ * Pure logic — findKappaForProject without loadFleet() dependency.
  */
-export function findOracleForProjectForTest(projectRepo: string, fleet: FleetEntry[]): string | null {
+export function findKappaForProjectForTest(projectRepo: string, fleet: FleetEntry[]): string | null {
   for (const sess of fleet) {
     if (sess.project_repos?.includes(projectRepo)) {
       return sess.name.replace(/^\d+-/, "");
@@ -66,10 +66,10 @@ export function findOracleForProjectForTest(projectRepo: string, fleet: FleetEnt
 /**
  * Pure logic — findPeers without loadFleet() dependency.
  */
-export function findPeersForTest(oracleName: string, fleet: FleetEntry[]): string[] {
+export function findPeersForTest(kappaName: string, fleet: FleetEntry[]): string[] {
   for (const sess of fleet) {
     const name = sess.name.replace(/^\d+-/, "");
-    if (name === oracleName && sess.sync_peers) return sess.sync_peers;
+    if (name === kappaName && sess.sync_peers) return sess.sync_peers;
   }
   return [];
 }

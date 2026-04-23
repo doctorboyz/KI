@@ -1,10 +1,10 @@
 /**
- * aoi plugin init <name> --ts
+ * ki plugin init <name> --ts
  *
  * Scaffolds a 5-file TypeScript plugin at ./<name>/:
  *   plugin.json       — full v1 manifest with blank-but-present placeholders
- *   src/index.ts      — @aoi-js/sdk hello-world stub
- *   package.json      — author-side deps (typescript, @aoi-js/sdk via workspace)
+ *   src/index.ts      — @ki-js/sdk hello-world stub
+ *   package.json      — author-side deps (typescript, @ki-js/sdk via workspace)
  *   tsconfig.json     — strict ESM bundler resolution
  *   README.md         — 10-line quickstart
  *
@@ -17,8 +17,8 @@ import { parseFlags } from "../../../cli-src/parse-args";
 
 // Repo root (for resolving the workspace SDK absolute path baked into
 // scaffolded package.json). src/commands/plugins/plugin/init-impl.ts → ../../../..
-const AOI_DIR = resolve(import.meta.dir, "../../../..");
-const SDK_PKG_PATH = join(AOI_DIR, "packages", "sdk");
+const KI_DIR = resolve(import.meta.dir, "../../../..");
+const SDK_PKG_PATH = join(KI_DIR, "packages", "sdk");
 
 const NAME_RE = /^[a-z][a-z0-9-]*$/;
 
@@ -27,7 +27,7 @@ export async function cmdPluginInit(args: string[]): Promise<void> {
   const name = flags._[0];
 
   if (!name || name.startsWith("-")) {
-    throw new Error("usage: aoi plugin init <name> --ts");
+    throw new Error("usage: ki plugin init <name> --ts");
   }
   if (!NAME_RE.test(name)) {
     throw new Error(
@@ -35,7 +35,7 @@ export async function cmdPluginInit(args: string[]): Promise<void> {
     );
   }
   if (!flags["--ts"]) {
-    throw new Error("usage: aoi plugin init <name> --ts  (only --ts is supported in Phase A)");
+    throw new Error("usage: ki plugin init <name> --ts  (only --ts is supported in Phase A)");
   }
 
   const dest = join(process.cwd(), name);
@@ -54,34 +54,34 @@ export async function cmdPluginInit(args: string[]): Promise<void> {
     entry: "./src/index.ts",
     artifact: { path: "dist/index.js", sha256: null },
     capabilities: [] as string[],
-    description: `${name} — a aoi-js plugin`,
+    description: `${name} — a ki-js plugin`,
     cli: { command: name, help: `Invoke ${name}` },
   };
   writeFileSync(join(dest, "plugin.json"), JSON.stringify(manifest, null, 2) + "\n");
 
-  // 2. src/index.ts — @aoi-js/sdk hello-world stub
+  // 2. src/index.ts — @ki-js/sdk hello-world stub
   writeFileSync(
     join(dest, "src", "index.ts"),
-    `import { aoi } from "@aoi-js/sdk";
-import type { InvokeContext, InvokeResult } from "@aoi-js/sdk/plugin";
+    `import { ki } from "@ki-js/sdk";
+import type { InvokeContext, InvokeResult } from "@ki-js/sdk/plugin";
 
 export default async function (ctx: InvokeContext): Promise<InvokeResult> {
-  const id = await aoi.identity();
+  const id = await ki.identity();
   return { ok: true, output: \`hello from \${id.node}!\` };
 }
 `,
   );
 
   // 3. package.json — workspace-linked SDK via file: protocol (absolute path
-  // into the aoi-js tree). Phase A: bundler inlines this on `aoi plugin build`.
+  // into the ki-js tree). Phase A: bundler inlines this on `ki plugin build`.
   const pkg = {
     name,
     version: "0.1.0",
     type: "module",
     main: "src/index.ts",
-    scripts: { build: "aoi plugin build" },
+    scripts: { build: "ki plugin build" },
     devDependencies: {
-      "@aoi-js/sdk": `file:${SDK_PKG_PATH}`,
+      "@ki-js/sdk": `file:${SDK_PKG_PATH}`,
       typescript: "^5.0.0",
     },
   };
@@ -108,23 +108,23 @@ export default async function (ctx: InvokeContext): Promise<InvokeResult> {
     join(dest, "README.md"),
     `# ${name}
 
-A aoi-js plugin.
+A ki-js plugin.
 
 ## Build
 
     bun install
-    aoi plugin build
+    ki plugin build
 
 ## Install
 
-    aoi plugin install ./${name}-0.1.0.tgz
+    ki plugin install ./${name}-0.1.0.tgz
 
 ## Invoke
 
-    aoi ${name}
+    ki ${name}
 `,
   );
 
   console.log(`\x1b[36m⚡\x1b[0m scaffolded \x1b[1m${name}\x1b[0m (ts)`);
-  console.log(`  next: cd ${name} && bun install && aoi plugin build`);
+  console.log(`  next: cd ${name} && bun install && ki plugin build`);
 }

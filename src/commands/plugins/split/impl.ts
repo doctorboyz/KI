@@ -21,19 +21,19 @@ export interface SplitOpts {
 }
 
 /**
- * aoi split <target> [--pct N] [--vertical] [--no-attach]
+ * ki split <target> [--pct N] [--vertical] [--no-attach]
  *
  * Split the current tmux pane and attach to a target session in the new pane.
  *
  * Target resolution:
  *   - "session:window"  → used as-is
  *   - "session"         → resolved to session:window[0]
- *   - bare oracle name  → finds session ending with "-<name>" or name === <name>
+ *   - bare kappa name  → finds session ending with "-<name>" or name === <name>
  *
  * Why this exists: `/bud --split` inlined this pattern, but (a) the nested
  * `tmux attach-session` silently fails when $TMUX is set, and (b) the logic
  * is useful beyond bud (worktree, pair-ops, debugging). Extracted here as
- * one canonical helper — future skills call `aoi split` instead of duplicating
+ * one canonical helper — future skills call `ki split` instead of duplicating
  * the tmux shell-out.
  */
 export async function cmdSplit(target: string, opts: SplitOpts = {}) {
@@ -41,14 +41,14 @@ export async function cmdSplit(target: string, opts: SplitOpts = {}) {
   // Safe for "session:window" form: nothing to strip unless the user adds a literal slash.
   target = normalizeTarget(target);
   if (!process.env.TMUX) {
-    throw new Error("aoi split requires an active tmux session");
+    throw new Error("ki split requires an active tmux session");
   }
 
   if (!target) {
-    console.error("usage: aoi split <target> [--pct N] [--vertical] [--no-attach]");
-    console.error("  e.g. aoi split yeast");
-    console.error("       aoi split aoijs-view --pct 30 --vertical");
-    throw new Error("usage: aoi split <target> [--pct N] [--vertical] [--no-attach]");
+    console.error("usage: ki split <target> [--pct N] [--vertical] [--no-attach]");
+    console.error("  e.g. ki split yeast");
+    console.error("       ki split kijs-view --pct 30 --vertical");
+    throw new Error("usage: ki split <target> [--pct N] [--vertical] [--no-attach]");
   }
 
   // Validate pct early so bad input never reaches tmux
@@ -70,7 +70,7 @@ export async function cmdSplit(target: string, opts: SplitOpts = {}) {
       for (const s of r.candidates) {
         console.error(`  \x1b[90m    • ${s.name}\x1b[0m`);
       }
-      console.error(`  \x1b[90m  use the full name: aoi split <exact-session>\x1b[0m`);
+      console.error(`  \x1b[90m  use the full name: ki split <exact-session>\x1b[0m`);
       throw new Error(`'${target}' is ambiguous`);
     }
     if (r.kind === "none") {
@@ -81,7 +81,7 @@ export async function cmdSplit(target: string, opts: SplitOpts = {}) {
           console.error(`  \x1b[90m    • ${h.name}\x1b[0m`);
         }
       }
-      console.error(`  \x1b[90m  try: aoi ls\x1b[0m`);
+      console.error(`  \x1b[90m  try: ki ls\x1b[0m`);
       throw new Error(`session '${target}' not found in fleet`);
     }
 
@@ -96,7 +96,7 @@ export async function cmdSplit(target: string, opts: SplitOpts = {}) {
   //
   // Target the caller's pane (#365 cascade fix): without -t, tmux splits
   // the currently-active pane — which shifts after the first split, causing
-  // the second `aoi bud <name> --split` from the same parent to silently
+  // the second `ki bud <name> --split` from the same parent to silently
   // split the wrong pane (or noop visually). Explicit -t $TMUX_PANE anchors
   // every split to the caller's origin pane, so buds cascade instead of drifting.
   // Fallback: if TMUX_PANE isn't set (shouldn't happen — we checked $TMUX above,

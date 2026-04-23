@@ -61,20 +61,20 @@ export class HubTransport implements Transport {
 
   async send(target: TransportTarget, message: string): Promise<boolean> {
     const qualifiedTarget = target.host
-      ? `${target.host}:${target.oracle}`
-      : target.oracle;
+      ? `${target.host}:${target.kappa}`
+      : target.kappa;
 
     // Find a workspace that can reach this target
     for (const conn of this.connections.values()) {
       if (!conn.connected || !conn.ws) continue;
 
       // Check if this workspace knows about the target agent
-      if (conn.remoteAgents.has(target.oracle) || conn.remoteAgents.has(qualifiedTarget)) {
+      if (conn.remoteAgents.has(target.kappa) || conn.remoteAgents.has(qualifiedTarget)) {
         const payload = JSON.stringify({
           type: "message",
           to: qualifiedTarget,
           body: message,
-          from: `${this.nodeId}:${target.oracle}`,
+          from: `${this.nodeId}:${target.kappa}`,
           timestamp: Date.now(),
         });
 
@@ -93,7 +93,7 @@ export class HubTransport implements Transport {
   async publishPresence(presence: TransportPresence): Promise<void> {
     const payload = JSON.stringify({
       type: "presence",
-      agents: [{ name: presence.oracle, status: presence.status }],
+      agents: [{ name: presence.kappa, status: presence.status }],
       timestamp: presence.timestamp,
     });
 
@@ -130,12 +130,12 @@ export class HubTransport implements Transport {
   canReach(target: TransportTarget): boolean {
     if (!this._connected) return false;
     const qualifiedTarget = target.host
-      ? `${target.host}:${target.oracle}`
-      : target.oracle;
+      ? `${target.host}:${target.kappa}`
+      : target.kappa;
 
     for (const conn of this.connections.values()) {
       if (!conn.connected) continue;
-      if (conn.remoteAgents.has(target.oracle) || conn.remoteAgents.has(qualifiedTarget)) {
+      if (conn.remoteAgents.has(target.kappa) || conn.remoteAgents.has(qualifiedTarget)) {
         return true;
       }
     }

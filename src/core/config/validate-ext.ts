@@ -1,4 +1,4 @@
-import type { AoiConfig } from "./types";
+import type { KiConfig } from "./types";
 import { validateBasicFields } from "./validate";
 
 /** @internal Validates extended fields: triggers, federation, plugins, peers, node, etc. */
@@ -38,8 +38,8 @@ function validateExtFields(
 
   // allowPeersWithoutToken: boolean, explicit opt-in to legacy open posture.
   // Without this passthrough the field is silently stripped in production
-  // (review feedback from aoijs on #396), making the escape hatch unreachable
-  // via aoi.config.json while still reachable in tests — a UX bug where
+  // (review feedback from kijs on #396), making the escape hatch unreachable
+  // via ki.config.json while still reachable in tests — a UX bug where
   // runtime posture is stricter-than-advertised.
   if ("allowPeersWithoutToken" in raw) {
     if (typeof raw.allowPeersWithoutToken === "boolean") {
@@ -151,11 +151,11 @@ function validateExtFields(
 }
 
 /** Validate config values, warn on invalid fields, return sanitized config */
-export function validateConfig(raw: Record<string, unknown>): Partial<AoiConfig> {
+export function validateConfig(raw: Record<string, unknown>): Partial<KiConfig> {
   const result: Record<string, unknown> = {};
   const warn = (field: string, msg: string) =>
-    console.warn(`[aoi] config warning: ${field} ${msg}, using default`);
+    console.warn(`[ki] config warning: ${field} ${msg}, using default`);
   validateBasicFields(raw, result, warn);
   validateExtFields(raw, result, warn);
-  return result as Partial<AoiConfig>;
+  return result as Partial<KiConfig>;
 }

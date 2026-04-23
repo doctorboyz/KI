@@ -21,7 +21,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
   try {
     const args = ctx.source === "cli" ? (ctx.args as string[]) : [];
     if (!args[0]) {
-      throw new Error("usage: aoi workon <repo> [task]");
+      throw new Error("usage: ki workon <repo> [task]");
     }
     await cmdWorkon(args[0], args[1]);
     return { ok: true, output: logs.join("\n") || undefined };

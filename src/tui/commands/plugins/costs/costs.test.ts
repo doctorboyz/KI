@@ -58,6 +58,6 @@ describe("costs plugin", () => {
     const ctx: InvokeContext = { source: "cli", args: [] };
     const result = await handler(ctx);
     expect(result.ok).toBe(false);
-    expect(result.error).toContain("aoi serve");
+    expect(result.error).toContain("ki serve");
   });
 });

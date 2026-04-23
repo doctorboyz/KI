@@ -270,7 +270,7 @@ describe("fetchGitHubPrompt — edge cases", () => {
 
   test("issue number and repo slug appear in the source tag", async () => {
     const exec = makeIssueExec("Any title", "any body");
-    const result = await fetchGitHubPromptWith("issue", 123, "Soul-Brews-Studio/maw-js", exec);
-    expect(result).toContain("GitHub issue #123 (Soul-Brews-Studio/maw-js)");
+    const result = await fetchGitHubPromptWith("issue", 123, "doctorboyz/maw-js", exec);
+    expect(result).toContain("GitHub issue #123 (doctorboyz/maw-js)");
   });
 });

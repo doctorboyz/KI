@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Session, FeedEvent } from "../types/aoi";
+import type { Session, FeedEvent } from "../types/ki";
 import type { AgentStatus } from "../types/ui";
 
 interface AgentState {
@@ -38,7 +38,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   updateAgentFromFeed: (event) =>
     set((state) => {
       const agents = state.agents.map((a) => {
-        if (a.target === event.oracle || a.name === event.oracle) {
+        if (a.target === event.kappa || a.name === event.kappa) {
           const status = event.event === "Stop" || event.event === "SessionEnd" ? "idle" : "busy";
           return { ...a, lastEvent: event, status: status as AgentStatus["status"] };
         }

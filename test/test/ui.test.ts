@@ -20,17 +20,17 @@ import {
 describe("resolvePeerHostPort", () => {
   test("literal host:port → returns as-is", () => {
     expect(resolvePeerHostPort("10.20.0.16:3456")).toBe("10.20.0.16:3456");
-    expect(resolvePeerHostPort("oracle-world:3456")).toBe("oracle-world:3456");
+    expect(resolvePeerHostPort("kappa-world:3456")).toBe("kappa-world:3456");
   });
 
   test("bare hostname → returns as-is", () => {
-    expect(resolvePeerHostPort("oracle-world")).toBe("oracle-world");
+    expect(resolvePeerHostPort("kappa-world")).toBe("kappa-world");
   });
 
   test("hostnames with dots and dashes", () => {
     expect(resolvePeerHostPort("white.local:3456")).toBe("white.local:3456");
-    expect(resolvePeerHostPort("my-oracle.example.com:3456")).toBe(
-      "my-oracle.example.com:3456",
+    expect(resolvePeerHostPort("my-kappa.example.com:3456")).toBe(
+      "my-kappa.example.com:3456",
     );
   });
 
@@ -49,12 +49,12 @@ describe("resolvePeerHostPort", () => {
 
 describe("justHost", () => {
   test("strips port from host:port", () => {
-    expect(justHost("oracle-world:3456")).toBe("oracle-world");
+    expect(justHost("kappa-world:3456")).toBe("kappa-world");
     expect(justHost("10.20.0.16:5173")).toBe("10.20.0.16");
   });
 
   test("returns hostname unchanged when no port", () => {
-    expect(justHost("oracle-world")).toBe("oracle-world");
+    expect(justHost("kappa-world")).toBe("kappa-world");
   });
 });
 
@@ -126,16 +126,16 @@ describe("parseUiArgs", () => {
   });
 
   test("--tunnel + peer", () => {
-    expect(parseUiArgs(["--tunnel", "oracle-world"])).toEqual({
+    expect(parseUiArgs(["--tunnel", "kappa-world"])).toEqual({
       tunnel: true,
-      peer: "oracle-world",
+      peer: "kappa-world",
     });
   });
 
   test("flag order doesn't matter", () => {
-    expect(parseUiArgs(["oracle-world", "--tunnel"])).toEqual({
+    expect(parseUiArgs(["kappa-world", "--tunnel"])).toEqual({
       tunnel: true,
-      peer: "oracle-world",
+      peer: "kappa-world",
     });
   });
 
@@ -152,7 +152,7 @@ describe("parseUiArgs", () => {
   });
 
   test("first positional wins", () => {
-    expect(parseUiArgs(["white", "oracle-world"])).toEqual({ peer: "white" });
+    expect(parseUiArgs(["white", "kappa-world"])).toEqual({ peer: "white" });
   });
 });
 

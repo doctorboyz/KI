@@ -4,7 +4,7 @@ import { mkdirSync, writeFileSync, readFileSync, readdirSync, unlinkSync } from 
 import { join } from "path";
 import { homedir } from "os";
 
-const PARKED_DIR = join(homedir(), ".config/aoi/parked");
+const PARKED_DIR = join(homedir(), ".config/ki/parked");
 
 interface ParkedState {
   window: string;
@@ -27,10 +27,10 @@ export async function cmdPark(...rawArgs: string[]) {
   const { session, window: currentWindow } = await currentWindowInfo();
 
   // Determine target window and note:
-  // - aoi park → park current window
-  // - aoi park "note" → park current window with note (if arg doesn't match a window)
-  // - aoi park <window-name> → park that window
-  // - aoi park <window-name> "note" → park that window with note
+  // - ki park → park current window
+  // - ki park "note" → park current window with note (if arg doesn't match a window)
+  // - ki park <window-name> → park that window
+  // - ki park <window-name> "note" → park that window with note
   let targetWindow = currentWindow;
   let note: string | undefined;
 

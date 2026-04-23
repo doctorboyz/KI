@@ -20,9 +20,9 @@ beforeEach(() => {
   originalCwd = process.cwd();
   originalTMUX = process.env.TMUX;
   testDir = mkdtempSync(join(tmpdir(), "maw-bugC-"));
-  // Oracle root markers for resolvePsi
+  // Kappa root markers for resolvePsi
   mkdirSync(join(testDir, "ψ/memory/mailbox/teams/test-team"), { recursive: true });
-  writeFileSync(join(testDir, "CLAUDE.md"), "# test oracle\n");
+  writeFileSync(join(testDir, "CLAUDE.md"), "# test kappa\n");
   writeFileSync(
     join(testDir, "ψ/memory/mailbox/teams/test-team/manifest.json"),
     JSON.stringify({ name: "test-team", members: [], description: "test" })

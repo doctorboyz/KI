@@ -36,7 +36,7 @@ function listVaultOnlyTeams(toolTeamNames: Set<string>): Array<{ name: string; m
   return out;
 }
 
-// ─── aoi team list ───
+// ─── ki team list ───
 
 export async function cmdTeamList() {
   let teamDirs: string[] = [];
@@ -46,7 +46,7 @@ export async function cmdTeamList() {
     );
   } catch { /* expected: teams dir may not exist */ }
 
-  // #393 Bug B: also surface vault-only teams (created via aoi team create
+  // #393 Bug B: also surface vault-only teams (created via ki team create
   // but never wired through the tool-layer Agent()). They don't have pane
   // IDs, but they exist and can be resumed.
   const vaultOnly = listVaultOnlyTeams(new Set(teamDirs));
@@ -94,14 +94,14 @@ export async function cmdTeamList() {
   }
 
   if (vaultOnly.length > 0) {
-    console.log(`\n  \x1b[90m${vaultOnly.length} vault-only team(s) — resume via \x1b[36maoi team resume <name>\x1b[90m or remove via \x1b[36mrm -rf ψ/memory/mailbox/teams/<name>/\x1b[0m`);
+    console.log(`\n  \x1b[90m${vaultOnly.length} vault-only team(s) — resume via \x1b[36mki team resume <name>\x1b[90m or remove via \x1b[36mrm -rf ψ/memory/mailbox/teams/<name>/\x1b[0m`);
   }
 
   // Check for orphan zombie panes (panes running claude with no matching team)
   const allPanes = await tmux.listPanes();
   const zombies = findZombiePanes(allPanes);
   if (zombies.length > 0) {
-    console.log(`\n  \x1b[33m⚠ ${zombies.length} orphan zombie pane(s) detected\x1b[0m — run \x1b[36maoi cleanup --zombie-agents\x1b[0m`);
+    console.log(`\n  \x1b[33m⚠ ${zombies.length} orphan zombie pane(s) detected\x1b[0m — run \x1b[36mki cleanup --zombie-agents\x1b[0m`);
   }
 
   console.log();

@@ -24,7 +24,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     const rawArgs = ctx.source === "cli" ? (ctx.args as string[]) : [];
 
     // --split accepts both a bare form (`--split`, caller's active pane) and
-    // a valued form (`--split=<anchor>`, anchor at another oracle's view).
+    // a valued form (`--split=<anchor>`, anchor at another kappa's view).
     // Scan explicitly — the handler below uses includes()/filter() rather
     // than an arg parser, and the valued form needs an extra pass anyway.
     let splitAnchor: string | true | undefined = undefined;
@@ -43,7 +43,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (!scanned[0]) {
       return {
         ok: false,
-        error: "usage: aoi view <agent> [window] [--clean] [--kill] [--split[=<anchor>]]",
+        error: "usage: ki view <agent> [window] [--clean] [--kill] [--split[=<anchor>]]",
       };
     }
 

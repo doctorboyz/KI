@@ -3,23 +3,23 @@ import { ghqFind } from "../../../core/ghq";
 import { buildCommandInDir, cfgTimeout, loadConfig, saveConfig } from "../../../core/config";
 import { resolveWorktreeTarget } from "../../../core/matcher/resolve-target";
 import { normalizeTarget } from "../../../core/matcher/normalize-target";
-import { assertValidOracleName } from "../../../core/fleet/validate";
-import { resolveOracle, findWorktrees, getSessionMap, resolveFleetSession, detectSession, setSessionEnv, sanitizeBranchName } from "./wake-resolve";
+import { assertValidKappaName } from "../../../core/fleet/validate";
+import { resolveKappa, findWorktrees, getSessionMap, resolveFleetSession, detectSession, setSessionEnv, sanitizeBranchName } from "./wake-resolve";
 import { attachToSession, ensureSessionRunning, createWorktree } from "./wake-session";
 import { maybeSplit } from "./wake-maybe-split";
 
-export async function cmdWake(oracle: string, opts: { task?: string; wt?: string; prompt?: string; incubate?: string; fresh?: boolean; attach?: boolean; listWt?: boolean; split?: boolean; repoPath?: string }): Promise<string> {
+export async function cmdWake(kappa: string, opts: { task?: string; wt?: string; prompt?: string; incubate?: string; fresh?: boolean; attach?: boolean; listWt?: boolean; split?: boolean; repoPath?: string }): Promise<string> {
   // Canonicalize the bare name before any lookup — strips trailing `/`, `/.git`, `/.git/`
-  // so `aoi wake token-oracle/` (tab-completion artifact) resolves the same as `token-oracle`.
-  oracle = normalizeTarget(oracle);
+  // so `ki wake token-kappa/` (tab-completion artifact) resolves the same as `token-kappa`.
+  kappa = normalizeTarget(kappa);
   // #358 — reject -view suffix at the user-input boundary (before any session work).
-  assertValidOracleName(oracle);
-  console.log(`\x1b[36m⚡\x1b[0m resolving ${oracle}...`);
+  assertValidKappaName(kappa);
+  console.log(`\x1b[36m⚡\x1b[0m resolving ${kappa}...`);
   let resolved: { repoPath: string; repoName: string; parentDir: string };
 
   if (opts.repoPath) {
-    // #421 — caller already knows the exact on-disk path (e.g. `aoi bud --org`
-    // just cloned it). Skip resolveOracle so a stale same-named repo in a
+    // #421 — caller already knows the exact on-disk path (e.g. `ki bud --org`
+    // just cloned it). Skip resolveKappa so a stale same-named repo in a
     // different org can't shadow the freshly-created one.
     const repoPath = opts.repoPath;
     resolved = { repoPath, repoName: repoPath.split("/").pop()!, parentDir: repoPath.replace(/\/[^/]+$/, "") };
@@ -40,18 +40,18 @@ export async function cmdWake(oracle: string, opts: { task?: string; wt?: string
     resolved = { repoPath, repoName: repoPath.split("/").pop()!, parentDir: repoPath.replace(/\/[^/]+$/, "") };
     if (!opts.task && !opts.wt) opts.wt = resolved.repoName.replace(/-/g, "");
   } else {
-    resolved = await resolveOracle(oracle);
+    resolved = await resolveKappa(kappa);
   }
 
   const { repoPath, repoName, parentDir } = resolved;
   console.log(`\x1b[36m→\x1b[0m found ${repoPath}`);
-  let session = await detectSession(oracle);
+  let session = await detectSession(kappa);
   if (session) console.log(`\x1b[36m→\x1b[0m session exists: ${session}`);
   else console.log(`\x1b[36m→\x1b[0m no session found, creating...`);
 
   if (!session) {
-    session = getSessionMap()[oracle] || resolveFleetSession(oracle) || oracle;
-    const mainWindowName = `${oracle}-oracle`;
+    session = getSessionMap()[kappa] || resolveFleetSession(kappa) || kappa;
+    const mainWindowName = `${kappa}-kappa`;
     await tmux.newSession(session, { window: mainWindowName, cwd: repoPath });
     await setSessionEnv(session);
     await new Promise(r => setTimeout(r, 300));
@@ -61,10 +61,10 @@ export async function cmdWake(oracle: string, opts: { task?: string; wt?: string
     // Auto-register agent in config.agents so federation peers can route to it (#285)
     const config = loadConfig();
     const agents = config.agents || {};
-    if (!(oracle in agents)) {
+    if (!(kappa in agents)) {
       const node = config.node || "local";
-      saveConfig({ agents: { ...agents, [oracle]: node } });
-      console.log(`\x1b[32m+\x1b[0m registered agent '${oracle}' → '${node}' in config.agents`);
+      saveConfig({ agents: { ...agents, [kappa]: node } });
+      console.log(`\x1b[32m+\x1b[0m registered agent '${kappa}' → '${node}' in config.agents`);
     }
 
     if (!opts.task && !opts.wt) {
@@ -72,8 +72,8 @@ export async function cmdWake(oracle: string, opts: { task?: string; wt?: string
       const usedNames = new Set<string>();
       for (const wt of allWt) {
         const taskPart = wt.name.replace(/^\d+-/, "");
-        let wtWindowName = `${oracle}-${taskPart}`;
-        if (usedNames.has(wtWindowName)) wtWindowName = `${oracle}-${wt.name}`;
+        let wtWindowName = `${kappa}-${taskPart}`;
+        if (usedNames.has(wtWindowName)) wtWindowName = `${kappa}-${wt.name}`;
         usedNames.add(wtWindowName);
         await tmux.newWindow(session, wtWindowName, { cwd: wt.path });
         await new Promise(r => setTimeout(r, 300));
@@ -93,12 +93,12 @@ export async function cmdWake(oracle: string, opts: { task?: string; wt?: string
         const usedNames = new Set(existingWindows);
         for (const wt of allWt) {
           const taskPart = wt.name.replace(/^\d+-/, "");
-          let wtWindowName = `${oracle}-${taskPart}`;
+          let wtWindowName = `${kappa}-${taskPart}`;
           if (usedNames.has(wtWindowName)) {
             if (existingWindows.includes(wtWindowName)) continue;
-            wtWindowName = `${oracle}-${wt.name}`;
+            wtWindowName = `${kappa}-${wt.name}`;
           }
-          const altName = `${oracle}-${wt.name}`;
+          const altName = `${kappa}-${wt.name}`;
           if (existingWindows.includes(wtWindowName) || existingWindows.includes(altName)) continue;
           usedNames.add(wtWindowName);
           await tmux.newWindow(session, wtWindowName, { cwd: wt.path });
@@ -118,13 +118,13 @@ export async function cmdWake(oracle: string, opts: { task?: string; wt?: string
   if (reordered > 0) console.log(`\x1b[36m↻ ${reordered} window(s) reordered to saved positions.\x1b[0m`);
 
   let targetPath = repoPath;
-  let windowName = `${oracle}-oracle`;
+  let windowName = `${kappa}-kappa`;
 
   if (opts.listWt) {
     const worktrees = await findWorktrees(parentDir, repoName);
-    if (!worktrees.length) { console.log(`\x1b[90mNo worktrees for ${oracle}.\x1b[0m`); }
+    if (!worktrees.length) { console.log(`\x1b[90mNo worktrees for ${kappa}.\x1b[0m`); }
     else {
-      console.log(`\n\x1b[36mWorktrees for ${oracle}\x1b[0m (${worktrees.length})\n`);
+      console.log(`\n\x1b[36mWorktrees for ${kappa}\x1b[0m (${worktrees.length})\n`);
       for (const wt of worktrees) console.log(`  \x1b[32m●\x1b[0m ${wt.name}  \x1b[90m${wt.path}\x1b[0m`);
     }
     return `${session}:${windowName}`;
@@ -145,7 +145,7 @@ export async function cmdWake(oracle: string, opts: { task?: string; wt?: string
           const lines = [
             `\x1b[31m✗\x1b[0m '${name}' is ambiguous — matches ${resolvedTarget.candidates.length} worktrees:`,
             ...resolvedTarget.candidates.map(c => `\x1b[90m    • ${c.name}\x1b[0m`),
-            `\x1b[90m  use the full name: aoi wake ${oracle} --task <exact-worktree>\x1b[0m`,
+            `\x1b[90m  use the full name: ki wake ${kappa} --task <exact-worktree>\x1b[0m`,
           ];
           throw new Error(lines.join("\n"));
         }
@@ -158,9 +158,9 @@ export async function cmdWake(oracle: string, opts: { task?: string; wt?: string
     if (match) {
       console.log(`\x1b[33m⚡\x1b[0m reusing worktree: ${match.path}`);
       targetPath = match.path;
-      windowName = `${oracle}-${name}`;
+      windowName = `${kappa}-${name}`;
     } else {
-      const result = await createWorktree(repoPath, parentDir, repoName, oracle, name, worktrees);
+      const result = await createWorktree(repoPath, parentDir, repoName, kappa, name, worktrees);
       targetPath = result.wtPath;
       windowName = result.windowName;
     }
@@ -168,9 +168,9 @@ export async function cmdWake(oracle: string, opts: { task?: string; wt?: string
 
   try {
     const windows = await tmux.listWindows(session);
-    const nameSuffix = windowName.replace(`${oracle}-`, "");
+    const nameSuffix = windowName.replace(`${kappa}-`, "");
     const existingWindow = windows.map(w => w.name).find(w => w === windowName)
-      || windows.map(w => w.name).find(w => new RegExp(`^${oracle}-\\d+-${nameSuffix}$`).test(w));
+      || windows.map(w => w.name).find(w => new RegExp(`^${kappa}-\\d+-${nameSuffix}$`).test(w));
     if (existingWindow) {
       if (opts.prompt) {
         await tmux.selectWindow(`${session}:${existingWindow}`);

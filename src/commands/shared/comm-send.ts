@@ -1,5 +1,5 @@
 /**
- * comm-send.ts — cmdSend + resolveOraclePane + resolveMyName + writeInboxMessage.
+ * comm-send.ts — cmdSend + resolveKappaPane + resolveMyName + writeInboxMessage.
  */
 
 import {
@@ -12,9 +12,9 @@ import { logMessage, emitFeed } from "./comm-log-feed";
 import { writeInboxFile } from "../plugins/inbox/impl";
 
 /**
- * Write a message to an oracle's ψ/inbox/ directory.
- * peerRoot is the oracle's repo root (contains ψ/ dir).
- * Called from route-comm.ts when --inbox is passed to `aoi hey`.
+ * Write a message to an kappa's ψ/inbox/ directory.
+ * peerRoot is the kappa's repo root (contains ψ/ dir).
+ * Called from route-comm.ts when --inbox is passed to `ki hey`.
  */
 export function writeInboxMessage(peerRoot: string, from: string, to: string, body: string): string {
   const { join } = require("path");
@@ -24,14 +24,14 @@ export function writeInboxMessage(peerRoot: string, from: string, to: string, bo
 
 /**
  * Resolve a `session:window` target to a specific pane running an agent
- * (claude / codex / node). Fixes the multi-pane routing bug: when an oracle
+ * (claude / codex / node). Fixes the multi-pane routing bug: when an kappa
  * window has multiple panes (e.g., team-agents split beside it), tmux's
  * `send-keys -t session:window` defaults to the LAST-ACTIVE pane — which
- * becomes whichever teammate just spawned, not the oracle itself.
+ * becomes whichever teammate just spawned, not the kappa itself.
  *
  * Strategy: list all panes in the window, pick the lowest-index pane
  * running a claude/codex/node process. Pane 0 is conventionally the
- * oracle's main pane (created by `tmux.newWindow` during `aoi wake`);
+ * kappa's main pane (created by `tmux.newWindow` during `ki wake`);
  * team-agents spawn LATER as splits and take higher indexes.
  *
  * If the target already specifies a pane (`.N` suffix) the caller knows
@@ -40,7 +40,7 @@ export function writeInboxMessage(peerRoot: string, from: string, to: string, bo
  * error path surfaces correctly.
  */
 /** @internal */
-export async function resolveOraclePane(target: string): Promise<string> {
+export async function resolveKappaPane(target: string): Promise<string> {
   // Already pane-specific — honor caller's choice.
   if (/\.[0-9]+$/.test(target)) return target;
 
@@ -67,11 +67,11 @@ export async function resolveOraclePane(target: string): Promise<string> {
   }
 }
 
-/** Resolve the current oracle name from CLAUDE_AGENT_NAME or tmux session */
+/** Resolve the current kappa name from CLAUDE_AGENT_NAME or tmux session */
 /** @internal */
 export function resolveMyName(config: ReturnType<typeof loadConfig>): string {
   if (process.env.CLAUDE_AGENT_NAME) return process.env.CLAUDE_AGENT_NAME;
-  // Try tmux session name: "08-aoijs" → "aoijs"
+  // Try tmux session name: "08-kijs" → "kijs"
   try {
     const tmuxSession = require("child_process").execSync("tmux display-message -p '#{session_name}'", { encoding: "utf-8" }).trim();
     if (tmuxSession) return tmuxSession.replace(/^\d+-/, "");
@@ -109,15 +109,15 @@ export async function cmdSend(query: string, message: string, force = false) {
   const config = loadConfig();
 
   // #362b — inform users when they omit the node prefix. Canonical form is
-  // `<node>:<oracle>` (add `:<window>` to target a specific tmux window when
+  // `<node>:<kappa>` (add `:<window>` to target a specific tmux window when
   // the session has more than one — see #410). Bare name works locally but
   // scripts should use the prefixed form for fleet portability. Silent when
-  // AOI_QUIET=1.
-  if (!query.includes(":") && !query.includes("/") && !process.env.AOI_QUIET && config.node) {
-    console.error(`\x1b[90mℹ tip: use canonical form 'aoi hey ${config.node}:${query}' for cross-node scripts — append ':<window>' to target a specific window (bare name = exact match locally; errors on ambiguity)\x1b[0m`);
+  // KI_QUIET=1.
+  if (!query.includes(":") && !query.includes("/") && !process.env.KI_QUIET && config.node) {
+    console.error(`\x1b[90mℹ tip: use canonical form 'ki hey ${config.node}:${query}' for cross-node scripts — append ':<window>' to target a specific window (bare name = exact match locally; errors on ambiguity)\x1b[0m`);
   }
 
-  // --- Plugin routing: aoi hey plugin:<name> <msg> ---
+  // --- Plugin routing: ki hey plugin:<name> <msg> ---
   if (query.startsWith("plugin:")) {
     const name = query.slice("plugin:".length);
     const { discoverPackages, invokePlugin } = await import("../../plugin/registry");
@@ -135,18 +135,18 @@ export async function cmdSend(query: string, message: string, force = false) {
   const result = resolveTarget(query, config, sessions);
 
   // Local target (or self-node) → send via tmux.
-  // Resolve to a specific pane first: when the oracle window has multiple
+  // Resolve to a specific pane first: when the kappa window has multiple
   // panes (team-agents spawned beside it), `send-keys -t session:window`
   // would otherwise land in whichever pane is currently active, not the
-  // oracle's claude pane. See resolveOraclePane.
+  // kappa's claude pane. See resolveKappaPane.
   if (result?.type === "local" || result?.type === "self-node") {
-    const target = await resolveOraclePane(result.target);
+    const target = await resolveKappaPane(result.target);
     if (!force) {
       const cmd = await getPaneCommand(target);
       const isAgent = /claude|codex|node/i.test(cmd);
       if (!isAgent) {
         console.error(`\x1b[31merror\x1b[0m: no active Claude session in ${target} (running: ${cmd})`);
-        console.error(`\x1b[33mhint\x1b[0m:  run \x1b[36maoi wake ${query}\x1b[0m first, or use \x1b[36m--force\x1b[0m to send anyway`);
+        console.error(`\x1b[33mhint\x1b[0m:  run \x1b[36mki wake ${query}\x1b[0m first, or use \x1b[36m--force\x1b[0m to send anyway`);
         process.exit(1);
       }
       // #405: idle guard — abort if user has in-progress input on the prompt line
@@ -163,7 +163,7 @@ export async function cmdSend(query: string, message: string, force = false) {
     }
     await sendKeys(target, message);
     await runHook("after_send", { to: query, message });
-    if (!config.node) throw new Error("config.node is required — set 'node' in aoi.config.json");
+    if (!config.node) throw new Error("config.node is required — set 'node' in ki.config.json");
     const senderName = resolveMyName(config);
     logMessage(senderName, query, message, "local");
     emitFeed("MessageSend", senderName, config.node, `${query}: ${message.slice(0, 200)}`, config.port || 3456);
@@ -192,7 +192,7 @@ export async function cmdSend(query: string, message: string, force = false) {
     }
     const underlying = res.data?.error || (res.status ? `HTTP ${res.status}` : "connection failed");
     console.error(`\x1b[31merror\x1b[0m: Remote fetch failed for peer ${result.peerUrl} (${result.node}): ${underlying}`);
-    console.error(`\x1b[33mhint\x1b[0m:  check peer connectivity: aoi health`);
+    console.error(`\x1b[33mhint\x1b[0m:  check peer connectivity: ki health`);
     process.exit(1);
   }
 
@@ -215,7 +215,7 @@ export async function cmdSend(query: string, message: string, force = false) {
     // Never fall through to "not found in local sessions" when the real problem is network.
     const underlying = res.data?.error || (res.status ? `HTTP ${res.status}` : "connection failed");
     console.error(`\x1b[31merror\x1b[0m: Remote fetch failed for peer ${peerUrl}: ${underlying}`);
-    console.error(`\x1b[33mhint\x1b[0m:  check peer connectivity: aoi health`);
+    console.error(`\x1b[33mhint\x1b[0m:  check peer connectivity: ki health`);
     process.exit(1);
   }
 

@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
 import { tmux } from "../transport/tmux";
-import type { AoiWS } from "../types";
+import type { KiWS } from "../types";
 
 // Runtime shape of a team member as stored in ~/.claude/teams/<team>/config.json.
 // Superset of TeamMember (in commands/plugins/team/team-helpers) — Claude Code's
@@ -85,7 +85,7 @@ export async function scanTeams(): Promise<TeamData[]> {
 
 /** Broadcast teams to all clients if changed */
 export async function broadcastTeams(
-  clients: Set<AoiWS>,
+  clients: Set<KiWS>,
   lastJson: { value: string },
 ): Promise<void> {
   if (clients.size === 0) return;

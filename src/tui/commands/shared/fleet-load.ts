@@ -11,9 +11,9 @@ export interface FleetSession {
   name: string;
   windows: FleetWindow[];
   skip_command?: boolean;
-  /** Peer oracle names for soul-sync (flat, no hierarchy). */
+  /** Peer kappa names for soul-sync (flat, no hierarchy). */
   sync_peers?: string[];
-  /** Project repos (org/repo) this oracle absorbs ψ/ from via `aoi soul-sync --project`. */
+  /** Project repos (org/repo) this kappa absorbs ψ/ from via `ki soul-sync --project`. */
   project_repos?: string[];
 }
 

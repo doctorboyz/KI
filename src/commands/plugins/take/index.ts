@@ -3,7 +3,7 @@ import { cmdTake } from "./impl";
 
 export const command = {
   name: ["take", "handover"],
-  description: "Move a tmux window from one oracle session to another (vesicle transport).",
+  description: "Move a tmux window from one kappa session to another (vesicle transport).",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -25,7 +25,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (ctx.source === "cli") {
       const args = ctx.args as string[];
       if (!args[0]) {
-        return { ok: false, error: "usage: aoi take <session>:<window> [target-session]" };
+        return { ok: false, error: "usage: ki take <session>:<window> [target-session]" };
       }
       source = args[0];
       target = args[1];

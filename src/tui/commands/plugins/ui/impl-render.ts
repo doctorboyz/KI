@@ -1,13 +1,13 @@
 /**
- * `aoi ui` — output rendering, argument parsing, and CLI dispatcher.
+ * `ki ui` — output rendering, argument parsing, and CLI dispatcher.
  */
 
 import {
   LENS_PORT,
-  AOI_PORT,
+  KI_PORT,
   type UiOptions,
   isUiDistInstalled,
-  findAoiUiSrcDir,
+  findKiUiSrcDir,
   buildDevCommand,
   buildLensUrl,
   resolvePeerHostPort,
@@ -17,41 +17,41 @@ import {
 import { parseFlags } from "../../../../cli-src/parse-args";
 
 /**
- * Render the full output that `aoi ui` prints, given the parsed options.
+ * Render the full output that `ki ui` prints, given the parsed options.
  * Returns a single string with newlines so tests can assert on it without
  * having to capture stdout. The CLI just prints this verbatim.
  */
 export function renderUiOutput(opts: UiOptions): string {
-  // Detect Shape A: if dist is installed, use aoi port (3456) instead of vite (5173)
+  // Detect Shape A: if dist is installed, use ki port (3456) instead of vite (5173)
   const distInstalled = isUiDistInstalled();
-  const lensPort = distInstalled ? AOI_PORT : LENS_PORT;
+  const lensPort = distInstalled ? KI_PORT : LENS_PORT;
 
   // --dev mode: print the vite dev server command
   if (opts.dev) {
-    const srcDir = findAoiUiSrcDir();
+    const srcDir = findKiUiSrcDir();
     if (!srcDir) {
       return [
-        `# aoi-ui source not found. Searched:`,
-        `#   - ghq list (no match for /aoi-ui)`,
-        `#   - sibling directory of aoi`,
-        `#   - $AOI_UI_SRC env var`,
+        `# ki-ui source not found. Searched:`,
+        `#   - ghq list (no match for /ki-ui)`,
+        `#   - sibling directory of ki`,
+        `#   - $KI_UI_SRC env var`,
         `#`,
-        `# Clone it: ghq get https://github.com/Soul-Brews-Studio/aoi-ui`,
-        `# Or set: export AOI_UI_SRC=/path/to/aoi-ui`,
+        `# Clone it: ghq get https://github.com/doctorboyz/ki-ui`,
+        `# Or set: export KI_UI_SRC=/path/to/ki-ui`,
       ].join("\n");
     }
     const devCmd = buildDevCommand(srcDir);
     const url = buildLensUrl({ threeD: opts.threeD, port: LENS_PORT });
     return [
-      `# Start vite dev server (HMR on :${LENS_PORT}, proxy /api → aoi serve on :${AOI_PORT}):`,
+      `# Start vite dev server (HMR on :${LENS_PORT}, proxy /api → ki serve on :${KI_PORT}):`,
       devCmd,
       ``,
       `# Then open:`,
       url,
       ``,
-      `# Requires aoi serve running on :${AOI_PORT} for API/WS proxy.`,
+      `# Requires ki serve running on :${KI_PORT} for API/WS proxy.`,
       `# Edit files in ${srcDir} — vite hot-reloads instantly.`,
-      `# Ctrl+C stops the dev server. Static :${AOI_PORT} keeps serving if installed.`,
+      `# Ctrl+C stops the dev server. Static :${KI_PORT} keeps serving if installed.`,
     ].join("\n");
   }
 
@@ -59,8 +59,8 @@ export function renderUiOutput(opts: UiOptions): string {
   if (opts.tunnel) {
     if (!opts.peer) {
       return [
-        "# usage: aoi ui --tunnel <peer>",
-        "# example: aoi ui --tunnel oracle-world",
+        "# usage: ki ui --tunnel <peer>",
+        "# example: ki ui --tunnel kappa-world",
       ].join("\n");
     }
     const hostPort = resolvePeerHostPort(opts.peer);
@@ -75,14 +75,14 @@ export function renderUiOutput(opts: UiOptions): string {
     const sshCmd = buildTunnelCommand({ user, host });
     const url = buildLensUrl({ threeD: opts.threeD, port: lensPort });
     return [
-      `# Run this on your local machine to forward both lens (${lensPort}) and aoi (${AOI_PORT}):`,
+      `# Run this on your local machine to forward both lens (${lensPort}) and ki (${KI_PORT}):`,
       sshCmd,
       ``,
       `# Then open in your browser:`,
       url,
       ``,
       `# Stop the tunnel with Ctrl+C in the SSH terminal.`,
-      ...(distInstalled ? [``, `# (Shape A — aoi-ui dist served from aoi on port ${AOI_PORT})`] : []),
+      ...(distInstalled ? [``, `# (Shape A — ki-ui dist served from ki on port ${KI_PORT})`] : []),
     ].join("\n");
   }
 

@@ -6,15 +6,15 @@ import { FeedViewer } from "./features/feed-viewer/feed-viewer";
 import { CommandBar } from "./features/command-bar/command-bar";
 import { useCommandStore } from "./stores/command-store";
 import { useKeyInput } from "./hooks/use-key-input";
-import { useAoiApi } from "./hooks/use-aoi-api";
+import { useKiApi } from "./hooks/use-ki-api";
 import { useWebSocket } from "./hooks/use-websocket";
 import { POLL_INTERVAL_MS } from "./utils/constants";
-import { AoiApiClient } from "./api/client";
+import { KiApiClient } from "./api/client";
 import { execSync } from "child_process";
 
 export function App() {
   const mode = useCommandStore((s) => s.mode);
-  const { refreshSessions, fetchIdentity } = useAoiApi();
+  const { refreshSessions, fetchIdentity } = useKiApi();
   const wsRef = useWebSocket();
 
   const handleAction = useCallback(
@@ -31,7 +31,7 @@ export function App() {
           }
           break;
         case "logs": {
-          const client = new AoiApiClient();
+          const client = new KiApiClient();
           client
             .getMirror(agent)
             .then((res: { lines: string[] }) => store.setLastResult({ ok: true, message: res.lines.join("\n") }))
@@ -39,7 +39,7 @@ export function App() {
           break;
         }
         case "kill": {
-          const client = new AoiApiClient();
+          const client = new KiApiClient();
           client
             .sleep({ target: agent })
             .then(() => store.setLastResult({ ok: true, message: `Killed ${agent}` }))

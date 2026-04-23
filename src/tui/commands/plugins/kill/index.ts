@@ -29,10 +29,10 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
 
       target = flags._[0];
       if (!target || target === "--help" || target === "-h") {
-        return { ok: false, error: "usage: aoi kill <target>[:window] [--pane N]" };
+        return { ok: false, error: "usage: ki kill <target>[:window] [--pane N]" };
       }
       if (target.startsWith("-")) {
-        return { ok: false, error: `"${target}" looks like a flag, not a target.\n  usage: aoi kill <target>` };
+        return { ok: false, error: `"${target}" looks like a flag, not a target.\n  usage: ki kill <target>` };
       }
       opts = { pane: flags["--pane"] };
     } else {

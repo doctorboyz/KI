@@ -1,6 +1,6 @@
 import { tmux, tmuxCmd } from "./tmux";
 import { loadConfig, cfgTimeout, cfgLimit } from "../config";
-import type { AoiWS } from "../types";
+import type { KiWS } from "../types";
 
 let nextPtyId = 0;
 
@@ -8,7 +8,7 @@ interface PtySession {
   proc: ReturnType<typeof Bun.spawn>;
   target: string;
   ptySessionName: string;
-  viewers: Set<AoiWS>;
+  viewers: Set<KiWS>;
   cleanupTimer: ReturnType<typeof setTimeout> | null;
 }
 
@@ -16,17 +16,17 @@ const sessions = new Map<string, PtySession>();
 const attaching = new Set<string>();
 
 function isLocalHost(): boolean {
-  const host = process.env.AOI_HOST || loadConfig().host || "local";
+  const host = process.env.KI_HOST || loadConfig().host || "local";
   return host === "local" || host === "localhost";
 }
 
-function findSession(ws: AoiWS): PtySession | undefined {
+function findSession(ws: KiWS): PtySession | undefined {
   for (const s of sessions.values()) {
     if (s.viewers.has(ws)) return s;
   }
 }
 
-export function handlePtyMessage(ws: AoiWS, msg: string | Buffer) {
+export function handlePtyMessage(ws: KiWS, msg: string | Buffer) {
   if (typeof msg !== "string") {
     // Binary → keystroke to PTY stdin
     const session = findSession(ws);
@@ -47,11 +47,11 @@ export function handlePtyMessage(ws: AoiWS, msg: string | Buffer) {
   } catch { /* expected: malformed WS message */ }
 }
 
-export function handlePtyClose(ws: AoiWS) {
+export function handlePtyClose(ws: KiWS) {
   detach(ws);
 }
 
-async function attach(ws: AoiWS, target: string, cols: number, rows: number) {
+async function attach(ws: KiWS, target: string, cols: number, rows: number) {
   // Sanitize target: only allow safe characters
   const safe = target.replace(/[^a-zA-Z0-9\-_:.]/g, "");
   if (!safe) return;
@@ -82,7 +82,7 @@ async function attach(ws: AoiWS, target: string, cols: number, rows: number) {
 
   // Create a grouped session — shares windows but has independent client sizing.
   // This prevents the web terminal from shrinking the real terminal.
-  const ptySessionName = `aoi-pty-${Date.now()}-${++nextPtyId}`;
+  const ptySessionName = `ki-pty-${Date.now()}-${++nextPtyId}`;
   try {
     await tmux.newGroupedSession(sessionName, ptySessionName, {
       cols: c, rows: r, window: windowPart || undefined,
@@ -101,7 +101,7 @@ async function attach(ws: AoiWS, target: string, cols: number, rows: number) {
     const cmd = `stty rows ${r} cols ${c} 2>/dev/null; TERM=xterm-256color ${tmuxCmd()} attach-session -t '${ptySessionName}'`;
     args = ["script", "-qfc", cmd, "/dev/null"];
   } else {
-    const host = process.env.AOI_HOST || loadConfig().host || "local";
+    const host = process.env.KI_HOST || loadConfig().host || "local";
     args = ["ssh", "-tt", host, `TERM=xterm-256color ${tmuxCmd()} attach-session -t '${ptySessionName}'`];
   }
 
@@ -147,13 +147,13 @@ async function attach(ws: AoiWS, target: string, cols: number, rows: number) {
   })();
 }
 
-function resize(_ws: AoiWS, _cols: number, _rows: number) {
+function resize(_ws: KiWS, _cols: number, _rows: number) {
   // No-op: with grouped sessions, resize-pane would affect the shared pane
   // (shrinking the real terminal). The web terminal works at its initial size.
   // TODO: proper PTY resize via node-pty or ioctl
 }
 
-function detach(ws: AoiWS) {
+function detach(ws: KiWS) {
   for (const [target, session] of sessions) {
     if (!session.viewers.has(ws)) continue;
     session.viewers.delete(ws);

@@ -14,7 +14,7 @@ export async function cmdHealth() {
     checks.push({ name: "tmux server", status: "fail", detail: "not running" });
   }
 
-  // 2. aoi server
+  // 2. ki server
   try {
     const config = loadConfig();
     const port = loadConfig().port;
@@ -22,12 +22,12 @@ export async function cmdHealth() {
     if (res.ok) {
       const data = await res.json();
       const count = Array.isArray(data) ? data.length : (data.sessions?.length || 0);
-      checks.push({ name: "aoi server", status: "ok", detail: `online (:${port}, ${count} sessions)` });
+      checks.push({ name: "ki server", status: "ok", detail: `online (:${port}, ${count} sessions)` });
     } else {
-      checks.push({ name: "aoi server", status: "warn", detail: `HTTP ${res.status}` });
+      checks.push({ name: "ki server", status: "warn", detail: `HTTP ${res.status}` });
     }
   } catch {
-    checks.push({ name: "aoi server", status: "fail", detail: "offline" });
+    checks.push({ name: "ki server", status: "fail", detail: "offline" });
   }
 
   // 3. disk
@@ -55,14 +55,14 @@ export async function cmdHealth() {
   try {
     const pm2 = execSync("pm2 jlist 2>/dev/null", { encoding: "utf-8" });
     const procs = JSON.parse(pm2);
-    const aoi = procs.find((p: any) => p.name === "aoi");
-    if (aoi) {
-      checks.push({ name: "pm2 aoi", status: aoi.pm2_env?.status === "online" ? "ok" : "warn", detail: `${aoi.pm2_env?.status} (pid ${aoi.pid})` });
+    const ki = procs.find((p: any) => p.name === "ki");
+    if (ki) {
+      checks.push({ name: "pm2 ki", status: ki.pm2_env?.status === "online" ? "ok" : "warn", detail: `${ki.pm2_env?.status} (pid ${ki.pid})` });
     } else {
-      checks.push({ name: "pm2 aoi", status: "fail", detail: "not found" });
+      checks.push({ name: "pm2 ki", status: "fail", detail: "not found" });
     }
   } catch {
-    checks.push({ name: "pm2 aoi", status: "warn", detail: "pm2 not available" });
+    checks.push({ name: "pm2 ki", status: "warn", detail: "pm2 not available" });
   }
 
   // 6. peers — reconcile both config.peers (string[]) and config.namedPeers ({name,url}[])
@@ -87,7 +87,7 @@ export async function cmdHealth() {
   }
 
   // Output
-  console.log("\naoi health\n");
+  console.log("\nki health\n");
   for (const c of checks) {
     const icon = c.status === "ok" ? "\x1b[32m●\x1b[0m" : c.status === "warn" ? "\x1b[33m●\x1b[0m" : c.status === "fail" ? "\x1b[31m●\x1b[0m" : "\x1b[90m○\x1b[0m";
     console.log(`  ${icon} ${c.name.padEnd(18)} ${c.detail}`);

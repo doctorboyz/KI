@@ -1,7 +1,7 @@
 /**
  * Command Plugin Registry (beta) — pluggable CLI commands.
  *
- * Drop a .ts/.js file in ~/.oracle/commands/ with:
+ * Drop a .ts/.js file in ~/.kappa/commands/ with:
  *   export const command = { name: "hello", description: "Say hello" };
  *   export default async function(args, flags) { ... }
  *

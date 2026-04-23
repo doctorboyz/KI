@@ -1,7 +1,7 @@
 /**
- * aoi peers — subcommand implementations (#568).
+ * ki peers — subcommand implementations (#568).
  *
- * Pure(-ish) functions for CRUD over `~/.aoi/peers.json`. No CLI
+ * Pure(-ish) functions for CRUD over `~/.ki/peers.json`. No CLI
  * parsing here — the dispatcher in index.ts peels off `args[0]` and
  * hands typed positional + flag data to these functions.
  *

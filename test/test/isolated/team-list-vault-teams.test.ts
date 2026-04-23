@@ -12,7 +12,7 @@ import { _setDirs } from "../../src/commands/plugins/team/impl";
 let testDir: string;
 let toolTeamsDir: string;
 let tasksDir: string;
-let oracleRoot: string;
+let kappaRoot: string;
 let originalCwd: string;
 
 beforeEach(() => {
@@ -20,13 +20,13 @@ beforeEach(() => {
   testDir = mkdtempSync(join(tmpdir(), "maw-bugB-"));
   toolTeamsDir = join(testDir, "tool-teams");
   tasksDir = join(testDir, "tasks");
-  oracleRoot = join(testDir, "oracle");
+  kappaRoot = join(testDir, "kappa");
   mkdirSync(toolTeamsDir, { recursive: true });
   mkdirSync(tasksDir, { recursive: true });
-  // Oracle root markers for resolvePsi
-  mkdirSync(join(oracleRoot, "ψ/memory/mailbox/teams"), { recursive: true });
-  writeFileSync(join(oracleRoot, "CLAUDE.md"), "# oracle\n");
-  process.chdir(oracleRoot);
+  // Kappa root markers for resolvePsi
+  mkdirSync(join(kappaRoot, "ψ/memory/mailbox/teams"), { recursive: true });
+  writeFileSync(join(kappaRoot, "CLAUDE.md"), "# kappa\n");
+  process.chdir(kappaRoot);
   _setDirs(toolTeamsDir, tasksDir);
 });
 
@@ -42,7 +42,7 @@ function writeToolTeam(name: string, members: any[] = []) {
 }
 
 function writeVaultTeam(name: string, members: string[] = []) {
-  const d = join(oracleRoot, "ψ/memory/mailbox/teams", name);
+  const d = join(kappaRoot, "ψ/memory/mailbox/teams", name);
   mkdirSync(d, { recursive: true });
   writeFileSync(join(d, "manifest.json"), JSON.stringify({ name, members, description: "vault test" }));
 }
@@ -140,7 +140,7 @@ describe("listVaultOnlyTeams + cmdTeamList — #393 Bug B", () => {
   });
 
   test("malformed vault manifest is skipped, not thrown", async () => {
-    const d = join(oracleRoot, "ψ/memory/mailbox/teams/broken");
+    const d = join(kappaRoot, "ψ/memory/mailbox/teams/broken");
     mkdirSync(d, { recursive: true });
     writeFileSync(join(d, "manifest.json"), "{not-valid-json");
 

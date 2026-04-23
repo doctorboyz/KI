@@ -1,9 +1,9 @@
 /**
- * Oracle Feed Parser — Pure functions, zero dependencies.
+ * Kappa Feed Parser — Pure functions, zero dependencies.
  * Works in both server (Bun) and browser (via Vite).
  *
  * Feed log format:
- *   TIMESTAMP | ORACLE | HOST | EVENT | PROJECT | SESSION_ID » MESSAGE
+ *   TIMESTAMP | KAPPA | HOST | EVENT | PROJECT | SESSION_ID » MESSAGE
  */
 
 export type FeedEventType =
@@ -30,7 +30,7 @@ export type FeedEventType =
 
 export interface FeedEvent {
   timestamp: string;
-  oracle: string;
+  kappa: string;
   host: string;
   event: FeedEventType;
   project: string;
@@ -50,7 +50,7 @@ export function parseLine(line: string): FeedEvent | null {
   if (parts.length < 5) return null;
 
   const timestamp = parts[0];
-  const oracle = parts[1];
+  const kappa = parts[1];
   const host = parts[2];
   const event = parts[3] as FeedEventType;
   const project = parts[4];
@@ -73,14 +73,14 @@ export function parseLine(line: string): FeedEvent | null {
   const ts = new Date(timestamp.replace(" ", "T")).getTime();
   if (isNaN(ts)) return null;
 
-  return { timestamp, oracle, host, event, project, sessionId, message, ts };
+  return { timestamp, kappa, host, event, project, sessionId, message, ts };
 }
 
 /**
- * Get active oracles from a list of events within a time window.
- * Returns Map of oracle name → most recent FeedEvent.
+ * Get active kappas from a list of events within a time window.
+ * Returns Map of kappa name → most recent FeedEvent.
  */
-export function activeOracles(
+export function activeKappas(
   events: FeedEvent[],
   windowMs = 5 * 60_000,
 ): Map<string, FeedEvent> {
@@ -89,8 +89,8 @@ export function activeOracles(
 
   for (const e of events) {
     if (e.ts < cutoff) continue;
-    const prev = map.get(e.oracle);
-    if (!prev || e.ts > prev.ts) map.set(e.oracle, e);
+    const prev = map.get(e.kappa);
+    if (!prev || e.ts > prev.ts) map.set(e.kappa, e);
   }
 
   return map;
@@ -110,7 +110,7 @@ const TOOL_ICONS: Record<string, string> = {
 };
 
 /**
- * Human-readable one-liner for what the oracle is doing.
+ * Human-readable one-liner for what the kappa is doing.
  */
 export function describeActivity(event: FeedEvent): string {
   switch (event.event) {

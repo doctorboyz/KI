@@ -8,7 +8,7 @@
  *
  * Both types share the same manifest shape. The difference:
  *   wasm: string  → sandboxed WASM plugin (host functions only)
- *   entry: string → TS plugin (full aoi internals access)
+ *   entry: string → TS plugin (full ki internals access)
  */
 
 /**
@@ -20,8 +20,8 @@ export type PluginTarget = "js" | "wasm";
 
 /**
  * Built-plugin artifact descriptor. Present on compiled plugins written
- * by `aoi plugin build`. `sha256: null` means "unbuilt" — the loader
- * refuses such plugins with a "run `aoi plugin build`" message.
+ * by `ki plugin build`. `sha256: null` means "unbuilt" — the loader
+ * refuses such plugins with a "run `ki plugin build`" message.
  */
 export interface PluginArtifact {
   path: string;             // relative path to built bundle (e.g. "dist/index.js")
@@ -62,7 +62,7 @@ export interface PluginManifest {
     path: string;       // relative path to module file
   };
   transport?: {
-    peer?: boolean;     // enable aoi hey plugin:<name>
+    peer?: boolean;     // enable ki hey plugin:<name>
   };
 }
 

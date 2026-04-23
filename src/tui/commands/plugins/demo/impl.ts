@@ -63,11 +63,11 @@ function buildAgent2Script(fast: boolean): string {
     "pause 3",
     "echo \"  \\033[33m[agent-2]\\033[0m   analysing improvement opportunities...\"",
     "pause 2",
-    "echo \"  \\033[33m[agent-2]\\033[0m   [1] ship aoi init wizard — reduce setup from 6 steps to 30 seconds\"",
+    "echo \"  \\033[33m[agent-2]\\033[0m   [1] ship ki init wizard — reduce setup from 6 steps to 30 seconds\"",
     "pause 2",
     "echo \"  \\033[33m[agent-2]\\033[0m   [2] add asciinema to README — first-5-minute retention lever\"",
     "pause 2",
-    "echo \"  \\033[33m[agent-2]\\033[0m   [3] aoi costs --daily sparkline — 80% already built\"",
+    "echo \"  \\033[33m[agent-2]\\033[0m   [3] ki costs --daily sparkline — 80% already built\"",
     "pause 3",
     "echo \"\"",
     "echo \"  \\033[33m[agent-2]\\033[0m ✓ improvements filed — 3 issues created\"",
@@ -125,7 +125,7 @@ async function writeTempScript(
   exec: (cmd: string) => Promise<string>,
 ): Promise<string> {
   const suffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  const path = `/tmp/aoi-demo-${suffix}.sh`;
+  const path = `/tmp/ki-demo-${suffix}.sh`;
   await Bun.write(path, content + "\n");
   await exec(`chmod +x '${path}'`);
   return path;
@@ -145,18 +145,18 @@ export async function cmdDemo(opts: DemoOpts = {}): Promise<void> {
 
   if (!process.env.TMUX) {
     say("");
-    say(`  ${CYAN}aoi demo${RESET} \u2014 simulated multi-agent session`);
+    say(`  ${CYAN}ki demo${RESET} \u2014 simulated multi-agent session`);
     say("");
     say(`  ${DIM}This demo requires an active tmux session.${RESET}`);
     say(`  Run: ${CYAN}tmux new-session -s demo${RESET}`);
-    say(`  Then re-run: ${CYAN}aoi demo${RESET}`);
+    say(`  Then re-run: ${CYAN}ki demo${RESET}`);
     say("");
     return;
   }
 
   // --- Narrator intro -------------------------------------------------------
 
-  header("\uD83C\uDFAC  aoi demo \u2014 simulated multi-agent session");
+  header("\uD83C\uDFAC  ki demo \u2014 simulated multi-agent session");
   say(`  ${DIM}No API key required. Zero real Claude calls.${RESET}`);
   say(`  ${DIM}Two mock agents will work on a canned task.${RESET}`);
   await sleep(delay * 1200);
@@ -254,13 +254,13 @@ export async function cmdDemo(opts: DemoOpts = {}): Promise<void> {
     say(`  ${GREEN}\u2713 demo complete.${RESET}`);
     say("");
     say(`  ${DIM}For the real thing:${RESET}`);
-    say(`    ${CYAN}aoi wake <your-repo>${RESET}   \u2014 spawn a real agent from any GitHub repo`);
-    say(`    ${CYAN}aoi hey <agent> "..."${RESET}   \u2014 send it a task`);
-    say(`    ${CYAN}aoi peek <agent>${RESET}         \u2014 watch its screen`);
-    say(`    ${CYAN}aoi costs${RESET}                \u2014 see what it spent`);
+    say(`    ${CYAN}ki wake <your-repo>${RESET}   \u2014 spawn a real agent from any GitHub repo`);
+    say(`    ${CYAN}ki hey <agent> "..."${RESET}   \u2014 send it a task`);
+    say(`    ${CYAN}ki peek <agent>${RESET}         \u2014 watch its screen`);
+    say(`    ${CYAN}ki costs${RESET}                \u2014 see what it spent`);
     say("");
     say(
-      `  ${DIM}Install: curl -fsSL https://github.com/Soul-Brews-Studio/aoi/install.sh | bash${RESET}`,
+      `  ${DIM}Install: curl -fsSL https://github.com/doctorboyz/ki/install.sh | bash${RESET}`,
     );
     say("");
   } finally {

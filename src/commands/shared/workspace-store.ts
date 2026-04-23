@@ -5,7 +5,7 @@ import { loadConfig } from "../../core/config";
 
 // ── Workspace config directory ──────────────────────────────────────
 export const WORKSPACES_DIR = join(
-  process.env.AOI_CONFIG_DIR || join(homedir(), ".config", "aoi"),
+  process.env.KI_CONFIG_DIR || join(homedir(), ".config", "ki"),
   "workspaces"
 );
 mkdirSync(WORKSPACES_DIR, { recursive: true });
@@ -38,8 +38,8 @@ export function configPath(id: string): string {
  * - `joinedAt` falls back to `createdAt` (preserves info from legacy files)
  * - `lastStatus` is whitelisted to the two valid values
  *
- * Early versions of `aoi workspace create` (around commit 15830d2,
- * 2026-03-30) wrote server-side-shaped files into ~/.config/aoi/workspaces/
+ * Early versions of `ki workspace create` (around commit 15830d2,
+ * 2026-03-30) wrote server-side-shaped files into ~/.config/ki/workspaces/
  * that are missing `hubUrl`, `sharedAgents`, and `joinedAt`. See #194.
  */
 export function normalizeWorkspace(raw: unknown): WorkspaceConfig | null {
@@ -110,8 +110,8 @@ export function reportNoWorkspaceId(): void {
   const all = loadAllWorkspaces();
   if (all.length === 0) {
     console.error("\x1b[31m\u274c\x1b[0m no workspaces joined");
-    console.error("\x1b[90m  aoi workspace create <name>   Create a new workspace\x1b[0m");
-    console.error("\x1b[90m  aoi workspace join <code>     Join with invite code\x1b[0m");
+    console.error("\x1b[90m  ki workspace create <name>   Create a new workspace\x1b[0m");
+    console.error("\x1b[90m  ki workspace join <code>     Join with invite code\x1b[0m");
     return;
   }
   console.error(`\x1b[31m\u274c\x1b[0m multiple workspaces joined (${all.length}) — pass one with --workspace <id>:`);

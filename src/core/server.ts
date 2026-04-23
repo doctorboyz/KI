@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { AoiEngine } from "./engine";
+import { KiEngine } from "./engine";
 import type { WSData } from "./types";
 import { loadConfig } from "./config";
 import { existsSync, readFileSync } from "fs";
@@ -50,20 +50,20 @@ views.get("/topology", async (c) => {
 
 mountViews(views);
 
-// Serve packed aoi-ui dist (Shape A — single port, single process)
-const AOI_UI_DIR = process.env.AOI_UI_DIR || join(homedir(), ".aoi", "ui", "dist");
-if (existsSync(AOI_UI_DIR)) {
-  views.use("/*", serveStatic({ root: AOI_UI_DIR }));
+// Serve packed ki-ui dist (Shape A — single port, single process)
+const KI_UI_DIR = process.env.KI_UI_DIR || join(homedir(), ".ki", "ui", "dist");
+if (existsSync(KI_UI_DIR)) {
+  views.use("/*", serveStatic({ root: KI_UI_DIR }));
 } else {
-  // The Door — minimal landing page when no packed aoi-ui is installed.
+  // The Door — minimal landing page when no packed ki-ui is installed.
   // Lets users connect to any federation by pasting an address.
   let doorHtml: string;
   try {
     doorHtml = readFileSync(join(import.meta.dir, "static", "door.html"), "utf-8");
   } catch {
     // door.html missing (e.g. fresh clone without assets) — serve inline stub
-    process.stderr.write("→ aoi-ui not found. Run `aoi ui build` or install aoi-ui.\n");
-    doorHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>aoi</title></head><body style="font-family:monospace;background:#0d0d0d;color:#ccc;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><div style="text-align:center"><h1 style="color:#fff">aoi</h1><p>aoi-ui not installed. Run <code style="color:#7dd3fc">aoi ui build</code> or install aoi-ui.</p></div></body></html>`;
+    process.stderr.write("→ ki-ui not found. Run `ki ui build` or install ki-ui.\n");
+    doorHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ki</title></head><body style="font-family:monospace;background:#0d0d0d;color:#ccc;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><div style="text-align:center"><h1 style="color:#fff">ki</h1><p>ki-ui not installed. Run <code style="color:#7dd3fc">ki ui build</code> or install ki-ui.</p></div></body></html>`;
   }
   views.get("/", (c) => c.html(doorHtml));
 }
@@ -74,8 +74,8 @@ export { views };
 
 // --- Server ---
 
-export async function startServer(port = +(process.env.AOI_PORT || loadConfig().port || 3456)) {
-  const engine = new AoiEngine({ feedBuffer, feedListeners });
+export async function startServer(port = +(process.env.KI_PORT || loadConfig().port || 3456)) {
+  const engine = new KiEngine({ feedBuffer, feedListeners });
 
   const HTTP_URL = `http://localhost:${port}`;
   const WS_URL = `ws://localhost:${port}/ws`;
@@ -84,7 +84,7 @@ export async function startServer(port = +(process.env.AOI_PORT || loadConfig().
   try {
     const sessions = await listSessions();
     const stale = sessions.filter(s =>
-      s.name.startsWith("aoi-pty-") || s.name.endsWith("-view")
+      s.name.startsWith("ki-pty-") || s.name.endsWith("-view")
     );
     if (stale.length > 0) {
       const reaper = new Tmux();
@@ -108,7 +108,7 @@ export async function startServer(port = +(process.env.AOI_PORT || loadConfig().
   // Hook workflow triggers into feed events
   setupTriggerListener(feedListeners);
 
-  // Plugin system — AOI registry-based plugin loading
+  // Plugin system — KI registry-based plugin loading
   try {
     const { discoverPackages } = require("../plugin/registry");
     const discovered = discoverPackages();
@@ -159,12 +159,12 @@ export async function startServer(port = +(process.env.AOI_PORT || loadConfig().
   if (hasPeers && !config.federationToken) {
     console.warn(`\x1b[31m⚠ WARNING: peers configured but no federationToken set!\x1b[0m`);
     console.warn(`\x1b[31m  Port ${port} is exposed to network WITHOUT authentication.\x1b[0m`);
-    console.warn(`\x1b[31m  Add "federationToken" (min 16 chars) to aoi.config.json\x1b[0m`);
+    console.warn(`\x1b[31m  Add "federationToken" (min 16 chars) to ki.config.json\x1b[0m`);
   }
 
   const server = Bun.serve({ port, hostname, fetch: fetchHandler, websocket: wsHandler });
   setBunServer(server);
-  console.log(`aoi ${VERSION} serve → ${HTTP_URL} (${WS_URL}) [${hostname}]`);
+  console.log(`ki ${VERSION} serve → ${HTTP_URL} (${WS_URL}) [${hostname}]`);
 
   // HTTPS server (if TLS configured)
   const tlsCfg = loadConfig().tls;
@@ -172,13 +172,13 @@ export async function startServer(port = +(process.env.AOI_PORT || loadConfig().
     const tlsPort = port + 1;
     const tls = { cert: readFileSync(tlsCfg.cert), key: readFileSync(tlsCfg.key) };
     Bun.serve({ port: tlsPort, tls, fetch: fetchHandler, websocket: wsHandler });
-    console.log(`aoi serve → https://localhost:${tlsPort} (wss://localhost:${tlsPort}/ws) [TLS]`);
+    console.log(`ki serve → https://localhost:${tlsPort} (wss://localhost:${tlsPort}/ws) [TLS]`);
   }
 
   return server;
 }
 
-// Auto-start unless imported by CLI (CLI sets AOI_CLI=1)
-if (!process.env.AOI_CLI) {
+// Auto-start unless imported by CLI (CLI sets KI_CLI=1)
+if (!process.env.KI_CLI) {
   startServer();
 }

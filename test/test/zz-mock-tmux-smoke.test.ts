@@ -28,7 +28,7 @@ describe("mock-tmux helper", () => {
 
   test("installTmuxMock makes tmux.listAll() return configured sessions", async () => {
     const sessions: MockSession[] = [
-      { name: "oracles", windows: [{ index: 1, name: "pulse-oracle", active: true }] },
+      { name: "kappas", windows: [{ index: 1, name: "pulse-kappa", active: true }] },
     ];
     installTmuxMock({ sessions });
 
@@ -36,20 +36,20 @@ describe("mock-tmux helper", () => {
     const result = await tmux.listAll();
 
     expect(result).toHaveLength(1);
-    expect(result[0].name).toBe("oracles");
-    expect(result[0].windows[0].name).toBe("pulse-oracle");
+    expect(result[0].name).toBe("kappas");
+    expect(result[0].windows[0].name).toBe("pulse-kappa");
   });
 
   test("setPaneCommands controls getPaneCommands() output", async () => {
     installTmuxMock({ sessions: [] });
-    setPaneCommands({ "oracles:1": "claude", "oracles:2": "zsh" });
+    setPaneCommands({ "kappas:1": "claude", "kappas:2": "zsh" });
 
     const { tmux } = await import("../src/core/transport/tmux");
-    const cmds = await tmux.getPaneCommands(["oracles:1", "oracles:2", "oracles:3"]);
+    const cmds = await tmux.getPaneCommands(["kappas:1", "kappas:2", "kappas:3"]);
 
-    expect(cmds["oracles:1"]).toBe("claude");
-    expect(cmds["oracles:2"]).toBe("zsh");
-    expect(cmds["oracles:3"]).toBeUndefined();
+    expect(cmds["kappas:1"]).toBe("claude");
+    expect(cmds["kappas:2"]).toBe("zsh");
+    expect(cmds["kappas:3"]).toBeUndefined();
   });
 
   test("getCapturedCommands records tmux calls for assertions", async () => {

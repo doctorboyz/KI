@@ -6,7 +6,7 @@
  * those need a human.
  */
 
-import type { AoiConfig, PeerConfig } from "../../core/config";
+import type { KiConfig, PeerConfig } from "../../core/config";
 import type { DoctorFinding, Level } from "./fleet-doctor-checks";
 
 // ---------- Color/icon helpers ----------
@@ -38,7 +38,7 @@ export function iconFor(level: Level): string {
  * transitively. The stub in test/helpers/mock-config.ts only exposes a
  * subset of the config API.
  */
-export function defaultSave(update: Partial<AoiConfig>): void {
+export function defaultSave(update: Partial<KiConfig>): void {
   const mod = require("../../core/config") as typeof import("../../core/config");
   mod.saveConfig(update);
 }
@@ -57,8 +57,8 @@ export function defaultSave(update: Partial<AoiConfig>): void {
  */
 export function autoFix(
   findings: DoctorFinding[],
-  config: AoiConfig,
-  save: (update: Partial<AoiConfig>) => void = defaultSave,
+  config: KiConfig,
+  save: (update: Partial<KiConfig>) => void = defaultSave,
 ): string[] {
   const applied: string[] = [];
   const currentPeers = config.namedPeers || [];
@@ -112,11 +112,11 @@ export function autoFix(
   // 3. Auto-add missing agents
   for (const f of findings) {
     if (f.check !== "missing-agent" || !f.fixable || !f.detail) continue;
-    const oracle = f.detail.oracle as string | undefined;
+    const kappa = f.detail.kappa as string | undefined;
     const peerNode = f.detail.peerNode as string | undefined;
-    if (oracle && peerNode && !currentAgents[oracle]) {
-      currentAgents[oracle] = peerNode;
-      applied.push(`added config.agents['${oracle}'] = '${peerNode}'`);
+    if (kappa && peerNode && !currentAgents[kappa]) {
+      currentAgents[kappa] = peerNode;
+      applied.push(`added config.agents['${kappa}'] = '${peerNode}'`);
       touched = true;
     }
   }

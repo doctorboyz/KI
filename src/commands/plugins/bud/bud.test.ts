@@ -16,9 +16,9 @@ describe("bud plugin", () => {
   });
 
   it("cli: basic bud", async () => {
-    const result = await handler({ source: "cli", args: ["myoracle"] });
+    const result = await handler({ source: "cli", args: ["mykappa"] });
     expect(result.ok).toBe(true);
-    expect(result.output).toContain("budding myoracle");
+    expect(result.output).toContain("budding mykappa");
   });
 
   it("cli: bud with flags", async () => {

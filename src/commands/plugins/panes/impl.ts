@@ -17,14 +17,14 @@ interface PaneRow {
 }
 
 /**
- * aoi panes [target]
+ * ki panes [target]
  *
  * List panes with metadata. Default target is the current tmux window.
  * If target is a bare session name, lists panes across ALL its windows.
  * If target is session:window, lists panes of that window.
  *
  * Output columns — target, dims, command, title — match the style of
- * `aoi ls`: plain text, ANSI-colored header, one row per pane.
+ * `ki ls`: plain text, ANSI-colored header, one row per pane.
  */
 export async function cmdPanes(target?: string, opts: PanesOpts = {}) {
   const tmux = tmuxCmd();
@@ -65,7 +65,7 @@ export async function cmdPanes(target?: string, opts: PanesOpts = {}) {
           console.error(`  \x1b[90m  did you mean:\x1b[0m`);
           for (const s of r.hints) console.error(`  \x1b[90m    • ${s.name}\x1b[0m`);
         } else {
-          console.error(`  \x1b[90m  try: aoi ls\x1b[0m`);
+          console.error(`  \x1b[90m  try: ki ls\x1b[0m`);
         }
         throw new Error(`session '${target}' not found`);
       }

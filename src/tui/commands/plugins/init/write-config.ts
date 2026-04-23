@@ -1,9 +1,9 @@
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "fs";
 import { dirname } from "path";
-import type { AoiConfig } from "../../../../core/config/types";
+import type { KiConfig } from "../../../../core/config/types";
 
 /** Atomically write JSON config; throws EEXIST if `wx` flag and file exists. */
-export function writeConfigAtomic(filePath: string, config: Partial<AoiConfig>, overwrite: boolean): void {
+export function writeConfigAtomic(filePath: string, config: Partial<KiConfig>, overwrite: boolean): void {
   mkdirSync(dirname(filePath), { recursive: true });
   const body = JSON.stringify(config, null, 2) + "\n";
   if (overwrite) {
@@ -35,19 +35,19 @@ export interface BuildConfigInput {
 }
 
 const DEFAULT_PORT = 3456;
-const DEFAULT_ORACLE_URL = "http://localhost:47778";
+const DEFAULT_KAPPA_URL = "http://localhost:47778";
 const DEFAULT_COMMAND = "claude --dangerously-skip-permissions --continue";
 
-export function buildConfig(input: BuildConfigInput): Partial<AoiConfig> {
+export function buildConfig(input: BuildConfigInput): Partial<KiConfig> {
   const env: Record<string, string> = {};
   if (input.token) env.CLAUDE_CODE_OAUTH_TOKEN = input.token;
 
-  const cfg: Partial<AoiConfig> = {
+  const cfg: Partial<KiConfig> = {
     host: input.node,
     node: input.node,
     port: DEFAULT_PORT,
     ghqRoot: input.ghqRoot,
-    oracleUrl: DEFAULT_ORACLE_URL,
+    kappaUrl: DEFAULT_KAPPA_URL,
     env,
     commands: { default: DEFAULT_COMMAND },
     sessions: {},

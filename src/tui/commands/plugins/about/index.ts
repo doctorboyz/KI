@@ -1,9 +1,9 @@
 import type { InvokeContext, InvokeResult } from "../../../../plugin/types";
-import { cmdOracleAbout } from "../oracle/impl";
+import { cmdKappaAbout } from "../kappa/impl";
 
 export const command = {
   name: ["about", "info"],
-  description: "Show information about an oracle (session, repo, windows).",
+  description: "Show information about an kappa (session, repo, windows).",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -19,23 +19,23 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     else logs.push(a.map(String).join(" "));
   };
   try {
-    let oracle: string;
+    let kappa: string;
 
     if (ctx.source === "cli") {
       const args = ctx.args as string[];
       if (!args[0]) {
-        return { ok: false, error: "usage: aoi about <oracle>" };
+        return { ok: false, error: "usage: ki about <kappa>" };
       }
-      oracle = args[0];
+      kappa = args[0];
     } else {
       const args = ctx.args as Record<string, unknown>;
-      if (!args.oracle) {
-        return { ok: false, error: "oracle is required" };
+      if (!args.kappa) {
+        return { ok: false, error: "kappa is required" };
       }
-      oracle = args.oracle as string;
+      kappa = args.kappa as string;
     }
 
-    await cmdOracleAbout(oracle);
+    await cmdKappaAbout(kappa);
     return { ok: true, output: logs.join("\n") || undefined };
   } catch (e: any) {
     return { ok: false, error: logs.join("\n") || e.message, output: logs.join("\n") || undefined };

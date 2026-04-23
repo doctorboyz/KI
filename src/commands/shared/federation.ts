@@ -33,7 +33,7 @@ function labelForPeer(url: string, named: { name: string; url: string }[]): stri
   } catch { return url; }
 }
 
-/** aoi federation status — show all nodes (local + peers) with connectivity + agent counts */
+/** ki federation status — show all nodes (local + peers) with connectivity + agent counts */
 export async function cmdFederationStatus() {
   const peers = getPeers();
   const config = loadConfig();
@@ -64,7 +64,7 @@ export async function cmdFederationStatus() {
 
   // No peers? Still show helpful hint.
   if (peers.length === 0) {
-    console.log("\n\x1b[90mNo peers configured. Add namedPeers[] to aoi.config.json.\x1b[0m");
+    console.log("\n\x1b[90mNo peers configured. Add namedPeers[] to ki.config.json.\x1b[0m");
     console.log('\x1b[90mExample: { "namedPeers": [{ "name": "other", "url": "http://other-host:3456" }] }\x1b[0m\n');
     return;
   }
@@ -83,7 +83,7 @@ export async function cmdFederationStatus() {
     const dot = reachable ? "\x1b[32m●\x1b[0m" : "\x1b[31m●\x1b[0m";
     // "reachable" is truthful — we only verified local→peer direction.
     // The reverse direction (peer→local) is NOT checked here. See PR #398
-    // for the symmetric-pair proposal (`aoi federation --verify`).
+    // for the symmetric-pair proposal (`ki federation --verify`).
     const status = reachable
       ? `\x1b[32mreachable\x1b[0m  \x1b[90m${latency}ms · ${agentCount} agent${agentCount !== 1 ? "s" : ""}\x1b[0m`
       : "\x1b[31munreachable\x1b[0m";
@@ -97,9 +97,9 @@ export async function cmdFederationStatus() {
 }
 
 /**
- * aoi federation --verify — pair-symmetric check.
+ * ki federation --verify — pair-symmetric check.
  *
- * Runs the one-way `aoi federation` output first, then for each reachable peer
+ * Runs the one-way `ki federation` output first, then for each reachable peer
  * asks their `/api/federation/status` whether local is in their peer list and
  * marked reachable. Classifies each pair as healthy / half-up / down / unknown
  * and exits non-zero if any pair is non-healthy.
@@ -120,7 +120,7 @@ export async function cmdFederationStatusVerify(): Promise<{ ok: boolean }> {
   );
 
   if (result.totalPairs === 0) {
-    console.log("\x1b[90mNo peers configured. Add namedPeers[] to aoi.config.json.\x1b[0m\n");
+    console.log("\x1b[90mNo peers configured. Add namedPeers[] to ki.config.json.\x1b[0m\n");
     return { ok: true };
   }
 

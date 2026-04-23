@@ -11,7 +11,7 @@ export interface CaptureOpts {
 }
 
 /**
- * aoi capture <target> [--pane N] [--lines N] [--full]
+ * ki capture <target> [--pane N] [--lines N] [--full]
  *
  * Capture tmux pane content. Wraps `tmux capture-pane -p` with sane
  * defaults so skills don't shell out directly.
@@ -22,7 +22,7 @@ export interface CaptureOpts {
  */
 export async function cmdCapture(target: string, opts: CaptureOpts = {}) {
   if (!target) {
-    throw new Error("usage: aoi capture <target> [--pane N] [--lines N] [--full]\n  e.g. aoi capture aoijs\n       aoi capture neo:0 --pane 1 --lines 100\n       aoi capture aoijs --full");
+    throw new Error("usage: ki capture <target> [--pane N] [--lines N] [--full]\n  e.g. ki capture kijs\n       ki capture neo:0 --pane 1 --lines 100\n       ki capture kijs --full");
   }
 
   let resolved: string;
@@ -56,7 +56,7 @@ export async function cmdCapture(target: string, opts: CaptureOpts = {}) {
         console.error(`  \x1b[90m  did you mean:\x1b[0m`);
         for (const s of r.hints) console.error(`  \x1b[90m    • ${s.name}\x1b[0m`);
       } else {
-        console.error(`  \x1b[90m  try: aoi ls\x1b[0m`);
+        console.error(`  \x1b[90m  try: ki ls\x1b[0m`);
       }
       throw new Error(`session '${target}' not found`);
     }

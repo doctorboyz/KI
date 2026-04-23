@@ -9,10 +9,10 @@
  */
 
 import type { MiddlewareHandler } from "hono";
-import { loadConfig, type AoiConfig } from "../core/config";
+import { loadConfig, type KiConfig } from "../core/config";
 
 // Lazy singleton — initialized once, reused across requests
-let _config: AoiConfig | null = null;
+let _config: KiConfig | null = null;
 
 export function withContext(): MiddlewareHandler {
   return async (c, next) => {

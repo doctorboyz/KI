@@ -5,12 +5,12 @@ export async function cmdTriggers(): Promise<void> {
   const history = getTriggerHistory();
 
   if (!triggers.length) {
-    console.log("\x1b[90mNo triggers configured. Add a 'triggers' array to aoi.config.json.\x1b[0m");
+    console.log("\x1b[90mNo triggers configured. Add a 'triggers' array to ki.config.json.\x1b[0m");
     console.log(`\n\x1b[90mExample:\x1b[0m
   "triggers": [
-    { "on": "issue-close", "repo": "Soul-Brews-Studio/aoi-js", "action": "aoi hey pulse-oracle 'issue closed'" },
-    { "on": "pr-merge", "repo": "Soul-Brews-Studio/aoi-js", "action": "aoi done neo-aoijs" },
-    { "on": "agent-idle", "timeout": 30, "action": "aoi sleep {agent}" }
+    { "on": "issue-close", "repo": "doctorboyz/ki-js", "action": "ki hey pulse-kappa 'issue closed'" },
+    { "on": "pr-merge", "repo": "doctorboyz/ki-js", "action": "ki done neo-kijs" },
+    { "on": "agent-idle", "timeout": 30, "action": "ki sleep {agent}" }
   ]`);
     return;
   }

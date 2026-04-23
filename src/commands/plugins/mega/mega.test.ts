@@ -13,7 +13,7 @@ describe("mega plugin — smoke", () => {
     const ctx: InvokeContext = { source: "cli", args: ["--help"] };
     const result = await handler(ctx);
     expect(result.ok).toBe(true);
-    expect(result.output ?? "").toContain("aoi mega");
+    expect(result.output ?? "").toContain("ki mega");
   });
 
   it("CLI — 'help' sub also hits usage branch", async () => {

@@ -58,14 +58,14 @@ export async function ensureSessionRunning(session: string, excludeNames?: Set<s
 }
 
 /**
- * Create a new git worktree for an oracle task.
+ * Create a new git worktree for an kappa task.
  * Returns the worktree path and window name.
  */
 export async function createWorktree(
   repoPath: string,
   parentDir: string,
   repoName: string,
-  oracle: string,
+  kappa: string,
   name: string,
   existingWorktrees: { name: string; path: string }[],
 ): Promise<{ wtPath: string; windowName: string }> {
@@ -81,5 +81,5 @@ export async function createWorktree(
   try { await hostExec(`git -C '${safe(repoPath)}' branch -D '${safe(branch)}' 2>/dev/null`); } catch { /* ok */ }
   await hostExec(`git -C '${safe(repoPath)}' worktree add '${safe(wtPath)}' -b '${safe(branch)}'`);
   console.log(`\x1b[32m+\x1b[0m worktree: ${wtPath} (${branch})`);
-  return { wtPath, windowName: `${oracle}-${name}` };
+  return { wtPath, windowName: `${kappa}-${name}` };
 }

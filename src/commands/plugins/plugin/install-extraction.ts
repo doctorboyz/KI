@@ -82,7 +82,7 @@ export async function downloadTarball(url: string): Promise<{ ok: true; path: st
     return { ok: false, error: `download refused: response body (${buf.byteLength} bytes) exceeds ${MAX_DOWNLOAD_BYTES} byte limit` };
   }
 
-  const tmp = mkdtempSync(join(tmpdir(), "aoi-dl-"));
+  const tmp = mkdtempSync(join(tmpdir(), "ki-dl-"));
   const filename = basename(new URL(url).pathname) || "plugin.tgz";
   const outPath = join(tmp, filename);
   writeFileSync(outPath, buf);
@@ -102,7 +102,7 @@ export function verifyArtifactHashAgainst(
   expected: string,
 ): { ok: true } | { ok: false; error: string } {
   if (!manifest.artifact) {
-    return { ok: false, error: "tarball manifest has no 'artifact' field — rebuild with `aoi plugin build`" };
+    return { ok: false, error: "tarball manifest has no 'artifact' field — rebuild with `ki plugin build`" };
   }
   const artifactPath = join(dir, manifest.artifact.path);
   if (!existsSync(artifactPath)) {
@@ -124,10 +124,10 @@ export function verifyArtifactHashAgainst(
 /** Legacy manifest-only hash check. Kept as defense-in-depth fencepost per #487 §8 Phase 1. */
 export function verifyArtifactHash(dir: string, manifest: PluginManifest): { ok: true } | { ok: false; error: string } {
   if (!manifest.artifact) {
-    return { ok: false, error: "tarball manifest has no 'artifact' field — rebuild with `aoi plugin build`" };
+    return { ok: false, error: "tarball manifest has no 'artifact' field — rebuild with `ki plugin build`" };
   }
   if (manifest.artifact.sha256 === null) {
-    return { ok: false, error: "tarball manifest has artifact.sha256=null (unbuilt) — rebuild with `aoi plugin build`" };
+    return { ok: false, error: "tarball manifest has artifact.sha256=null (unbuilt) — rebuild with `ki plugin build`" };
   }
   return verifyArtifactHashAgainst(dir, manifest, manifest.artifact.sha256);
 }

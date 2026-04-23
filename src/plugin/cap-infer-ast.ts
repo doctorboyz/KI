@@ -2,14 +2,14 @@
  * AST-based capability inference — Phase B replacement for regex scanning.
  *
  * Problem with the Phase A regex approach:
- *   • `const { id } = aoi; id()` — destructured usage escapes `aoi\.(\w+)` regex
- *   • `const m = aoi; m.identity()` — aliased binding escapes regex
- *   • `aoi["wake"]()` — dynamic bracket-access escapes `aoi\.\w+` regex
- *   • Transitive imports (`import aoi from "aoi-sdk"`) are not followed by regex
+ *   • `const { id } = ki; id()` — destructured usage escapes `ki\.(\w+)` regex
+ *   • `const m = ki; m.identity()` — aliased binding escapes regex
+ *   • `ki["wake"]()` — dynamic bracket-access escapes `ki\.\w+` regex
+ *   • Transitive imports (`import ki from "ki-sdk"`) are not followed by regex
  *
  * This module uses the TypeScript Compiler API to:
  *   1. Parse the source into an AST (no type-checker needed — parse only).
- *   2. Walk import declarations to find the local name(s) bound to the aoi SDK.
+ *   2. Walk import declarations to find the local name(s) bound to the ki SDK.
  *   3. Walk call expressions and member accesses to detect capability usage
  *      through any of the four patterns above.
  *
@@ -17,8 +17,8 @@
  * When the same source is fed to both, the AST path must detect everything
  * the regex path detects PLUS additional patterns the regex misses.
  *
- * SDK import specifiers that are treated as "aoi" bindings:
- *   • "@aoi/sdk", "aoi", "aoi-sdk", "aoi/sdk" (all common forms)
+ * SDK import specifiers that are treated as "ki" bindings:
+ *   • "@ki/sdk", "ki", "ki-sdk", "ki/sdk" (all common forms)
  *   • Any import from those specifiers becomes a tracked binding.
  *
  * Module capability mappings (non-SDK):
@@ -32,8 +32,8 @@ import ts from "typescript";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-/** Import specifiers recognised as the aoi SDK. */
-const AOI_SDK_SPECIFIERS = new Set(["@aoi/sdk", "aoi", "aoi-sdk", "aoi/sdk"]);
+/** Import specifiers recognised as the ki SDK. */
+const KI_SDK_SPECIFIERS = new Set(["@ki/sdk", "ki", "ki-sdk", "ki/sdk"]);
 
 /** Module specifiers that map to a fixed capability (non-SDK). */
 const MODULE_CAP_MAP: Record<string, string> = {
@@ -64,26 +64,26 @@ export function inferCapabilitiesAst(source: string, fileName = "plugin.ts"): st
     ts.ScriptKind.TSX,
   );
 
-  // Phase 1: collect all local bindings that come from aoi SDK imports.
+  // Phase 1: collect all local bindings that come from ki SDK imports.
   //
   // We track two kinds:
-  //   • `aoiDefaultBindings` — names bound to the default export (the aoi object)
-  //     e.g. `import aoi from "@aoi/sdk"` → "aoi"
-  //          `import * as aoi from "@aoi/sdk"` → "aoi"
-  //          `import aoiAlias from "@aoi/sdk"` → "aoiAlias"
-  //          `const m = aoi; ...` → tracked via alias walk below
+  //   • `kiDefaultBindings` — names bound to the default export (the ki object)
+  //     e.g. `import ki from "@ki/sdk"` → "ki"
+  //          `import * as ki from "@ki/sdk"` → "ki"
+  //          `import kiAlias from "@ki/sdk"` → "kiAlias"
+  //          `const m = ki; ...` → tracked via alias walk below
   //
-  //   • `aoiNamedBindings` — names bound to named exports (methods directly)
-  //     e.g. `import { identity, send } from "@aoi/sdk"` → { identity: "identity", send: "send" }
-  //          `import { identity as id } from "@aoi/sdk"` → { id: "identity" }
+  //   • `kiNamedBindings` — names bound to named exports (methods directly)
+  //     e.g. `import { identity, send } from "@ki/sdk"` → { identity: "identity", send: "send" }
+  //          `import { identity as id } from "@ki/sdk"` → { id: "identity" }
   //
-  const aoiDefaultBindings = new Set<string>(); // local names bound to aoi object
-  const aoiNamedBindings = new Map<string, string>(); // local name → sdk method name
+  const kiDefaultBindings = new Set<string>(); // local names bound to ki object
+  const kiNamedBindings = new Map<string, string>(); // local name → sdk method name
 
-  collectImportBindings(sf, aoiDefaultBindings, aoiNamedBindings, caps);
+  collectImportBindings(sf, kiDefaultBindings, kiNamedBindings, caps);
 
-  // Phase 2: walk the AST for alias assignments (`const m = aoi`) and call sites.
-  collectAliasAndCallSites(sf, aoiDefaultBindings, aoiNamedBindings, caps);
+  // Phase 2: walk the AST for alias assignments (`const m = ki`) and call sites.
+  collectAliasAndCallSites(sf, kiDefaultBindings, kiNamedBindings, caps);
 
   return [...caps].sort();
 }
@@ -92,8 +92,8 @@ export function inferCapabilitiesAst(source: string, fileName = "plugin.ts"): st
 
 function collectImportBindings(
   sf: ts.SourceFile,
-  aoiDefaultBindings: Set<string>,
-  aoiNamedBindings: Map<string, string>,
+  kiDefaultBindings: Set<string>,
+  kiNamedBindings: Map<string, string>,
   caps: Set<string>,
 ): void {
   for (const stmt of sf.statements) {
@@ -111,29 +111,29 @@ function collectImportBindings(
     }
 
     // SDK import — collect local bindings.
-    if (!AOI_SDK_SPECIFIERS.has(spec)) continue;
+    if (!KI_SDK_SPECIFIERS.has(spec)) continue;
 
     const clause = stmt.importClause;
     if (!clause) continue;
 
-    // Default import: `import aoi from "@aoi/sdk"`
+    // Default import: `import ki from "@ki/sdk"`
     if (clause.name) {
-      aoiDefaultBindings.add(clause.name.text);
+      kiDefaultBindings.add(clause.name.text);
     }
 
     const bindings = clause.namedBindings;
     if (!bindings) continue;
 
     if (ts.isNamespaceImport(bindings)) {
-      // `import * as aoi from "@aoi/sdk"` — namespace is equivalent to default
-      aoiDefaultBindings.add(bindings.name.text);
+      // `import * as ki from "@ki/sdk"` — namespace is equivalent to default
+      kiDefaultBindings.add(bindings.name.text);
     } else if (ts.isNamedImports(bindings)) {
-      // `import { identity, send as s } from "@aoi/sdk"`
+      // `import { identity, send as s } from "@ki/sdk"`
       for (const el of bindings.elements) {
         // el.name is the local alias; el.propertyName is the exported name (if aliased).
         const localName = el.name.text;
         const exportedName = el.propertyName ? el.propertyName.text : localName;
-        aoiNamedBindings.set(localName, exportedName);
+        kiNamedBindings.set(localName, exportedName);
       }
     }
   }
@@ -143,43 +143,43 @@ function collectImportBindings(
 
 function collectAliasAndCallSites(
   sf: ts.SourceFile,
-  aoiDefaultBindings: Set<string>,
-  aoiNamedBindings: Map<string, string>,
+  kiDefaultBindings: Set<string>,
+  kiNamedBindings: Map<string, string>,
   caps: Set<string>,
 ): void {
-  // First pass: collect variable aliases like `const m = aoi` and destructures
-  // like `const { identity } = aoi` before walking call sites.
-  collectVariableAliases(sf, aoiDefaultBindings, aoiNamedBindings);
+  // First pass: collect variable aliases like `const m = ki` and destructures
+  // like `const { identity } = ki` before walking call sites.
+  collectVariableAliases(sf, kiDefaultBindings, kiNamedBindings);
 
   // Second pass: walk all call expressions and member accesses.
-  walkNode(sf, aoiDefaultBindings, aoiNamedBindings, caps);
+  walkNode(sf, kiDefaultBindings, kiNamedBindings, caps);
 }
 
 /**
- * Pre-pass: find alias and destructure patterns over aoi bindings.
+ * Pre-pass: find alias and destructure patterns over ki bindings.
  *
  * Handles:
- *   • `const m = aoi` — simple alias, adds "m" to aoiDefaultBindings
- *   • `const { identity } = aoi` — destructure, adds "identity" → "identity" to aoiNamedBindings
- *   • `const { identity: id } = aoi` — renamed destructure, adds "id" → "identity"
+ *   • `const m = ki` — simple alias, adds "m" to kiDefaultBindings
+ *   • `const { identity } = ki` — destructure, adds "identity" → "identity" to kiNamedBindings
+ *   • `const { identity: id } = ki` — renamed destructure, adds "id" → "identity"
  *
  * This pre-pass runs BEFORE the call-site walk so aliases/destructures at any
  * scope level are captured before their call sites are visited.
  */
 function collectVariableAliases(
   node: ts.Node,
-  aoiDefaultBindings: Set<string>,
-  aoiNamedBindings: Map<string, string>,
+  kiDefaultBindings: Set<string>,
+  kiNamedBindings: Map<string, string>,
 ): void {
   if (ts.isVariableDeclaration(node) && node.initializer) {
     const init = node.initializer;
 
-    if (ts.isIdentifier(init) && aoiDefaultBindings.has(init.text)) {
+    if (ts.isIdentifier(init) && kiDefaultBindings.has(init.text)) {
       if (ts.isIdentifier(node.name)) {
-        // Pattern: `const m = aoi` — simple alias
-        aoiDefaultBindings.add(node.name.text);
+        // Pattern: `const m = ki` — simple alias
+        kiDefaultBindings.add(node.name.text);
       } else if (ts.isObjectBindingPattern(node.name)) {
-        // Pattern: `const { identity, send: s } = aoi` — destructure
+        // Pattern: `const { identity, send: s } = ki` — destructure
         for (const el of node.name.elements) {
           if (ts.isBindingElement(el) && ts.isIdentifier(el.name)) {
             const localName = el.name.text;
@@ -188,39 +188,39 @@ function collectVariableAliases(
               el.propertyName && ts.isIdentifier(el.propertyName)
                 ? el.propertyName.text
                 : localName;
-            aoiNamedBindings.set(localName, exportedName);
+            kiNamedBindings.set(localName, exportedName);
           }
         }
       }
     }
   }
-  ts.forEachChild(node, (child) => collectVariableAliases(child, aoiDefaultBindings, aoiNamedBindings));
+  ts.forEachChild(node, (child) => collectVariableAliases(child, kiDefaultBindings, kiNamedBindings));
 }
 
 /** Main AST walker — detects capability call sites. */
 function walkNode(
   node: ts.Node,
-  aoiDefaultBindings: Set<string>,
-  aoiNamedBindings: Map<string, string>,
+  kiDefaultBindings: Set<string>,
+  kiNamedBindings: Map<string, string>,
   caps: Set<string>,
 ): void {
-  // Pattern A: `aoi.method(...)` or `aoi["method"](...)`
+  // Pattern A: `ki.method(...)` or `ki["method"](...)`
   if (ts.isCallExpression(node)) {
     const expr = node.expression;
 
     if (ts.isPropertyAccessExpression(expr)) {
-      // aoi.identity() — property access
+      // ki.identity() — property access
       if (
         ts.isIdentifier(expr.expression) &&
-        aoiDefaultBindings.has(expr.expression.text)
+        kiDefaultBindings.has(expr.expression.text)
       ) {
         caps.add(`sdk:${expr.name.text}`);
       }
     } else if (ts.isElementAccessExpression(expr)) {
-      // aoi["identity"]() or aoi[varKey]() — bracket access
+      // ki["identity"]() or ki[varKey]() — bracket access
       if (
         ts.isIdentifier(expr.expression) &&
-        aoiDefaultBindings.has(expr.expression.text)
+        kiDefaultBindings.has(expr.expression.text)
       ) {
         if (ts.isStringLiteral(expr.argumentExpression)) {
           // Static string key — we know the method name
@@ -232,7 +232,7 @@ function walkNode(
       }
     } else if (ts.isIdentifier(expr)) {
       // Pattern B: named import used directly — `identity()` (from `import { identity }`)
-      const exportedName = aoiNamedBindings.get(expr.text);
+      const exportedName = kiNamedBindings.get(expr.text);
       if (exportedName !== undefined) {
         caps.add(`sdk:${exportedName}`);
       }
@@ -265,6 +265,6 @@ function walkNode(
   }
 
   ts.forEachChild(node, (child) =>
-    walkNode(child, aoiDefaultBindings, aoiNamedBindings, caps),
+    walkNode(child, kiDefaultBindings, kiNamedBindings, caps),
   );
 }

@@ -14,7 +14,7 @@
  *     5-min window (this is the attack D#2 closes).
  *   - v2 (preferred): payload is METHOD:PATH:TIMESTAMP:BODY_SHA256. Body hash
  *     binds the signature to the exact bytes sent. Body-swap replay is 401.
- *   - Version is signaled via `X-Aoi-Auth-Version: v2` header. Absent header
+ *   - Version is signaled via `X-Ki-Auth-Version: v2` header. Absent header
  *     = v1 (for outbound: signHeaders without body; for inbound: legacy peer).
  */
 
@@ -68,7 +68,7 @@ export function sign(token: string, method: string, path: string, timestamp: num
  *   - omitted/empty → verifies v1 (legacy)
  *   - provided     → verifies v2 (body-bound)
  * The caller is responsible for passing the right value based on the
- * `X-Aoi-Auth-Version` header on the incoming request.
+ * `X-Ki-Auth-Version` header on the incoming request.
  */
 export function verify(token: string, method: string, path: string, timestamp: number, signature: string, bodyHash = ""): boolean {
   const now = Math.floor(Date.now() / 1000);
@@ -100,7 +100,7 @@ export function isLoopback(address: string | undefined): boolean {
  * Produce auth headers for outgoing federation HTTP calls.
  *
  * When `body` is provided (and non-empty), emits v2 signature + the
- * `X-Aoi-Auth-Version: v2` header so the peer knows to re-hash the body
+ * `X-Ki-Auth-Version: v2` header so the peer knows to re-hash the body
  * and verify accordingly. When omitted, produces v1 for backward compat
  * (but callers SHOULD pass the body whenever possible — body-swap replay
  * is a real attack path otherwise).
@@ -114,10 +114,10 @@ export function signHeaders(
   const ts = Math.floor(Date.now() / 1000);
   const bh = body != null ? hashBody(body) : "";
   const headers: Record<string, string> = {
-    "X-Aoi-Timestamp": String(ts),
-    "X-Aoi-Signature": sign(token, method, path, ts, bh),
+    "X-Ki-Timestamp": String(ts),
+    "X-Ki-Signature": sign(token, method, path, ts, bh),
   };
-  if (bh) headers["X-Aoi-Auth-Version"] = "v2";
+  if (bh) headers["X-Ki-Auth-Version"] = "v2";
   return headers;
 }
 
@@ -186,9 +186,9 @@ export function federationAuth(): MiddlewareHandler {
     // address is authoritative for loopback detection.
 
     // Check for HMAC signature
-    const sig = c.req.header("x-aoi-signature");
-    const ts = c.req.header("x-aoi-timestamp");
-    const authVersion = (c.req.header("x-aoi-auth-version") ?? "v1").toLowerCase();
+    const sig = c.req.header("x-ki-signature");
+    const ts = c.req.header("x-ki-timestamp");
+    const authVersion = (c.req.header("x-ki-auth-version") ?? "v1").toLowerCase();
 
     if (!sig || !ts) {
       return c.json({ error: "federation auth required", reason: "missing_signature" }, 401);

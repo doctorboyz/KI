@@ -1,7 +1,7 @@
 import { loadConfig } from "../../../../core/config";
 import { parseWakeTarget, ensureCloned } from "../../shared/wake-target";
 import { normalizeTarget } from "../../../../core/matcher/normalize-target";
-import { assertValidOracleName } from "../../../../core/fleet/validate";
+import { assertValidKappaName } from "../../../../core/fleet/validate";
 import { hostExec } from "../../../../sdk";
 import { ensureBudRepo } from "./bud-repo";
 import { initVault, generateClaudeMd, configureFleet, writeBirthNote } from "./bud-init";
@@ -22,9 +22,9 @@ export interface BudOpts {
   /** @deprecated Use --seed for explicit inheritance. Birth is blank by default now. */
   blank?: boolean;
   /** Opt-in: pre-load parent's ψ at birth (bulk push). Default is blank — child
-   *  pulls memory later via `aoi soul-sync <parent> --from` after /awaken. */
+   *  pulls memory later via `ki soul-sync <parent> --from` after /awaken. */
   seed?: boolean;
-  /** Drop a "birth" signal into the parent oracle's ψ/memory/signals/ on creation. */
+  /** Drop a "birth" signal into the parent kappa's ψ/memory/signals/ on creation. */
   signalOnBirth?: boolean;
 }
 
@@ -32,14 +32,14 @@ export interface BudOpts {
 // See #209 for history. Full buds with --blank (alpha.38) are now as lightweight.
 
 /**
- * aoi bud <name> [--from <parent>] [--org <org>] [--repo org/repo] [--issue N] [--fast] [--dry-run]
+ * ki bud <name> [--from <parent>] [--org <org>] [--repo org/repo] [--issue N] [--fast] [--dry-run]
  *
- * Yeast budding — any oracle can spawn a new oracle.
+ * Yeast budding — any kappa can spawn a new kappa.
  *
  * Target org resolution (first wins):
  *   1. --org <org>                    — per-invocation override (#235)
  *   2. config.githubOrg               — per-machine default from config
- *   3. "Soul-Brews-Studio"            — hard-coded fallback
+ *   3. "doctorboyz"            — hard-coded fallback
  *
  * Note: --repo is an INCUBATION flag (seeds the bud from an existing local
  * project's ψ/), NOT a target-org override. Use --org to target a different
@@ -48,54 +48,54 @@ export interface BudOpts {
 export async function cmdBud(name: string, opts: BudOpts = {}) {
   // Canonicalize first — drop trailing `/`, `/.git`, `/.git/` from tab-completion/paste.
   name = normalizeTarget(name);
-  // Oracle names: alphanumeric + hyphens only, must start with a letter
+  // Kappa names: alphanumeric + hyphens only, must start with a letter
   if (!/^[a-zA-Z][a-zA-Z0-9-]*$/.test(name)) {
     throw new Error(
-      `invalid oracle name: "${name}" — names must start with a letter and contain only letters, numbers, hyphens`,
+      `invalid kappa name: "${name}" — names must start with a letter and contain only letters, numbers, hyphens`,
     );
   }
   // #358 — reject -view suffix (reserved for ephemeral grouped sessions).
   try {
-    assertValidOracleName(name);
+    assertValidKappaName(name);
   } catch (e: any) {
     throw new Error(e.message);
   }
 
-  // Runtime guard: stem must NOT end with -oracle (the plugin auto-appends it).
-  // This prevents arra-oracle-v3 → arra-oracle-v3-oracle (correct)
-  // from being confused with arra-oracle-v3-oracle → arra-oracle-v3-oracle-oracle (triple).
-  if (name.endsWith("-oracle")) {
+  // Runtime guard: stem must NOT end with -kappa (the plugin auto-appends it).
+  // This prevents arra-kappa-v3 → arra-kappa-v3-kappa (correct)
+  // from being confused with arra-kappa-v3-kappa → arra-kappa-v3-kappa-kappa (triple).
+  if (name.endsWith("-kappa")) {
     throw new Error(
-      `\x1b[31m✗\x1b[0m bud stem must NOT end with '-oracle' — got '${name}'\n` +
-      `  The plugin auto-appends '-oracle' to produce the repo name.\n` +
-      `  Try: aoi bud ${name.replace(/-oracle$/, "")}\n` +
-      `  This produces repo: ${name.replace(/-oracle$/, "")}-oracle`,
+      `\x1b[31m✗\x1b[0m bud stem must NOT end with '-kappa' — got '${name}'\n` +
+      `  The plugin auto-appends '-kappa' to produce the repo name.\n` +
+      `  Try: ki bud ${name.replace(/-kappa$/, "")}\n` +
+      `  This produces repo: ${name.replace(/-kappa$/, "")}-kappa`,
     );
   }
 
   const config = loadConfig();
   const ghqRoot = config.ghqRoot;
-  const org = opts.org || config.githubOrg || "Soul-Brews-Studio";
+  const org = opts.org || config.githubOrg || "doctorboyz";
 
-  // Resolve parent oracle (skip for --root)
+  // Resolve parent kappa (skip for --root)
   let parentName: string | null = opts.from || null;
-  // If --from is a URL or org/repo slug, extract oracle name and clone (#280)
+  // If --from is a URL or org/repo slug, extract kappa name and clone (#280)
   const fromTarget = parentName ? parseWakeTarget(parentName) : null;
   if (fromTarget) {
-    parentName = fromTarget.oracle;
+    parentName = fromTarget.kappa;
     if (!opts.repo) await ensureCloned(fromTarget.slug);
   }
   if (!parentName && !opts.root) {
     try {
       const cwd = (await hostExec("tmux display-message -p '#{pane_current_path}'")).trim();
       const repoName = cwd.split("/").pop() || "";
-      parentName = repoName.replace(/\.wt-.*$/, "").replace(/-oracle$/, "");
+      parentName = repoName.replace(/\.wt-.*$/, "").replace(/-kappa$/, "");
     } catch {
-      throw new Error("could not detect parent oracle. Use --from <oracle> or --root");
+      throw new Error("could not detect parent kappa. Use --from <kappa> or --root");
     }
   }
 
-  const budRepoName = `${name}-oracle`;
+  const budRepoName = `${name}-kappa`;
   const budRepoSlug = `${org}/${budRepoName}`;
   const budRepoPath = join(ghqRoot, org, budRepoName);
 
@@ -113,9 +113,9 @@ export async function cmdBud(name: string, opts: BudOpts = {}) {
     if (opts.seed && parentName) {
       console.log(`  \x1b[36m⬡\x1b[0m [dry-run] --seed: would bulk soul-sync from ${parentName}`);
     } else if (parentName) {
-      console.log(`  \x1b[36m⬡\x1b[0m [dry-run] born blank — pull memory later: aoi soul-sync ${parentName} --from`);
+      console.log(`  \x1b[36m⬡\x1b[0m [dry-run] born blank — pull memory later: ki soul-sync ${parentName} --from`);
     } else {
-      console.log(`  \x1b[36m⬡\x1b[0m [dry-run] root oracle — no parent`);
+      console.log(`  \x1b[36m⬡\x1b[0m [dry-run] root kappa — no parent`);
     }
     console.log(`  \x1b[36m⬡\x1b[0m [dry-run] would wake ${name}`);
     if (parentName) {
@@ -125,7 +125,7 @@ export async function cmdBud(name: string, opts: BudOpts = {}) {
     return;
   }
 
-  // 1. Create oracle repo
+  // 1. Create kappa repo
   await ensureBudRepo(budRepoSlug, budRepoPath, budRepoName, org);
 
   // 2-4.5. Initialize vault, CLAUDE.md, fleet config, birth note
@@ -142,7 +142,7 @@ export async function cmdBud(name: string, opts: BudOpts = {}) {
 
   // Optional: drop birth signal into parent's ψ/
   if (opts.signalOnBirth && parentName) {
-    const parentRepoPath = join(ghqRoot, org, `${parentName}-oracle`);
+    const parentRepoPath = join(ghqRoot, org, `${parentName}-kappa`);
     writeSignal(parentRepoPath, name, {
       kind: "info",
       message: `bud born: ${name}`,
@@ -157,7 +157,7 @@ export async function cmdBud(name: string, opts: BudOpts = {}) {
   console.log(`  \x1b[90m  fleet: ${fleetFile}`);
   console.log(`  \x1b[90m  sync_peers: [${parentName || ""}]`);
   if (!opts.fast) {
-    console.log(`  \x1b[90m  run /awaken in the new oracle for full identity setup\x1b[0m`);
+    console.log(`  \x1b[90m  run /awaken in the new kappa for full identity setup\x1b[0m`);
   }
   console.log();
 }

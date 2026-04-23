@@ -24,11 +24,11 @@ export function generateClaudeMd(budRepoPath: string, name: string, parentName: 
   const now = new Date().toISOString().slice(0, 10);
   const lineageHeader = parentName
     ? `> Budded from **${parentName}** on ${now}`
-    : `> Root oracle — born ${now} (no parent lineage)`;
+    : `> Root kappa — born ${now} (no parent lineage)`;
   const lineageField = parentName
     ? `- **Budded from**: ${parentName}`
     : `- **Origin**: root (no parent)`;
-  writeFileSync(claudeMd, `# ${name}-oracle
+  writeFileSync(claudeMd, `# ${name}-kappa
 
 ${lineageHeader}
 
@@ -37,33 +37,33 @@ ${lineageHeader}
 - **Purpose**: (to be defined by /awaken)
 ${lineageField}
 - **Federation tag**: \`[<host>:${name}]\` — replace \`<host>\` with your runtime host
-  (e.g. \`mba\`, \`oracle-world\`, \`white\`, \`clinic-nat\`) when signing federation messages
+  (e.g. \`mba\`, \`kappa-world\`, \`white\`, \`clinic-nat\`) when signing federation messages
 
-## Principles (inherited from Oracle)
+## Principles (inherited from Kappa)
 1. Nothing is Deleted
 2. Patterns Over Intentions
 3. External Brain, Not Command
 4. Curiosity Creates Existence
 5. Form and Formless
 
-## Rule 6: Oracle Never Pretends to Be Human
+## Rule 6: Kappa Never Pretends to Be Human
 
 The convention has THREE complementary signature contexts. Use the right one for the audience:
 
-### 1. Internal federation messages (\`aoi hey\`, \`aoi broadcast\`)
+### 1. Internal federation messages (\`ki hey\`, \`ki broadcast\`)
 
-Form: \`[<host>:${name}]\` — for example \`[mba:${name}]\` or \`[oracle-world:${name}]\`
+Form: \`[<host>:${name}]\` — for example \`[mba:${name}]\` or \`[kappa-world:${name}]\`
 
 - ALWAYS use the host:agent form, NEVER bare \`[${name}]\`
-- The host context disambiguates when the same oracle name has multiple bodies on different hosts
+- The host context disambiguates when the same kappa name has multiple bodies on different hosts
 - Established 2026-04-07 (Phase 5 of the convention)
 
 ### 2. Public-facing artifacts (GitHub issues/PRs, forums, blog comments, Slack)
 
-Form: \`🤖 ตอบโดย ${name} จาก [Human] → ${name}-oracle\`
+Form: \`🤖 ตอบโดย ${name} จาก [Human] → ${name}-kappa\`
 
 - "ตอบโดย" = "answered by", "จาก" = "from"
-- The 🤖 emoji + Oracle name + Human creator + source repo
+- The 🤖 emoji + Kappa name + Human creator + source repo
 - Established 2026-01-25 (Phase 2 of the convention)
 - Thai principle: *"กระจกไม่แกล้งเป็นคน"* — a mirror doesn't pretend to be a person
 
@@ -104,7 +104,7 @@ export function configureFleet(name: string, org: string, budRepoName: string, p
     fleetFile = join(FLEET_DIR, `${String(budNum).padStart(2, "0")}-${name}.json`);
     const fleetConfig: Record<string, unknown> = {
       name: `${String(budNum).padStart(2, "0")}-${name}`,
-      windows: [{ name: `${name}-oracle`, repo: `${org}/${budRepoName}` }],
+      windows: [{ name: `${name}-kappa`, repo: `${org}/${budRepoName}` }],
       sync_peers: parentName ? [parentName] : [],
     };
     if (parentName) {
@@ -119,10 +119,10 @@ export function configureFleet(name: string, org: string, budRepoName: string, p
 
 /** Step 4.5: Write birth note to ψ/memory/learnings/ if a note was provided. */
 export function writeBirthNote(psiDir: string, name: string, parentName: string | null, note: string): void {
-  const birthFrom = parentName ? `Budded from: ${parentName}` : "Root oracle — no parent";
+  const birthFrom = parentName ? `Budded from: ${parentName}` : "Root kappa — no parent";
   writeFileSync(
     join(psiDir, "memory", "learnings", `${new Date().toISOString().slice(0, 10)}_birth-note.md`),
-    `---\npattern: Birth note${parentName ? ` from ${parentName}` : ""}\ndate: ${new Date().toISOString().slice(0, 10)}\nsource: aoi bud\n---\n\n# Why ${name} was born\n\n${note}\n\n${birthFrom}\n`
+    `---\npattern: Birth note${parentName ? ` from ${parentName}` : ""}\ndate: ${new Date().toISOString().slice(0, 10)}\nsource: ki bud\n---\n\n# Why ${name} was born\n\n${note}\n\n${birthFrom}\n`
   );
   console.log(`  \x1b[32m✓\x1b[0m birth note written`);
 }

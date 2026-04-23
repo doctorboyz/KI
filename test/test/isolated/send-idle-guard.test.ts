@@ -29,7 +29,7 @@ let captureResponses: string[] = [];   // queue — each call pops from front
 let sendKeysCalls: Array<{ target: string; text: string }> = [];
 let getPaneCommandReturn = "claude";
 let listSessionsReturn: Array<{ name: string; windows: { index: number; name: string; active: boolean }[] }> = [];
-let resolveTargetReturn: { type: string; target: string } = { type: "local", target: "test-session:oracle" };
+let resolveTargetReturn: { type: string; target: string } = { type: "local", target: "test-session:kappa" };
 let sleepCalls: number[] = [];
 
 // ─── Mocks ───────────────────────────────────────────────────────────────────
@@ -116,8 +116,8 @@ beforeEach(() => {
   sendKeysCalls = [];
   sleepCalls = [];
   getPaneCommandReturn = "claude";
-  listSessionsReturn = [{ name: "test-session", windows: [{ index: 0, name: "oracle", active: true }] }];
-  resolveTargetReturn = { type: "local", target: "test-session:oracle.0" };
+  listSessionsReturn = [{ name: "test-session", windows: [{ index: 0, name: "kappa", active: true }] }];
+  resolveTargetReturn = { type: "local", target: "test-session:kappa.0" };
   delete process.env.MAW_QUIET;
   process.env.MAW_QUIET = "1"; // suppress tip output
 });
@@ -133,34 +133,34 @@ afterAll(() => {
 describe("checkPaneIdle — heuristic", () => {
   test("idle when last line ends with bare prompt marker ($)", async () => {
     captureResponses = ["user@host:~$ "];
-    const result = await checkPaneIdle("test-session:oracle.0");
+    const result = await checkPaneIdle("test-session:kappa.0");
     expect(result.idle).toBe(true);
     expect(result.lastInput).toBe("");
   });
 
   test("idle when last line ends with ❯ prompt (zsh)", async () => {
     captureResponses = ["❯ "];
-    const result = await checkPaneIdle("test-session:oracle.0");
+    const result = await checkPaneIdle("test-session:kappa.0");
     expect(result.idle).toBe(true);
   });
 
   test("not idle when user has typed after prompt ($)", async () => {
     captureResponses = ["user@host:~$ git push origin main"];
-    const result = await checkPaneIdle("test-session:oracle.0");
+    const result = await checkPaneIdle("test-session:kappa.0");
     expect(result.idle).toBe(false);
     expect(result.lastInput).toContain("git push");
   });
 
   test("not idle when user has typed after ❯ prompt", async () => {
     captureResponses = ["❯ maw hey le:hojo hi there"];
-    const result = await checkPaneIdle("test-session:oracle.0");
+    const result = await checkPaneIdle("test-session:kappa.0");
     expect(result.idle).toBe(false);
     expect(result.lastInput).toContain("maw");
   });
 
   test("idle when no prompt visible (agent output / running command)", async () => {
     captureResponses = ["Compiling maw-js v2.0.0-alpha.117\nFinished build in 3.2s"];
-    const result = await checkPaneIdle("test-session:oracle.0");
+    const result = await checkPaneIdle("test-session:kappa.0");
     expect(result.idle).toBe(true);
   });
 
@@ -179,14 +179,14 @@ describe("checkPaneIdle — heuristic", () => {
   test("strips ANSI codes before checking", async () => {
     // Pane contains ANSI-coloured prompt with user input
     captureResponses = ["\x1b[32muser@host\x1b[0m:\x1b[34m~\x1b[0m$ rm -rf /"];
-    const result = await checkPaneIdle("test-session:oracle.0");
+    const result = await checkPaneIdle("test-session:kappa.0");
     expect(result.idle).toBe(false);
     expect(result.lastInput).toContain("rm");
   });
 
   test("uses last non-empty line (ignores blank trailing lines)", async () => {
     captureResponses = ["user@host:~$ git status\n\n\n"];
-    const result = await checkPaneIdle("test-session:oracle.0");
+    const result = await checkPaneIdle("test-session:kappa.0");
     // "git status" is after prompt → not idle
     expect(result.idle).toBe(false);
   });
@@ -200,7 +200,7 @@ describe("cmdSend — idle guard integration (#405)", () => {
       "❯ ", // checkPaneIdle call (idle check)
       "",   // post-send capture for lastLine
     ];
-    await run(() => cmdSend("oracle", "hello world"));
+    await run(() => cmdSend("kappa", "hello world"));
     expect(sendKeysCalls.length).toBe(1);
     expect(sendKeysCalls[0].text).toBe("hello world");
     expect(exitCode).toBeUndefined();
@@ -212,7 +212,7 @@ describe("cmdSend — idle guard integration (#405)", () => {
       "❯ ",            // second checkPaneIdle after 500ms sleep → idle
       "",              // post-send capture
     ];
-    await run(() => cmdSend("oracle", "hello after retry"));
+    await run(() => cmdSend("kappa", "hello after retry"));
     expect(sleepCalls).toContain(500);
     expect(sendKeysCalls.length).toBe(1);
     expect(exitCode).toBeUndefined();
@@ -223,7 +223,7 @@ describe("cmdSend — idle guard integration (#405)", () => {
       "❯ git push",   // first checkPaneIdle → not idle
       "❯ git push",   // second checkPaneIdle → still not idle
     ];
-    await run(() => cmdSend("oracle", "injected message"));
+    await run(() => cmdSend("kappa", "injected message"));
     expect(exitCode).toBe(1);
     expect(sendKeysCalls.length).toBe(0);
     const errText = errs.join("\n");
@@ -236,7 +236,7 @@ describe("cmdSend — idle guard integration (#405)", () => {
       // No idle-check capture should be called; only post-send capture
       "",
     ];
-    await run(() => cmdSend("oracle", "forced message", /* force */ true));
+    await run(() => cmdSend("kappa", "forced message", /* force */ true));
     expect(sendKeysCalls.length).toBe(1);
     expect(sendKeysCalls[0].text).toBe("forced message");
     expect(exitCode).toBeUndefined();

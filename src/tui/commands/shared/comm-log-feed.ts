@@ -8,12 +8,12 @@ import { appendFile, mkdir } from "fs/promises";
 import { homedir, hostname } from "os";
 import { join } from "path";
 
-/** Log message to ~/.oracle/aoi-log.jsonl with normalized from/to */
+/** Log message to ~/.kappa/ki-log.jsonl with normalized from/to */
 export async function logMessage(from: string, to: string, msg: string, route: string) {
   const config = loadConfig();
-  if (!config.node) throw new Error("config.node is required — set 'node' in aoi.config.json");
+  if (!config.node) throw new Error("config.node is required — set 'node' in ki.config.json");
   const normalizedFrom = from.includes(":") ? from : `${config.node}:${from}`;
-  const logDir = join(homedir(), ".oracle");
+  const logDir = join(homedir(), ".kappa");
   const line = JSON.stringify({
     ts: new Date().toISOString(),
     from: normalizedFrom,
@@ -22,14 +22,14 @@ export async function logMessage(from: string, to: string, msg: string, route: s
     host: hostname(),
     route,
   }) + "\n";
-  try { await mkdir(logDir, { recursive: true }); await appendFile(join(logDir, "aoi-log.jsonl"), line); } catch {}
+  try { await mkdir(logDir, { recursive: true }); await appendFile(join(logDir, "ki-log.jsonl"), line); } catch {}
 }
 
 /** Emit feed event to server plugin pipeline (CLI → server bridge) */
-export function emitFeed(event: string, oracle: string, node: string, message: string, port: number) {
+export function emitFeed(event: string, kappa: string, node: string, message: string, port: number) {
   fetch(`http://localhost:${port}/api/feed`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ event, oracle, host: node, message, ts: Date.now() }),
+    body: JSON.stringify({ event, kappa, host: node, message, ts: Date.now() }),
   }).catch(() => {});
 }

@@ -6,8 +6,8 @@ export function scaffoldAs(name: string, dest: string, templateDir = TEMPLATE_AS
   if (!existsSync(templateDir)) {
     throw new Error(
       `AssemblyScript template not found at ${templateDir}\n` +
-      `  The AS SDK is still being built — try again after the next aoi update,\n` +
-      `  or check: https://github.com/Soul-Brews-Studio/aoi-js`,
+      `  The AS SDK is still being built — try again after the next ki update,\n` +
+      `  or check: https://github.com/doctorboyz/ki-js`,
     );
   }
 
@@ -26,7 +26,7 @@ export function scaffoldAs(name: string, dest: string, templateDir = TEMPLATE_AS
     join(dest, "README.md"),
     `# ${name}
 
-A aoi WASM command plugin (AssemblyScript).
+A ki WASM command plugin (AssemblyScript).
 
 ## Build
 
@@ -41,7 +41,7 @@ Output: \`build/${name}.wasm\`
 ## Install
 
 \`\`\`bash
-aoi plugin install "${dest}"
+ki plugin install "${dest}"
 \`\`\`
 `,
   );

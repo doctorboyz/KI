@@ -3,7 +3,7 @@ import { parseFlags } from "../../../../cli-src/parse-args";
 
 export const command = {
   name: "wake",
-  description: "Spawn or attach to an oracle session",
+  description: "Spawn or attach to an kappa session",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {
@@ -32,7 +32,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       if (!args[0]) {
         return {
           ok: false,
-          error: "usage: aoi wake <oracle|org/repo|URL> [task] [--task \"<prompt>\"] [--wt <name>] [--fresh] [--attach] [--issue N] [--pr N] [--repo org/name] [--list]\n       aoi wake all [--kill]\n       (--new is a deprecated alias for --wt, removed in alpha.114)",
+          error: "usage: ki wake <kappa|org/repo|URL> [task] [--task \"<prompt>\"] [--wt <name>] [--fresh] [--attach] [--issue N] [--pr N] [--repo org/name] [--list]\n       ki wake all [--kill]\n       (--new is a deprecated alias for --wt, removed in alpha.114)",
         };
       }
 
@@ -63,7 +63,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
       let repo: string | undefined = flags["--repo"];
 
       const parsed = parseWakeTarget(args[0]);
-      const oracleName = parsed ? parsed.oracle : args[0];
+      const kappaName = parsed ? parsed.kappa : args[0];
       if (parsed) {
         await ensureCloned(parsed.slug);
         if (parsed.issueNum) { issueNum = parsed.issueNum; repo = parsed.slug; }
@@ -94,14 +94,14 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
         wakeOpts.prompt = flags["--task"];
       }
 
-      await cmdWake(oracleName, wakeOpts);
+      await cmdWake(kappaName, wakeOpts);
       return { ok: true, output: logs.join("\n") || undefined };
     }
 
     // API source
     const body = ctx.args as Record<string, unknown>;
-    const oracle = body.oracle as string | undefined;
-    if (!oracle) return { ok: false, error: "missing oracle name" };
+    const kappa = body.kappa as string | undefined;
+    if (!kappa) return { ok: false, error: "missing kappa name" };
 
     const wakeOpts: { task?: string; prompt?: string; fresh?: boolean; attach?: boolean } = {};
     if (body.task) wakeOpts.task = body.task as string;
@@ -113,7 +113,7 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     if (body.fresh) wakeOpts.fresh = true;
     if (body.attach) wakeOpts.attach = true;
 
-    await cmdWake(oracle, wakeOpts);
+    await cmdWake(kappa, wakeOpts);
     return { ok: true, output: logs.join("\n") || undefined };
   } catch (e: any) {
     return { ok: false, error: logs.join("\n") || e.message, output: logs.join("\n") || undefined };

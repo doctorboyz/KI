@@ -163,14 +163,14 @@ describe("cmdFederationSync — no namedPeers configured", () => {
   });
 
   test("json mode → single-line JSON{node,diff:null,reason:'no peers'} + exit 0", async () => {
-    configStore = { node: "oracle-world", namedPeers: [], agents: {} };
+    configStore = { node: "kappa-world", namedPeers: [], agents: {} };
 
     await run(() => cmdFederationSync({ json: true }, captureSave));
 
     expect(exitCode).toBe(0);
     expect(outs).toHaveLength(1);
     const parsed = JSON.parse(outs[0]);
-    expect(parsed).toEqual({ node: "oracle-world", diff: null, reason: "no peers" });
+    expect(parsed).toEqual({ node: "kappa-world", diff: null, reason: "no peers" });
   });
 
   test("missing node defaults to 'local' in the JSON payload", async () => {
@@ -190,7 +190,7 @@ describe("cmdFederationSync — no namedPeers configured", () => {
 describe("cmdFederationSync — JSON output", () => {
   test("clean diff → exit 0 with full diff payload (pretty-printed, 2-space indent)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "local" },
     };
@@ -201,7 +201,7 @@ describe("cmdFederationSync — JSON output", () => {
     expect(exitCode).toBe(0);
     expect(outs).toHaveLength(1);
     const parsed = JSON.parse(outs[0]);
-    expect(parsed.node).toBe("oracle-world");
+    expect(parsed.node).toBe("kappa-world");
     expect(parsed.dryRun).toBe(false);
     expect(parsed.diff.add).toEqual([]);
     expect(parsed.diff.stale).toEqual([]);
@@ -212,7 +212,7 @@ describe("cmdFederationSync — JSON output", () => {
 
   test("dirty diff + check → exit 1 (CI signal)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: {},
     };
@@ -223,12 +223,12 @@ describe("cmdFederationSync — JSON output", () => {
     expect(exitCode).toBe(1);
     const parsed = JSON.parse(outs[0]);
     expect(parsed.diff.add).toHaveLength(1);
-    expect(parsed.diff.add[0].oracle).toBe("pulse");
+    expect(parsed.diff.add[0].kappa).toBe("pulse");
   });
 
   test("clean diff + check → exit 0 (in sync)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "local" },
     };
@@ -241,7 +241,7 @@ describe("cmdFederationSync — JSON output", () => {
 
   test("dirty diff WITHOUT check → exit 0 (informational only)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: {},
     };
@@ -254,7 +254,7 @@ describe("cmdFederationSync — JSON output", () => {
 
   test("dryRun flag is reflected in JSON payload", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: {},
     };
@@ -268,7 +268,7 @@ describe("cmdFederationSync — JSON output", () => {
 
   test("JSON path NEVER calls save (read-only signal)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: {},
     };
@@ -287,7 +287,7 @@ describe("cmdFederationSync — JSON output", () => {
 describe("cmdFederationSync — clean (in sync)", () => {
   test("zero diff entries → green '✓ in sync' + exit 0; no save", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "local" },
     };
@@ -307,7 +307,7 @@ describe("cmdFederationSync — clean (in sync)", () => {
 
   test("in-sync line reports unreachable count from diff", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [
         { name: "white", url: "https://white.example" },
         { name: "dead", url: "https://dead.example" },
@@ -333,7 +333,7 @@ describe("cmdFederationSync — clean (in sync)", () => {
 describe("cmdFederationSync — header + per-peer rendering", () => {
   test("header includes localNode, peer count, agent count", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [
         { name: "white", url: "https://white.example" },
         { name: "mba", url: "https://mba.example" },
@@ -349,14 +349,14 @@ describe("cmdFederationSync — header + per-peer rendering", () => {
 
     const joined = outs.join("\n");
     expect(joined).toContain("🔄 Federation Sync");
-    expect(joined).toContain("node: oracle-world");
+    expect(joined).toContain("node: kappa-world");
     expect(joined).toContain("2 peers");
     expect(joined).toContain("2 agents");
   });
 
   test("unreachable peer rendered with yellow ! and error suffix", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "dead", url: "https://dead.example" }],
       agents: {},
     };
@@ -373,7 +373,7 @@ describe("cmdFederationSync — header + per-peer rendering", () => {
 
   test("unreachable peer with NO error → 'unreachable' without trailing dash", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "dead", url: "https://dead.example" }],
       agents: {},
     };
@@ -387,9 +387,9 @@ describe("cmdFederationSync — header + per-peer rendering", () => {
     expect(joined).not.toContain("unreachable —");
   });
 
-  test("reachable peer → green ● + node + oracle count", async () => {
+  test("reachable peer → green ● + node + kappa count", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "local" },
     };
@@ -400,12 +400,12 @@ describe("cmdFederationSync — header + per-peer rendering", () => {
     const joined = outs.join("\n");
     expect(joined).toContain("\x1b[32m●\x1b[0m");
     expect(joined).toContain("node=white");
-    expect(joined).toContain("2 oracles");
+    expect(joined).toContain("2 kappas");
   });
 
   test("adds rendered with green + and target node", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: {},
     };
@@ -421,7 +421,7 @@ describe("cmdFederationSync — header + per-peer rendering", () => {
 
   test("conflicts rendered with yellow ~ + 'currently X, peer claims Y'", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "mba" },
     };
@@ -438,7 +438,7 @@ describe("cmdFederationSync — header + per-peer rendering", () => {
 
   test("stale entries rendered with red - + 'no longer hosted on'", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { oldGuy: "white" },
     };
@@ -460,7 +460,7 @@ describe("cmdFederationSync — header + per-peer rendering", () => {
 describe("cmdFederationSync — conflict gating", () => {
   test("conflict without --force → 'rerun with --force' + exit 2; no save", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "mba" },
     };
@@ -478,7 +478,7 @@ describe("cmdFederationSync — conflict gating", () => {
 
   test("multiple conflicts → 'N conflicts' (plural)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "mba", pulse: "mba" },
     };
@@ -492,7 +492,7 @@ describe("cmdFederationSync — conflict gating", () => {
 
   test("single conflict → 'conflict' (singular)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "mba" },
     };
@@ -507,7 +507,7 @@ describe("cmdFederationSync — conflict gating", () => {
 
   test("conflict + dryRun → conflict gate skipped, dry-run path runs (exit 0)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "mba" },
     };
@@ -522,7 +522,7 @@ describe("cmdFederationSync — conflict gating", () => {
 
   test("conflict + check → conflict gate skipped, check path runs (exit 1)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "mba" },
     };
@@ -542,11 +542,11 @@ describe("cmdFederationSync — conflict gating", () => {
 describe("cmdFederationSync — stale gating", () => {
   test("stale without --prune (with new add too) → stale warning rendered, apply continues", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { oldGuy: "white" },
     };
-    // white hosts a new oracle but no longer hosts oldGuy
+    // white hosts a new kappa but no longer hosts oldGuy
     fetchReturn = [peer("white", "white", ["pulse"])];
 
     await run(() => cmdFederationSync({}, captureSave));
@@ -562,7 +562,7 @@ describe("cmdFederationSync — stale gating", () => {
 
   test("multiple stale → 'N stale entries' (plural)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { a: "white", b: "white" },
     };
@@ -575,7 +575,7 @@ describe("cmdFederationSync — stale gating", () => {
 
   test("single stale → 'stale entry' (singular)", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { a: "white" },
     };
@@ -590,7 +590,7 @@ describe("cmdFederationSync — stale gating", () => {
 
   test("stale + dryRun → no stale warning rendered", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { a: "white" },
     };
@@ -604,7 +604,7 @@ describe("cmdFederationSync — stale gating", () => {
 
   test("stale + check → no stale warning, check exit 1", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { a: "white" },
     };
@@ -624,7 +624,7 @@ describe("cmdFederationSync — stale gating", () => {
 describe("cmdFederationSync — check summary", () => {
   test("check + dirty → '✖ out of sync: N add · N conflict · N stale' + exit 1", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "mba", oldGuy: "white" },
     };
@@ -650,7 +650,7 @@ describe("cmdFederationSync — check summary", () => {
 describe("cmdFederationSync — dry run", () => {
   test("dryRun + dirty → 'dry run — no changes written' + exit 0; no save", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: {},
     };
@@ -671,7 +671,7 @@ describe("cmdFederationSync — dry run", () => {
 describe("cmdFederationSync — apply path", () => {
   test("simple add → save called with new agents map; '✓ applied 1 change' + exit 0", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "local" },
     };
@@ -690,7 +690,7 @@ describe("cmdFederationSync — apply path", () => {
 
   test("multiple adds → 'applied N changes' (plural) + each msg printed", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: {},
     };
@@ -707,7 +707,7 @@ describe("cmdFederationSync — apply path", () => {
 
   test("conflict + --force → applies overwrite + save called with new map", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "mba" },
     };
@@ -725,7 +725,7 @@ describe("cmdFederationSync — apply path", () => {
 
   test("stale + --prune → entry removed from saved agents map", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "local", oldGuy: "white" },
     };
@@ -743,7 +743,7 @@ describe("cmdFederationSync — apply path", () => {
 
   test("apply with empty applied list (stale-only, no prune) → 'no changes applied' + exit 0; no save", async () => {
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { oldGuy: "white" },
     };
@@ -759,7 +759,7 @@ describe("cmdFederationSync — apply path", () => {
   test("conflict-only without --force (after stale gate already-clean) does not reach apply", async () => {
     // Sanity guard: conflict gate must precede apply, so save is not called.
     configStore = {
-      node: "oracle-world",
+      node: "kappa-world",
       namedPeers: [{ name: "white", url: "https://white.example" }],
       agents: { mawjs: "mba" },
     };
@@ -782,7 +782,7 @@ describe("cmdFederationSync — fetch wiring", () => {
       { name: "white", url: "https://white.example" },
       { name: "mba", url: "https://mba.example" },
     ];
-    configStore = { node: "oracle-world", namedPeers: peers, agents: { mawjs: "local" } };
+    configStore = { node: "kappa-world", namedPeers: peers, agents: { mawjs: "local" } };
     fetchReturn = [
       peer("white", "white", ["mawjs"]),
       peer("mba", "mba", []),

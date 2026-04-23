@@ -23,15 +23,15 @@ export default async function handler(ctx: InvokeContext): Promise<InvokeResult>
     const sub = args[0]?.toLowerCase();
 
     if (sub === "read") {
-      // aoi inbox read <id>  — mark as read
+      // ki inbox read <id>  — mark as read
       await cmdInboxMarkRead(args[1] ?? "");
     } else if (sub === "show") {
-      // aoi inbox show [N|name]  — display content of a message
+      // ki inbox show [N|name]  — display content of a message
       await cmdInboxRead(args[1]);
     } else if (sub === "write" && args[1]) {
       await cmdInboxWrite(args.slice(1).join(" "));
     } else {
-      // aoi inbox [--unread] [--from <peer>] [--last N]
+      // ki inbox [--unread] [--from <peer>] [--last N]
       const unread = args.includes("--unread");
       const fromIdx = args.indexOf("--from");
       const from = fromIdx >= 0 ? args[fromIdx + 1] : undefined;

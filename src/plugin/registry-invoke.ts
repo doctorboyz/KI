@@ -47,15 +47,15 @@ export async function invokePlugin(
 
     // -h / --help — show usage + flags + surfaces.
     // #388.1 — intercept anywhere in args, not just args[0], so
-    // `aoi <plugin> <sub> --help` shows help instead of running the
-    // subcommand (e.g. `aoi oracle scan --help`, `aoi ui install --help`).
+    // `ki <plugin> <sub> --help` shows help instead of running the
+    // subcommand (e.g. `ki kappa scan --help`, `ki ui install --help`).
     if (args.some(a => a === "-h" || a === "--help" || a === "-help")) {
       const lines: string[] = [];
       lines.push(`${m.name} v${m.version}`);
       if (m.description) lines.push(`  ${m.description}`);
       lines.push("");
       if (m.cli?.help) lines.push(`  usage: ${m.cli.help}`);
-      else if (m.cli) lines.push(`  usage: aoi ${m.cli.command}`);
+      else if (m.cli) lines.push(`  usage: ki ${m.cli.command}`);
       if (m.cli?.aliases?.length) lines.push(`  aliases: ${m.cli.aliases.join(", ")}`);
       if (m.cli?.flags) {
         lines.push("  flags:");
@@ -63,9 +63,9 @@ export async function invokePlugin(
       }
       lines.push("");
       lines.push("  surfaces:");
-      if (m.cli) lines.push(`    cli: aoi ${m.cli.command}`);
+      if (m.cli) lines.push(`    cli: ki ${m.cli.command}`);
       if (m.api) lines.push(`    api: ${m.api.methods.join("/")} ${m.api.path}`);
-      if (m.transport?.peer) lines.push(`    peer: aoi hey plugin:${m.name}`);
+      if (m.transport?.peer) lines.push(`    peer: ki hey plugin:${m.name}`);
       if (m.hooks) lines.push(`    hooks: ${Object.keys(m.hooks).join(", ")}`);
       lines.push(`\n  dir: ${plugin.dir}`);
       return { ok: true, output: lines.join("\n") };
@@ -152,8 +152,8 @@ export async function invokePlugin(
 
   wasmMemory = instance.exports.memory as WebAssembly.Memory;
   wasmAlloc =
-    (instance.exports.aoi_alloc as (size: number) => number) ??
-    bridge.env.aoi_alloc;
+    (instance.exports.ki_alloc as (size: number) => number) ??
+    bridge.env.ki_alloc;
 
   const handle = instance.exports.handle as (ptr: number, len: number) => number;
 
@@ -165,7 +165,7 @@ export async function invokePlugin(
     const json = JSON.stringify(ctx);
     const bytes = textEncoder.encode(json);
     const argPtr =
-      (instance.exports.aoi_alloc as Function)?.(bytes.length) ?? 0;
+      (instance.exports.ki_alloc as Function)?.(bytes.length) ?? 0;
     new Uint8Array(wasmMemory.buffer).set(bytes, argPtr);
 
     // Invoke handle(ptr, len) — matches command-registry.ts protocol

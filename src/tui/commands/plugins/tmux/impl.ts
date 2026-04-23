@@ -21,7 +21,7 @@ export interface TmuxPeekOpts {
  *
  * Resolution order:
  *   1. Pane ID literal (e.g. "%776")
- *   2. Fully-qualified session:w.p (e.g. "101-aoijs:0.1")
+ *   2. Fully-qualified session:w.p (e.g. "101-kijs:0.1")
  *   3. Team agent name → walk ~/.claude/teams/* /config.json, find member
  *   4. Bare session name → <target>:0 (pane 0)
  *
@@ -50,9 +50,9 @@ export function resolveTmuxTarget(target: string): { resolved: string; source: s
     }
   }
 
-  // 3.5 — Fleet session by bare stem (#394 Bug I). e.g. "aoijs-no2" → "114-aoijs-no2:0".
-  // Matches aoi peek's resolution. Suffix-preferred via the canonical
-  // resolveSessionTarget so "aoijs" → "101-aoijs" (not "aoijs-view").
+  // 3.5 — Fleet session by bare stem (#394 Bug I). e.g. "kijs-no2" → "114-kijs-no2:0".
+  // Matches ki peek's resolution. Suffix-preferred via the canonical
+  // resolveSessionTarget so "kijs" → "101-kijs" (not "kijs-view").
   try {
     const sessions = loadFleetEntries().map(e => ({ name: e.file.replace(/\.json$/, "") }));
     const r = resolveSessionTarget(target, sessions);
@@ -102,8 +102,8 @@ interface AnnotatedPane {
 }
 
 /**
- * List tmux panes with fleet + team annotations. Supersedes `aoi panes`
- * with smarter labeling — if a pane is a fleet oracle or a team agent,
+ * List tmux panes with fleet + team annotations. Supersedes `ki panes`
+ * with smarter labeling — if a pane is a fleet kappa or a team agent,
  * say so explicitly so operators don't need to cross-check configs.
  */
 export async function cmdTmuxLs(opts: TmuxLsOpts = {}): Promise<void> {
@@ -202,7 +202,7 @@ export interface TmuxSendOpts {
  */
 export async function cmdTmuxSend(target: string, command: string, opts: TmuxSendOpts = {}): Promise<void> {
   if (!command) {
-    throw new Error("usage: aoi tmux send <target> <command> [--literal] [--allow-destructive] [--force]");
+    throw new Error("usage: ki tmux send <target> <command> [--literal] [--allow-destructive] [--force]");
   }
 
   const hit = resolveTmuxTarget(target);
@@ -260,7 +260,7 @@ export interface TmuxSplitOpts {
 
 /**
  * Split a target pane. Wraps `tmux split-window -t <target>`. Thin —
- * intentionally NOT delegating to the aoi split plugin (that one
+ * intentionally NOT delegating to the ki split plugin (that one
  * attaches to a fleet session; this one is a primitive split).
  */
 export async function cmdTmuxSplit(target: string, opts: TmuxSplitOpts = {}): Promise<void> {
@@ -287,7 +287,7 @@ export async function cmdTmuxSplit(target: string, opts: TmuxSplitOpts = {}): Pr
 }
 
 export interface TmuxKillOpts {
-  /** Bypass fleet/view session refusal. Required to kill a live oracle pane/session. */
+  /** Bypass fleet/view session refusal. Required to kill a live kappa pane/session. */
   force?: boolean;
   /** Kill the entire session (not just the pane). */
   session?: boolean;
@@ -296,7 +296,7 @@ export interface TmuxKillOpts {
 /**
  * Kill a target pane or session. Wraps `tmux kill-pane -t` or
  * `tmux kill-session -t`. Refuses fleet/view sessions by default
- * (Bug F class — never accidentally kill live oracles).
+ * (Bug F class — never accidentally kill live kappas).
  */
 export async function cmdTmuxKill(target: string, opts: TmuxKillOpts = {}): Promise<void> {
   const hit = resolveTmuxTarget(target);
@@ -315,7 +315,7 @@ export async function cmdTmuxKill(target: string, opts: TmuxKillOpts = {}): Prom
   if (isFleetOrViewSession(session, fleetSessions) && !opts.force) {
     throw new Error(
       `refusing to kill: session '${session}' is fleet or view.\n` +
-      `  killing would terminate a live oracle (or its mirror).\n` +
+      `  killing would terminate a live kappa (or its mirror).\n` +
       `  pass --force to override (you really want to kill a fleet session)`
     );
   }
@@ -369,7 +369,7 @@ export async function cmdTmuxLayout(target: string, preset: string): Promise<voi
  * TTY-interactive and our process is the wrong process to attach. Instead
  * we resolve the target and print the exact command — the user runs it.
  *
- * This matches `aoi team spawn`'s pattern (Bug C philosophy): prepare,
+ * This matches `ki team spawn`'s pattern (Bug C philosophy): prepare,
  * print, let the operator run the interactive part.
  */
 export function cmdTmuxAttach(target: string): void {
@@ -399,7 +399,7 @@ export function annotatePane(
   const team = teamByPane.get(p.id);
   if (team) return `team: ${team}`;
   if (fleetSessions.has(session)) return `fleet: ${session.replace(/^\d+-/, "")}`;
-  if (session === "aoi-view" || /-view$/.test(session)) return `view: ${session}`;
+  if (session === "ki-view" || /-view$/.test(session)) return `view: ${session}`;
   if (p.command?.includes("claude")) return "orphan";
   return "";
 }

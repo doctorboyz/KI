@@ -14,7 +14,7 @@ export interface AuditEntry {
   result?: string;
 }
 
-/** Append a structured audit log entry to ~/.config/aoi/audit.jsonl */
+/** Append a structured audit log entry to ~/.config/ki/audit.jsonl */
 export function logAudit(cmd: string, args: string[], result?: string): void {
   const entry: AuditEntry = {
     ts: new Date().toISOString(),
@@ -44,7 +44,7 @@ export interface AnomalyEntry {
 }
 
 /**
- * Append a structured anomaly entry to ~/.config/aoi/audit.jsonl.
+ * Append a structured anomaly entry to ~/.config/ki/audit.jsonl.
  * Optional `filePath` overrides the default path (for test isolation).
  */
 export function logAnomaly(

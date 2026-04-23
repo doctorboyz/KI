@@ -37,7 +37,7 @@ export async function cmdFleetLs() {
   }
 
   if (conflicts.length > 0) {
-    console.log(`\n  \x1b[31m⚠ ${conflicts.length} conflict(s) found.\x1b[0m Run \x1b[36maoi fleet renumber\x1b[0m to fix.`);
+    console.log(`\n  \x1b[31m⚠ ${conflicts.length} conflict(s) found.\x1b[0m Run \x1b[36mki fleet renumber\x1b[0m to fix.`);
   }
   console.log();
 }

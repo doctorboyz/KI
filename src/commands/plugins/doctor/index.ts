@@ -3,7 +3,7 @@ import { cmdDoctor } from "./impl";
 
 export const command = {
   name: "doctor",
-  description: "Diagnostic checks — verifies aoi install health and auto-heals when possible.",
+  description: "Diagnostic checks — verifies ki install health and auto-heals when possible.",
 };
 
 export default async function handler(ctx: InvokeContext): Promise<InvokeResult> {

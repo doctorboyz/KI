@@ -21,18 +21,18 @@ export async function cmdFleetValidate() {
     }
   }
 
-  // 2. Oracle in multiple active configs
-  const oracleMap = new Map<string, string[]>();
+  // 2. Kappa in multiple active configs
+  const kappaMap = new Map<string, string[]>();
   for (const e of entries) {
     for (const w of e.session.windows) {
-      const oracles = oracleMap.get(w.name) || [];
-      oracles.push(e.session.name);
-      oracleMap.set(w.name, oracles);
+      const kappas = kappaMap.get(w.name) || [];
+      kappas.push(e.session.name);
+      kappaMap.set(w.name, kappas);
     }
   }
-  for (const [oracle, sessions] of oracleMap) {
+  for (const [kappa, sessions] of kappaMap) {
     if (sessions.length > 1) {
-      issues.push(`\x1b[33mDuplicate oracle\x1b[0m: ${oracle} in ${sessions.join(", ")}`);
+      issues.push(`\x1b[33mDuplicate kappa\x1b[0m: ${kappa} in ${sessions.join(", ")}`);
     }
   }
 

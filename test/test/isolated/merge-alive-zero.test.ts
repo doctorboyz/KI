@@ -24,12 +24,12 @@ beforeEach(() => {
   testDir = mkdtempSync(join(tmpdir(), "maw-mergeG-"));
   teamsDir = join(testDir, "teams");
   tasksDir = join(testDir, "tasks");
-  psiDir = join(testDir, "oracle");
+  psiDir = join(testDir, "kappa");
   mkdirSync(teamsDir, { recursive: true });
   mkdirSync(tasksDir, { recursive: true });
-  // Create a minimal oracle root so resolvePsi finds it
+  // Create a minimal kappa root so resolvePsi finds it
   mkdirSync(join(psiDir, "ψ"), { recursive: true });
-  writeFileSync(join(psiDir, "CLAUDE.md"), "# test oracle\n");
+  writeFileSync(join(psiDir, "CLAUDE.md"), "# test kappa\n");
   process.chdir(psiDir);
   _setDirs(teamsDir, tasksDir);
 });

@@ -1,5 +1,5 @@
 /**
- * Avengers API proxy — bridges aoi to ARRA-01/avengers rate limit monitor.
+ * Avengers API proxy — bridges ki to ARRA-01/avengers rate limit monitor.
  *
  * Routes:
  *   GET /api/avengers/status    -> all accounts with rate limit info
@@ -8,13 +8,13 @@
  */
 
 import { Elysia} from "elysia";
-import { loadConfig, type AoiConfig } from "../config";
+import { loadConfig, type KiConfig } from "../config";
 
 export const avengersApi = new Elysia();
 
 /** Extract avengers base URL from config */
 function getAvengersUrl(): string | null {
-  const config = loadConfig() as AoiConfig & { avengers?: string };
+  const config = loadConfig() as KiConfig & { avengers?: string };
   return config.avengers || null;
 }
 
